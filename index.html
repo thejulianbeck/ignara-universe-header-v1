@@ -4,110 +4,431 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ignara Universe — Hub</title>
-  <meta name="description" content="Hub de libros de Ignara Universe. Entra a Ignara dos." />
+  <meta name="description" content="Hub de Ignara Universe. Libros, puertas y comunidad. Entra a Ignara dos." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Preload critical display + mono fonts so the loader can track FontFace readiness -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body data-view="hub">
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
   <header class="site-header" id="site-header" data-scrolled="false" data-force-glass="false">
     <div class="header-glass" aria-hidden="true">
-      <div class="glass-fill"></div>
-      <div class="glass-highlight"></div>
-      <div class="glass-edge"></div>
+      <div class="glass-effect">
+        <div class="glass-fill"></div>
+        <div class="glass-fill-burn"></div>
+        <div class="glass-highlight-soft"></div>
+        <div class="glass-highlight-strong"></div>
+        <div class="glass-edge-light"></div>
+        <div class="glass-edge-dark"></div>
+        <div class="glass-inner-glow"></div>
+      </div>
     </div>
     <div class="header-inner">
-      <a class="brand" href="#hub" id="brand-home" aria-label="Ignara Universe — hub">
+      <a class="brand" href="#inicio" id="brand-home" aria-label="Ignara Universe — inicio">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-text">Ignara Universe</span>
       </a>
+      <nav class="header-nav" id="header-nav" aria-label="Principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#libros">Libros</a>
+        <a href="#mundos">Mundos</a>
+        <a href="#puertas">Puertas</a>
+        <a href="#familia">Familia</a>
+      </nav>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="header-nav" aria-label="Abrir menú">
+        <span></span><span></span>
+      </button>
       <span class="header-meta" id="header-meta">hub</span>
     </div>
   </header>
 
-  <!-- 1) Hub -->
-  <main id="view-hub" class="view view-hub" aria-label="Nuestros libros">
-    <section class="hub" id="hub">
-      <p class="eyebrow">Ignara Universe</p>
-      <h1 class="hub-title">Nuestros libros</h1>
-      <p class="hub-lede">Tres puertas. Solo una está abierta por ahora.</p>
-      <ul class="book-list" role="list">
-        <li>
-          <button type="button" class="book-item is-disabled" disabled aria-disabled="true">
-            <span class="book-index">01</span>
-            <span class="book-name">Ignara uno</span>
-            <span class="book-status">próximamente</span>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="book-item is-active" id="enter-book-2" aria-label="Entrar a Ignara dos">
-            <span class="book-index">02</span>
-            <span class="book-name">Ignara dos</span>
-            <span class="book-status">entrar →</span>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="book-item is-disabled" disabled aria-disabled="true">
-            <span class="book-index">03</span>
-            <span class="book-name">Ignara tres</span>
-            <span class="book-status">próximamente</span>
-          </button>
-        </li>
-      </ul>
-    </section>
+  <!-- 1) Hub home — remede of become-a-yogi section rhythm -->
+  <main id="view-hub" class="view view-hub" aria-label="Ignara Universe">
+    <div id="main">
 
-    <!-- Scroll sections so frosted glass reads over changing backgrounds -->
-    <section class="panel panel-ember" id="comunidad">
-      <h2>Comunidad</h2>
-      <p>Espacio placeholder para foros, eventos y charlas entre fans. El vidrio del header debería difuminar este rojo-ámbar al pasar.</p>
-      <div class="cards">
-        <article><h3>Canales</h3><p>Salas temáticas, roles y normas (placeholder).</p></article>
-        <article><h3>Eventos</h3><p>Lecturas en vivo, Q&amp;A y meetups (placeholder).</p></article>
-        <article><h3>Creadores</h3><p>Perfiles de artistas y escritores (placeholder).</p></article>
-      </div>
-    </section>
+      <!-- Hero -->
+      <section class="hero" id="inicio">
+        <div class="hero-stage">
+          <div class="hero-copy">
+            <p class="eyebrow">Para lectores, creadores y quien esté en el medio.</p>
+            <h1 class="hero-title">
+              <span>Sé la historia.</span>
+              <span>Abre el universo.</span>
+            </h1>
+            <p class="hero-lede">
+              Educación narrativa para quien busca más que páginas sueltas:
+              entrenar atención, imaginación y nervios con una práctica disciplinada
+              que se traduce en claridad al escribir, constancia al leer
+              y integridad a lo largo del tiempo.
+            </p>
+            <div class="hero-actions">
+              <a class="btn-solid" href="#libros">Ver libros</a>
+              <a class="btn-ghost" href="#puertas">Las siete puertas</a>
+            </div>
+          </div>
+          <div class="hero-aside" aria-hidden="true">
+            <div class="hero-orb"></div>
+            <div class="hero-orb hero-orb--2"></div>
+            <div class="hero-frame">
+              <span class="mono-label">señal_viva</span>
+              <span class="hero-frame-title">Ignara</span>
+              <span class="mono-label">universo · hub</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <section class="panel panel-violet" id="fan-art">
-      <h2>Fan Art</h2>
-      <p>Galería de ejemplo. Fondos saturados ayudan a notar el blur y la saturación del glass.</p>
-      <div class="gallery">
-        <div class="tile">Pieza 01</div>
-        <div class="tile">Pieza 02</div>
-        <div class="tile">Pieza 03</div>
-        <div class="tile">Pieza 04</div>
-      </div>
-    </section>
+      <!-- Mission + timeline -->
+      <section class="section section-cream" id="linaje">
+        <div class="section-inner">
+          <p class="eyebrow dark">Lo que vive aquí</p>
+          <h2 class="display-title dark">Formamos lectores y creadores para construir prácticas que se sostienen con el tiempo.</h2>
+          <p class="body-copy dark">
+            Este es el trabajo al que volvemos cada día en la página, en el estudio
+            y en cómo habitamos el lore. Lo que compartimos es práctico, encarnado
+            y anclado en una línea narrativa. No conceptos para coleccionar:
+            prácticas para aplicar una y otra vez.
+          </p>
 
-    <section class="panel panel-teal" id="merch">
-      <h2>Merch</h2>
-      <p>Catálogo ficticio: posters, pins, ropa. Solo para demostrar el scroll bajo el header.</p>
-      <ul class="merch-list">
-        <li>Poster mapa · edición limitada</li>
-        <li>Pin set · constelaciones</li>
-        <li>Hoodie · marca Ignara</li>
-        <li>Tote · tipografía mono</li>
-      </ul>
-    </section>
+          <div class="timeline" aria-label="Cronología placeholder del universo">
+            <article class="timeline-item">
+              <h3>2018</h3>
+              <p>Primer borrador en un cuaderno sin nombre.</p>
+            </article>
+            <article class="timeline-item">
+              <h3>2020</h3>
+              <p>La ciudad neón toma forma; nace el protocolo.</p>
+            </article>
+            <article class="timeline-item">
+              <h3>2022</h3>
+              <p>Archivos abiertos: tres libros en el mapa.</p>
+            </article>
+            <article class="timeline-item">
+              <h3>2024</h3>
+              <p>Comunidad temprana; primeras puertas públicas.</p>
+            </article>
+            <article class="timeline-item">
+              <h3>2025</h3>
+              <p>Hub unificado. Señal estable.</p>
+            </article>
+            <article class="timeline-item is-now">
+              <h3>2026</h3>
+              <p>Ignara dos en acceso. El resto, en camino.</p>
+            </article>
+          </div>
+        </div>
+      </section>
 
-    <section class="panel panel-night" id="universo">
-      <h2>Universo</h2>
-      <p>
-        Enlace conceptual al lore / universo narrativo (este hub no es el lorebook).
-        Sigue bajando: el header sticky mantiene el efecto frosted-glass.
-      </p>
-      <div class="spacer-block">
-        <p>Bloque alto 1 — atmósfera oscura</p>
-      </div>
-      <div class="spacer-block alt">
-        <p>Bloque alto 2 — contraste claro sobre el blur</p>
-      </div>
-      <div class="spacer-block">
-        <p>Bloque alto 3 — fin del demo</p>
-      </div>
-    </section>
+      <!-- Nuestros libros (training cards remede) -->
+      <section class="section section-night" id="libros">
+        <div class="section-inner">
+          <p class="eyebrow">Nuestros libros</p>
+          <h2 class="display-title">Tres puertas. Solo una está abierta por ahora.</h2>
+          <p class="body-copy soft">
+            Algunos mundos solo se aprenden viviéndolos. Elige un libro;
+            Ignara dos es la entrada activa.
+          </p>
+
+          <ul class="book-cards" role="list">
+            <li>
+              <article class="book-card is-disabled" aria-disabled="true">
+                <div class="book-card-media media-uno" aria-hidden="true">
+                  <span class="media-shape"></span>
+                </div>
+                <div class="book-card-body">
+                  <p class="mono-label">01 · próximamente</p>
+                  <h3>Ignara uno</h3>
+                  <p>El origen quieto. Fechas por anunciar. Un silencio que enseña antes de la primera línea.</p>
+                  <span class="book-card-cta is-muted">Pronto</span>
+                </div>
+              </article>
+            </li>
+            <li>
+              <article class="book-card is-active">
+                <div class="book-card-media media-dos" aria-hidden="true">
+                  <span class="media-shape"></span>
+                </div>
+                <div class="book-card-body">
+                  <p class="mono-label">02 · disponible</p>
+                  <h3>Ignara dos</h3>
+                  <p>Algunas cosas solo se aprenden cayendo adentro. Cables, neón y memoria filtrada.</p>
+                  <button type="button" class="book-card-cta" id="enter-book-2" aria-label="Entrar a Ignara dos">
+                    Entrar →
+                  </button>
+                </div>
+              </article>
+            </li>
+            <li>
+              <article class="book-card is-disabled" aria-disabled="true">
+                <div class="book-card-media media-tres" aria-hidden="true">
+                  <span class="media-shape"></span>
+                </div>
+                <div class="book-card-body">
+                  <p class="mono-label">03 · próximamente</p>
+                  <h3>Ignara tres</h3>
+                  <p>Más que un cierre: un espacio para conexión, renovación y lo que viene después.</p>
+                  <span class="book-card-cta is-muted">Pronto</span>
+                </div>
+              </article>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Mundos / map-studios remede -->
+      <section class="section section-cream" id="mundos">
+        <div class="section-inner wide">
+          <p class="eyebrow dark">Mapa del universo</p>
+          <h2 class="display-title dark">Leído y habitado en nodos de todo el mapa. ¿Dónde practicas tú?</h2>
+          <p class="body-copy dark">
+            Placeholder de estudios y mundos. Formas y gradientes propios —
+            sin fotos ajenas. El vidrio del header debería difuminar estos fondos al pasar.
+          </p>
+
+          <div class="world-grid">
+            <article class="world-card">
+              <div class="world-swatch swatch-ember" aria-hidden="true"></div>
+              <h3>Ciudad Neón</h3>
+              <p class="mono-label">sector · alpha</p>
+              <p>Calles mojadas, radios encriptadas.</p>
+            </article>
+            <article class="world-card">
+              <div class="world-swatch swatch-teal" aria-hidden="true"></div>
+              <h3>Archipiélago Memoria</h3>
+              <p class="mono-label">sector · beta</p>
+              <p>Islas de archivo y marea lenta.</p>
+            </article>
+            <article class="world-card">
+              <div class="world-swatch swatch-violet" aria-hidden="true"></div>
+              <h3>Estación Umbral</h3>
+              <p class="mono-label">sector · gamma</p>
+              <p>Andén entre capítulos.</p>
+            </article>
+            <article class="world-card">
+              <div class="world-swatch swatch-sand" aria-hidden="true"></div>
+              <h3>Desierto de Eco</h3>
+              <p class="mono-label">sector · delta</p>
+              <p>Viento que repite nombres viejos.</p>
+            </article>
+            <article class="world-card">
+              <div class="world-swatch swatch-ink" aria-hidden="true"></div>
+              <h3>Biblioteca Sótano</h3>
+              <p class="mono-label">sector · epsilon</p>
+              <p>Estantes que no aparecen en planos.</p>
+            </article>
+            <article class="world-card">
+              <div class="world-swatch swatch-rose" aria-hidden="true"></div>
+              <h3>Puerto Satélite</h3>
+              <p class="mono-label">sector · zeta</p>
+              <p>Señales que llegan con retraso.</p>
+            </article>
+            <article class="world-card">
+              <div class="world-swatch swatch-lime" aria-hidden="true"></div>
+              <h3>Jardín de Glosas</h3>
+              <p class="mono-label">sector · eta</p>
+              <p>Notas al margen que crecen solas.</p>
+            </article>
+            <article class="world-card">
+              <div class="world-swatch swatch-steel" aria-hidden="true"></div>
+              <h3>Torre Observatorio</h3>
+              <p class="mono-label">sector · theta</p>
+              <p>Vista al resto del canon.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seven doorways remede -->
+      <section class="section section-night" id="puertas">
+        <div class="section-inner wide">
+          <p class="eyebrow">Las siete puertas</p>
+          <h2 class="display-title">Las siete puertas de Ignara.</h2>
+          <p class="body-copy soft">
+            Ignara Universe se apoya en un plano energético refinado a lo largo
+            de una línea de autores — enseñado por completo solo dentro de la sala
+            de lectura. Lo que sigue es un vistazo.
+          </p>
+
+          <div class="door-bento">
+            <article class="door-card door-tall">
+              <p class="mono-label">01 · la voz</p>
+              <h3>El maestro interior</h3>
+              <p>No son habilidades que se coleccionan: son devociones que se practican. Sabiduría, compasión, ecuanimidad. Sostener el silencio como instrumento.</p>
+            </article>
+            <article class="door-card">
+              <p class="mono-label">02 · el oficio</p>
+              <h3>Inteligencia del flujo</h3>
+              <p>Secuencias desde principios, no desde listas. Esfuerzo y descanso. Lo simple que conversa contigo.</p>
+            </article>
+            <article class="door-card">
+              <p class="mono-label">03 · la raíz</p>
+              <h3>Línea y filosofía</h3>
+              <p>Canon, glosas y límites. La filosofía se estudia como modo de moverse por la vida.</p>
+            </article>
+            <article class="door-card">
+              <p class="mono-label">04 · el portador</p>
+              <h3>El aliento como arquitectura</h3>
+              <p>Antes de la pose, antes del lore: el ritmo. Atención que alarga el clima interior.</p>
+            </article>
+            <article class="door-card">
+              <p class="mono-label">05 · la firma</p>
+              <h3>Siete umbrales</h3>
+              <p>De la primera página al cierre. Cada puerta con su intención, su tempo, su protocolo.</p>
+            </article>
+            <article class="door-card">
+              <p class="mono-label">06 · el cuerpo</p>
+              <h3>Presencia encarnada</h3>
+              <p>Leer con el sistema nervioso despierto. Claridad en el trabajo, firmeza en los vínculos.</p>
+            </article>
+            <article class="door-card door-wide">
+              <p class="mono-label">07 · la integración</p>
+              <h3>Volver a la vida</h3>
+              <p>Lo construido aquí no se reduce a un guion. Se siente antes de poder nombrarlo — y se practica fuera de la página.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dharma conversations remede -->
+      <section class="section section-ember" id="charlas">
+        <div class="section-inner">
+          <p class="eyebrow">Charlas Ignara</p>
+          <h2 class="display-title">Conversaciones del dharma narrativo</h2>
+          <p class="body-copy soft">
+            Generaciones de lectores aprendieron sentados frente a quien sabía más,
+            preguntaba más duro y nos hacía menos seguros de nuestras propias respuestas.
+            Este es el mismo trabajo, en forma moderna. Diálogos largos con voces
+            que dan forma a cómo vive la práctica hoy.
+          </p>
+          <div class="talk-grid">
+            <article class="talk-card">
+              <p class="mono-label">episodio · 01</p>
+              <h3>La página me salvó la vida</h3>
+              <p>Una conversación sobre atención, duelo y el primer capítulo que no pudiste soltar.</p>
+              <span class="talk-meta">Placeholder · audio pronto</span>
+            </article>
+            <article class="talk-card">
+              <p class="mono-label">episodio · 02</p>
+              <h3>Cables y compasión</h3>
+              <p>Cómo el neón de Ignara dos habla de cuidado, no solo de velocidad.</p>
+              <span class="talk-meta">Placeholder · audio pronto</span>
+            </article>
+            <article class="talk-card">
+              <p class="mono-label">episodio · 03</p>
+              <h3>Línea, no pose</h3>
+              <p>Por qué el canon se practica y no se hereda.</p>
+              <span class="talk-meta">Placeholder · audio pronto</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Join the family -->
+      <section class="section section-cream" id="familia">
+        <div class="section-inner">
+          <p class="eyebrow dark">Únete a la familia</p>
+          <h2 class="display-title dark">Más de tres mil lectores y creadores compartiendo flujos, planificando encuentros y haciendo las preguntas reales.</h2>
+          <p class="body-copy dark tight">Gratis para entrar. Difícil de dejar.</p>
+
+          <div class="family-grid">
+            <article class="family-card">
+              <p class="mono-label dark">01</p>
+              <h3>Practica. Juntos. En todas partes.</h3>
+              <p>Flujos diarios, respiración de página y enseñanzas ancladas en la línea Ignara. En vivo o a tu ritmo, donde esté tu cuaderno.</p>
+            </article>
+            <article class="family-card">
+              <p class="mono-label dark">02</p>
+              <h3>Hay que vivirlo.</h3>
+              <p>Flujos compartidos, charlas honestas, planes de retiro en la mesa del desayuno. Quien practica contigo es quien te hace volver.</p>
+            </article>
+            <article class="family-card">
+              <p class="mono-label dark">03</p>
+              <h3>Nos encantaría tenerte.</h3>
+              <p>Desde tu primera inmersión hasta tu propio camino de autoría: mentorías, lecturas y una línea que te mantiene honesto.</p>
+            </article>
+          </div>
+
+          <div class="family-cta">
+            <a class="btn-solid dark" href="#libros">Empezar por Ignara dos</a>
+            <span class="mono-label dark">comunidad · placeholder</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="section section-night" id="voces">
+        <div class="section-inner wide">
+          <p class="eyebrow">Voces</p>
+          <h2 class="display-title">Llegaron a leer. Se quedaron por la vida.</h2>
+          <p class="mono-label soft-gap">Con la confianza de lectores placeholder</p>
+
+          <div class="quote-grid">
+            <blockquote class="quote-card">
+              <p>Si buscas reactivar tu práctica de lectura, tu ganas de escribir y tu porqué, esto es para ti. Sales inspirado, con herramientas nuevas para tu comunidad.</p>
+              <footer>— Andrea W.</footer>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>Una experiencia expansiva. El universo se siente cercano sin perder misterio. Lo recomiendo sin reservas.</p>
+              <footer>— Carlos M.</footer>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>Increíble de punta a punta: la gente, el espacio y lo aprendido. Gratitud eterna; volveré.</p>
+              <footer>— Carla B.</footer>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>Profundo. Entré por una publicación y salí con un mapa interior que no esperaba. No hace falta una certificación para transmitir sabiduría útil.</p>
+              <footer>— Wendy C.</footer>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>Si quieres transformar cómo habitas las historias, no puedo recomendar Ignara lo suficiente. Tú haces el trabajo; ellos sostienen el espacio.</p>
+              <footer>— Jennifer K.</footer>
+            </blockquote>
+            <blockquote class="quote-card">
+              <p>Entré abierta y salí transformada. Descubrí que mi capacidad de quedarme cinco respiraciones más era mucho mayor de lo que me concedía.</p>
+              <footer>— Micaela O.</footer>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="site-footer" id="pie">
+        <div class="section-inner wide footer-inner">
+          <div class="footer-top">
+            <div>
+              <p class="eyebrow">Ignara Universe</p>
+              <p class="footer-tag">Hecho para lectores que practican.</p>
+            </div>
+            <div class="footer-links">
+              <div>
+                <p class="mono-label">Explorar</p>
+                <a href="#libros">Nuestros libros</a>
+                <a href="#mundos">Mundos</a>
+                <a href="#puertas">Siete puertas</a>
+              </div>
+              <div>
+                <p class="mono-label">Comunidad</p>
+                <a href="#familia">Familia</a>
+                <a href="#charlas">Charlas</a>
+                <a href="#voces">Voces</a>
+              </div>
+              <div>
+                <p class="mono-label">Acceso</p>
+                <button type="button" class="footer-enter" id="footer-enter-2">Ignara dos →</button>
+                <span class="is-muted">Uno / tres · pronto</span>
+              </div>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <p class="mono-label">© 2026 Ignara Universe · hub placeholder</p>
+            <p class="mono-label">Remede de ritmo editorial · tipografía Inter + Fragment Mono</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   </main>
 
   <!-- Loading overlay: label + percentage only -->

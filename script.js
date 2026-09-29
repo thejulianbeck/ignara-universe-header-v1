@@ -19,11 +19,14 @@
   const loaderText = document.getElementById("loader-text");
   const loaderPct = document.getElementById("loader-pct");
   const enterBtn = document.getElementById("enter-book-2");
+  const footerEnter = document.getElementById("footer-enter-2");
   const backBtn = document.getElementById("back-hub");
   const brandHome = document.getElementById("brand-home");
   const headerMeta = document.getElementById("header-meta");
   const header = document.getElementById("site-header");
   const bookActions = document.getElementById("book-actions");
+  const navToggle = document.getElementById("nav-toggle");
+  const headerNav = document.getElementById("header-nav");
   const body = document.body;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -38,8 +41,28 @@
     header.setAttribute("data-force-glass", on ? "true" : "false");
   }
 
+  function setMenu(open) {
+    body.dataset.menu = open ? "open" : "closed";
+    if (navToggle) navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (navToggle) {
+      navToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    }
+  }
+
   updateGlass();
   window.addEventListener("scroll", updateGlass, { passive: true });
+
+  if (navToggle) {
+    navToggle.addEventListener("click", () => {
+      setMenu(body.dataset.menu !== "open");
+    });
+  }
+
+  if (headerNav) {
+    headerNav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setMenu(false));
+    });
+  }
 
   function setView(name) {
     body.dataset.view = name;
@@ -47,6 +70,7 @@
     book.hidden = name !== "book";
     headerMeta.textContent = name === "book" ? "ignara dos" : "hub";
     setForceGlass(name === "book");
+    setMenu(false);
     updateGlass();
   }
 
@@ -87,10 +111,6 @@
 
   /**
    * Blank → noise → resolve (followingwildfire txt-shuffle SHOW remede).
-   * options.startDelay: seconds before animation starts (stagger across nodes)
-   * options.duration: seconds of the SHOW window
-   * options.delayResolve: fraction of duration between reveal and resolve waves
-   * options.revealDelay: fraction before reveal starts INSIDE the window (keep low)
    */
   function scrambleText(el, options) {
     const opts = Object.assign(
@@ -110,7 +130,6 @@
       return Promise.resolve();
     }
 
-    // Start blank — never flash final copy then glitch
     el.textContent = "";
     el.classList.remove("is-resolved");
 
@@ -121,7 +140,6 @@
 
     const durationMs = Math.max(200, opts.duration * 1000);
     const startDelayMs = Math.max(0, opts.startDelay * 1000);
-    // Keep reveal+resolve inside the window: revealDelay + delayResolve < 0.85
     const revealDelay = clamp01(Math.min(opts.revealDelay, 0.15));
     const delayResolve = clamp01(Math.min(opts.delayResolve, 0.35));
 
@@ -137,12 +155,11 @@
         resolve();
       }
 
-      // Hard safety: never leave text empty
       const safety = window.setTimeout(finish, startDelayMs + durationMs + 400);
 
       window.setTimeout(() => {
         const chars = finalText.split("");
-        const order = chars.map((_, i) => i); // left→right
+        const order = chars.map((_, i) => i);
         const frameMs = 1000 / opts.fps;
         const start = performance.now();
         let lastPaint = 0;
@@ -197,7 +214,7 @@
   function prepareBookBlank() {
     book.classList.add("is-blank");
     book.querySelectorAll("[data-scramble]").forEach((node) => {
-      readFinal(node); // ensure data-final is canonical before clearing
+      readFinal(node);
       node.textContent = "";
       node.classList.remove("is-resolved");
       node.style.opacity = "";
@@ -217,7 +234,6 @@
 
   function scrambleAllInBook() {
     const nodes = Array.from(book.querySelectorAll("[data-scramble]"));
-    // Verify every node has a final before starting
     nodes.forEach((node) => {
       if (!readFinal(node)) {
         console.warn("[ignara] scramble node missing data-final", node);
@@ -241,7 +257,6 @@
         forceAllFinals();
       })
       .then(() => {
-        // Belt-and-suspenders: if any node is still empty, force final
         nodes.forEach((node) => {
           const finalText = readFinal(node);
           if (finalText && !node.textContent.trim()) {
@@ -255,8 +270,8 @@
   }
 
   /* —— Real-ish loading: weighted Promise stages + min dwell ——
-   * Weights (documented for Julián):
-   *   fonts          40%  — Fragment Mono + Space Grotesk via document.fonts
+   * Weights:
+   *   fonts          40%  — Fragment Mono + Inter via document.fonts
    *   stylesheet/css 20%  — styles.css fetch (cache-aware)
    *   glyph buffer   15%  — build scramble charset / seed strings
    *   init view      15%  — blank book nodes + prepare scramble finals
@@ -287,8 +302,9 @@
     }
     return Promise.all([
       document.fonts.load('400 1em "Fragment Mono"'),
-      document.fonts.load('400 1em "Space Grotesk"'),
-      document.fonts.load('700 1em "Space Grotesk"'),
+      document.fonts.load('400 1em "Inter"'),
+      document.fonts.load('500 1em "Inter"'),
+      document.fonts.load('600 1em "Inter"'),
       document.fonts.ready,
     ]).then(() => wait(40));
   }
@@ -427,7 +443,8 @@
   }
 
   async function enterBook2() {
-    enterBtn.disabled = true;
+    if (enterBtn) enterBtn.disabled = true;
+    if (footerEnter) footerEnter.disabled = true;
     prepareBookBlank();
     await runLoader();
     setView("book");
@@ -441,7 +458,6 @@
       bookActions.classList.remove("is-deferred");
       bookActions.classList.add("is-ready");
     }
-    // Final visibility check after a beat
     window.setTimeout(() => {
       const empty = Array.from(book.querySelectorAll("[data-scramble]")).filter(
         (n) => !n.textContent.trim() && readFinal(n)
@@ -451,7 +467,8 @@
         book.classList.remove("is-blank");
       }
     }, 100);
-    enterBtn.disabled = false;
+    if (enterBtn) enterBtn.disabled = false;
+    if (footerEnter) footerEnter.disabled = false;
   }
 
   function goHub() {
@@ -460,14 +477,22 @@
     window.scrollTo(0, 0);
   }
 
-  enterBtn.addEventListener("click", enterBook2);
+  if (enterBtn) enterBtn.addEventListener("click", enterBook2);
+  if (footerEnter) footerEnter.addEventListener("click", enterBook2);
   backBtn.addEventListener("click", goHub);
   brandHome.addEventListener("click", (e) => {
     e.preventDefault();
-    if (body.dataset.view !== "hub") goHub();
+    if (body.dataset.view !== "hub") {
+      goHub();
+    } else {
+      setMenu(false);
+      const top = document.getElementById("inicio");
+      if (top) top.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      else window.scrollTo(0, 0);
+    }
   });
 
-  // Ensure scramble targets never paint final text before reveal
   prepareBookBlank();
   setView("hub");
+  setMenu(false);
 })();
