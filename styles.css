@@ -1,19 +1,25 @@
 /* Ignara Universe hub → loading → Ignara dos
-   Remedes followingwildfire language (dark mono, loading ritual,
-   scramble/decode typography). No copied assets, icons, or copy. */
+   - Frosted header: remede of become-a-yogi (sticky translucent bar,
+     backdrop-filter saturate+blur, soft border, glass on scroll).
+   - Book stage: remede of followingwildfire layout language
+     (dark teal/near-black, orange accent, mono chrome, sparse hero,
+     blank→noise→resolve scramble). No copied assets/WebGL/copy. */
 
 :root {
   --bg: #07090a;
   --bg-panel: #0c1211;
   --bg-deep: #050708;
+  --bg-loader: #0e1a19;
   --text: #ececec;
   --text-soft: #cdcdcd;
   --text-dim: #7f7f7f;
-  --accent: #ff5a33;
-  --accent-dim: rgba(255, 90, 51, 0.22);
+  --accent: #ff4f28;
+  --accent-dim: rgba(255, 79, 40, 0.22);
   --line: rgba(255, 255, 255, 0.12);
-  --glass-bg: rgba(10, 14, 14, 0.55);
-  --header-h: 3.75rem;
+  --glass-bg: rgba(10, 14, 14, 0.42);
+  --glass-border: rgba(243, 240, 234, 0.14);
+  --header-h: 4.25rem;
+  --radius: 1rem;
   --font-mono: "Fragment Mono", ui-monospace, Menlo, monospace;
   --font-display: "Space Grotesk", system-ui, sans-serif;
 }
@@ -22,6 +28,10 @@
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,
@@ -56,26 +66,36 @@ button {
   cursor: pointer;
 }
 
-/* —— Minimal frosted header —— */
+/* —— Sticky frosted header (become-a-yogi remede) —— */
 .site-header {
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: 40;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   height: var(--header-h);
+  color: var(--text);
 }
 
 .header-glass {
   position: absolute;
-  inset: 0.5rem 0.75rem;
-  border-radius: 0.85rem;
+  inset: 0.55rem 0.75rem;
+  border-radius: var(--radius);
   overflow: hidden;
   pointer-events: none;
-  background: var(--glass-bg);
-  border: 1px solid var(--line);
+  opacity: 0;
+  transition: opacity 0.35s ease, background-color 0.35s ease;
+  isolation: isolate;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   -webkit-backdrop-filter: saturate(120%) blur(12px);
   backdrop-filter: saturate(120%) blur(12px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  opacity: 0.92;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.site-header[data-scrolled="true"] .header-glass,
+.site-header[data-force-glass="true"] .header-glass {
+  opacity: 1;
 }
 
 .glass-fill {
@@ -83,10 +103,25 @@ button {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.01) 45%,
-    rgba(0, 0, 0, 0.15)
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0.02) 40%,
+    rgba(0, 0, 0, 0.12)
   );
+}
+
+.glass-highlight {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0.2em 0.2em 0.08em -0.25em rgba(255, 255, 255, 0.35);
+  border-radius: inherit;
+}
+
+.glass-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset -0.15em -0.2em 0.08em -0.15em rgba(180, 180, 180, 0.25);
+  mix-blend-mode: overlay;
 }
 
 .header-inner {
@@ -95,34 +130,40 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   height: 100%;
   max-width: 56rem;
   margin: 0 auto;
-  padding: 0 1.35rem;
+  padding: 0 1.5rem;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.65rem;
 }
 
 .brand-mark {
-  width: 0.55rem;
-  height: 0.55rem;
+  width: 0.65rem;
+  height: 0.65rem;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #ffb199, var(--accent) 55%, #6b2414);
-  box-shadow: 0 0 10px var(--accent-dim);
+  box-shadow: 0 0 12px var(--accent-dim);
 }
 
-.brand-text,
-.header-meta {
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+.brand-text {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
 }
 
 .header-meta {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--text-dim);
 }
 
@@ -143,16 +184,16 @@ button {
   justify-content: center;
   max-width: 40rem;
   margin: 0 auto;
-  padding: calc(var(--header-h) + 2rem) 1.35rem 3rem;
+  padding: 2rem 1.35rem 3rem;
   background:
-    radial-gradient(ellipse 70% 50% at 80% 10%, rgba(255, 90, 51, 0.12), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 80% 10%, rgba(255, 79, 40, 0.12), transparent 55%),
     radial-gradient(ellipse 60% 40% at 10% 90%, rgba(40, 120, 110, 0.12), transparent 50%),
     linear-gradient(180deg, #0a0e0e 0%, var(--bg) 55%, #080a0b 100%);
 }
 
 .eyebrow {
   margin: 0 0 0.85rem;
-  font-size: 0.68rem;
+  font-size: 0.625rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent);
@@ -170,8 +211,9 @@ button {
 .hub-lede {
   margin: 0 0 2.25rem;
   color: var(--text-dim);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   max-width: 26rem;
+  letter-spacing: 0.01em;
 }
 
 .book-list {
@@ -199,7 +241,8 @@ button {
 
 .book-index {
   color: var(--text-dim);
-  font-size: 0.72rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
 }
 
 .book-name {
@@ -210,7 +253,7 @@ button {
 }
 
 .book-status {
-  font-size: 0.68rem;
+  font-size: 0.625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -222,15 +265,15 @@ button {
 }
 
 .book-item.is-active {
-  border-color: rgba(255, 90, 51, 0.45);
-  background: linear-gradient(135deg, rgba(255, 90, 51, 0.1), rgba(255, 255, 255, 0.03));
-  box-shadow: 0 0 0 1px rgba(255, 90, 51, 0.08), 0 12px 40px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 79, 40, 0.45);
+  background: linear-gradient(135deg, rgba(255, 79, 40, 0.1), rgba(255, 255, 255, 0.03));
+  box-shadow: 0 0 0 1px rgba(255, 79, 40, 0.08), 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
 .book-item.is-active:hover,
 .book-item.is-active:focus-visible {
   transform: translateY(-1px);
-  border-color: rgba(255, 90, 51, 0.75);
+  border-color: rgba(255, 79, 40, 0.75);
   outline: none;
 }
 
@@ -238,15 +281,43 @@ button {
   color: var(--accent);
 }
 
-/* —— Loader (remede of FW loading ritual) —— */
+/* Scroll strips so glass remede is visible when scrolling the hub */
+.hub-scroll-strip {
+  display: grid;
+  gap: 0;
+}
+
+.strip-panel {
+  min-height: 42vh;
+}
+
+.strip-ember {
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(255, 79, 40, 0.28), transparent 55%),
+    linear-gradient(180deg, #1a0c0a, #0c0808);
+}
+
+.strip-teal {
+  background:
+    radial-gradient(ellipse at 70% 50%, rgba(40, 140, 130, 0.28), transparent 50%),
+    linear-gradient(180deg, #0a1413, #071010);
+}
+
+.strip-violet {
+  background:
+    radial-gradient(ellipse at 40% 60%, rgba(90, 60, 160, 0.22), transparent 50%),
+    linear-gradient(180deg, #0c0b14, #07070c);
+}
+
+/* —— Loader (FW loading ritual remede) —— */
 .loader {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0e1a19;
+  background: var(--bg-loader);
   color: var(--text-soft);
 }
 
@@ -264,12 +335,12 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.625rem;
 }
 
 .loader-icon {
-  width: 1.35rem;
-  height: 1.35rem;
+  width: 1.25rem;
+  height: 1.25rem;
   color: var(--accent);
   opacity: 0;
 }
@@ -285,14 +356,16 @@ button {
 }
 
 .loader-text,
-.loader-pct {
-  margin-top: 1.25rem;
+.loader-pct,
+.loader-stage {
+  margin-top: 1.375rem;
   font-size: 0.75rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   opacity: 0;
   color: var(--text-soft);
+  font-family: var(--font-mono);
 }
 
 .loader-pct {
@@ -300,9 +373,17 @@ button {
   color: var(--text-dim);
 }
 
+.loader-stage {
+  margin-top: 0.85rem;
+  font-size: 0.625rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
 .loader.is-on .loader-icon,
 .loader.is-on .loader-text,
-.loader.is-on .loader-pct {
+.loader.is-on .loader-pct,
+.loader.is-on .loader-stage {
   opacity: 1;
   transition: opacity 0.4s ease;
 }
@@ -328,11 +409,11 @@ button {
   }
 }
 
-/* —— Book 2 stage —— */
+/* —— Book 2 stage (FW landing language remede) —— */
 .book-stage {
   position: relative;
-  min-height: 100dvh;
-  padding: calc(var(--header-h) + 2.5rem) 1.35rem 3.5rem;
+  min-height: 140dvh;
+  padding: 2.5rem 1.35rem 4rem;
   overflow: hidden;
 }
 
@@ -361,7 +442,7 @@ button {
   position: absolute;
   inset: -20%;
   background:
-    radial-gradient(circle at 70% 20%, rgba(255, 90, 51, 0.16), transparent 35%),
+    radial-gradient(circle at 70% 20%, rgba(255, 79, 40, 0.16), transparent 35%),
     radial-gradient(circle at 20% 80%, rgba(60, 180, 160, 0.08), transparent 40%);
   filter: blur(2px);
 }
@@ -369,16 +450,21 @@ button {
 .book-frame {
   position: relative;
   z-index: 1;
-  max-width: 38rem;
-  margin: 0 auto;
+  max-width: 36rem;
+  margin: 12vh auto 0;
+  text-align: left;
+}
+
+.view-book.is-blank .book-frame > :not(.book-corner):not(.book-actions) {
+  /* chrome corner stays; scramble nodes start empty */
 }
 
 .book-corner {
   position: absolute;
-  top: -1.5rem;
+  top: -1.75rem;
   left: 0;
   margin: 0;
-  font-size: 0.62rem;
+  font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
@@ -387,64 +473,71 @@ button {
 .book-kicker,
 .book-subtitle {
   margin: 0;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-dim);
+  min-height: 1em;
+  white-space: pre-wrap;
 }
 
 .book-heading {
-  margin: 0.65rem 0 0.75rem;
+  margin: 0.85rem 0 0.9rem;
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 9vw, 4rem);
+  font-size: clamp(2.6rem, 10vw, 4.25rem);
   font-weight: 700;
   letter-spacing: -0.035em;
-  line-height: 0.95;
+  line-height: 0.92;
   text-transform: uppercase;
+  min-height: 1.1em;
+  white-space: pre-wrap;
 }
 
 .book-body {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.35rem;
 }
 
 .scramble-paragraph {
   margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.65;
+  font-size: 0.75rem;
+  line-height: 1.7;
   color: var(--text-soft);
-  max-width: 34rem;
+  max-width: 32rem;
+  min-height: 3.4em;
+  white-space: pre-wrap;
 }
 
 .scramble-paragraph.muted {
   color: var(--text-dim);
 }
 
-.scramble-paragraph .glyph {
-  display: inline;
-  white-space: pre-wrap;
-}
-
-.scramble-paragraph .glyph.is-noise {
-  color: var(--text-dim);
-  opacity: 0.85;
-}
-
 .book-actions {
-  margin-top: 2.75rem;
+  margin-top: 3rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.book-actions.is-ready {
+  opacity: 1;
+}
+
+.book-actions.is-deferred {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .btn-ghost-mono {
   padding: 0.55rem 0.85rem;
   border: 1px solid var(--line);
   border-radius: 999px;
-  font-size: 0.68rem;
+  font-size: 0.625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-soft);
@@ -453,13 +546,13 @@ button {
 
 .btn-ghost-mono:hover,
 .btn-ghost-mono:focus-visible {
-  border-color: rgba(255, 90, 51, 0.5);
+  border-color: rgba(255, 79, 40, 0.5);
   color: var(--text);
   outline: none;
 }
 
 .book-signal {
-  font-size: 0.62rem;
+  font-size: 0.625rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -476,7 +569,9 @@ button {
     animation: none;
   }
 
-  .loader.is-leaving {
+  .loader.is-leaving,
+  .header-glass,
+  .book-actions {
     transition: none;
   }
 

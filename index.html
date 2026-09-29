@@ -4,16 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ignara Universe — Hub</title>
-  <meta name="description" content="Hub de libros de Ignara Universe. Entrá a Ignara dos." />
+  <meta name="description" content="Hub de libros de Ignara Universe. Entra a Ignara dos." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Preload critical display + mono fonts so the loader can track FontFace readiness -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body data-view="hub">
-  <header class="site-header" id="site-header">
+  <header class="site-header" id="site-header" data-scrolled="false" data-force-glass="false">
     <div class="header-glass" aria-hidden="true">
       <div class="glass-fill"></div>
+      <div class="glass-highlight"></div>
+      <div class="glass-edge"></div>
     </div>
     <div class="header-inner">
       <a class="brand" href="#hub" id="brand-home" aria-label="Ignara Universe — hub">
@@ -54,6 +58,12 @@
         </li>
       </ul>
     </section>
+    <!-- Extra scroll room so frosted glass can appear on scroll (become-a-yogi remede) -->
+    <section class="hub-scroll-strip" aria-hidden="true">
+      <div class="strip-panel strip-ember"></div>
+      <div class="strip-panel strip-teal"></div>
+      <div class="strip-panel strip-violet"></div>
+    </section>
   </main>
 
   <!-- Loading overlay -->
@@ -67,30 +77,26 @@
       </div>
       <div class="loader-text" id="loader-text">Loading_ignara_dos_</div>
       <div class="loader-pct" id="loader-pct">0%_</div>
+      <div class="loader-stage" id="loader-stage">preparando</div>
     </div>
   </div>
 
-  <!-- 2) Book entry -->
-  <main id="view-book" class="view view-book" hidden aria-label="Ignara dos">
+  <!-- 2) Book entry — content blank until scramble; finals live in data-final -->
+  <main id="view-book" class="view view-book is-blank" hidden aria-label="Ignara dos">
     <section class="book-stage">
       <div class="book-atmosphere" aria-hidden="true"></div>
       <div class="book-frame">
         <p class="book-corner">alerta // acceso</p>
-        <p class="book-kicker" data-scramble data-delay="0">Ignara Universe presenta</p>
-        <h1 class="book-heading" data-scramble data-delay="200">Ignara dos</h1>
-        <p class="book-subtitle" data-scramble data-delay="450">protocolo de entrada · capítulo cero</p>
+        <p class="book-kicker" data-scramble data-delay="0.05" data-duration="1.1" data-final="Ignara Universe presenta"></p>
+        <h1 class="book-heading" data-scramble data-delay="0.12" data-duration="1.35" data-final="Ignara dos"></h1>
+        <p class="book-subtitle" data-scramble data-delay="0.28" data-duration="1.2" data-final="protocolo de entrada · capítulo cero"></p>
         <div class="book-body">
-          <p class="scramble-paragraph" id="scramble-lead" data-scramble data-delay="700" data-duration="2200">
-            Cruzás el umbral. La ciudad no duerme: cables, neón y memoria filtrada.
-            Ignara dos no te cuenta el mundo; te deja caer adentro.
-            Respirá. El texto se desencripta. Lo que sigue ya te está mirando.
-          </p>
-          <p class="scramble-paragraph muted" data-scramble data-delay="1600" data-duration="1800">
-            Placeholder narrativo: aquí empieza el libro 2. Calles mojadas, radios
-            encriptadas, un nombre que no deberías decir en voz alta.
-          </p>
+          <p class="scramble-paragraph" id="scramble-lead" data-scramble data-delay="0.45" data-duration="2.1"
+             data-final="Cruzas el umbral. La ciudad no duerme: cables, neón y memoria filtrada. Ignara dos no te cuenta el mundo; te deja caer adentro. Respira. El texto se desencripta. Lo que sigue ya te está mirando."></p>
+          <p class="scramble-paragraph muted" data-scramble data-delay="0.95" data-duration="1.8"
+             data-final="Placeholder narrativo: aquí empieza el libro 2. Calles mojadas, radios encriptadas, un nombre que no deberías decir en voz alta."></p>
         </div>
-        <div class="book-actions">
+        <div class="book-actions is-deferred" id="book-actions">
           <button type="button" class="btn-ghost-mono" id="back-hub">← volver al hub</button>
           <span class="book-signal" aria-hidden="true">signal_ok</span>
         </div>
