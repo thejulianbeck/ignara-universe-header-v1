@@ -31,7 +31,8 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* —— Frosted glass: visible on scroll; forced on book view —— */
+  /* —— Frosted glass: visible on scroll; forced on book view ——
+     Theme-nav flips ink/cream so glass stays readable on cream OR night bands. */
   function updateGlass() {
     const scrolled = window.scrollY > 12;
     header.setAttribute("data-scrolled", scrolled ? "true" : "false");
@@ -39,6 +40,27 @@
 
   function setForceGlass(on) {
     header.setAttribute("data-force-glass", on ? "true" : "false");
+  }
+
+  function setThemeNav(theme) {
+    header.setAttribute("data-theme-nav", theme === "dark" ? "dark" : "light");
+  }
+
+  function sampleNavTheme() {
+    if (body.dataset.view === "book") {
+      setThemeNav("dark");
+      return;
+    }
+    const probeY = Math.min(header.getBoundingClientRect().bottom + 8, window.innerHeight * 0.2);
+    const sections = hub.querySelectorAll("[data-theme-section]");
+    let theme = "light";
+    sections.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top <= probeY && r.bottom > probeY) {
+        theme = el.getAttribute("data-theme-section") === "dark" ? "dark" : "light";
+      }
+    });
+    setThemeNav(theme);
   }
 
   function setMenu(open) {
@@ -50,7 +72,16 @@
   }
 
   updateGlass();
-  window.addEventListener("scroll", updateGlass, { passive: true });
+  sampleNavTheme();
+  window.addEventListener(
+    "scroll",
+    () => {
+      updateGlass();
+      sampleNavTheme();
+    },
+    { passive: true }
+  );
+  window.addEventListener("resize", sampleNavTheme, { passive: true });
 
   if (navToggle) {
     navToggle.addEventListener("click", () => {
@@ -72,6 +103,7 @@
     setForceGlass(name === "book");
     setMenu(false);
     updateGlass();
+    sampleNavTheme();
   }
 
   function randomGlyph() {

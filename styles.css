@@ -1,7 +1,8 @@
 /* Ignara Universe hub
-   HOME remede of become-a-yogi section rhythm (glass header, mono labels,
-   Inter body, Fragment Mono display, cream/night alternation, cards/bento).
-   Book stage remede of followingwildfire scramble language.
+   HOME: cream/light (#f0eee9 + ink) like become-a-yogi — NOT a black hub.
+   Glass: BAY remede — backdrop blur/saturate + #d4d4d426 fill (no dark plate).
+   Nav ink flips light/dark via data-theme-nav as sections scroll under header.
+   Book-2 cyber stage stays dark (loader + scramble). Spanish LA neutro.
    No hotlinked photos, logos, or proprietary font files. */
 
 :root {
@@ -10,20 +11,27 @@
   --ink: #1a1816;
   --ink-soft: #2c2622;
   --ink-muted: rgba(26, 24, 22, 0.62);
-  --bg: #07090a;
+  --bg: #f0eee9;
+  --bg-hub: #f0eee9;
   --bg-panel: #0c1211;
   --bg-deep: #050708;
   --bg-loader: #0e1a19;
-  --text: #ececec;
-  --text-soft: #cdcdcd;
-  --text-dim: #7f7f7f;
-  --text-muted: rgba(236, 236, 236, 0.72);
+  --text: #1a1816;
+  --text-hub: #1a1816;
+  --text-soft: #2c2622;
+  --text-dim: rgba(26, 24, 22, 0.55);
+  --text-muted: rgba(26, 24, 22, 0.62);
+  --text-cyber: #ececec;
+  --text-cyber-soft: #cdcdcd;
+  --text-cyber-dim: #7f7f7f;
+  --text-cyber-muted: rgba(236, 236, 236, 0.72);
   --accent: #ff4c24;
   --accent-dim: rgba(255, 76, 36, 0.22);
-  --line: rgba(255, 255, 255, 0.12);
+  --line: rgba(26, 24, 22, 0.14);
+  --line-light: rgba(255, 255, 255, 0.12);
   --line-dark: rgba(26, 24, 22, 0.14);
-  --glass-bg: rgba(212, 212, 212, 0.15);
-  --glass-border: rgba(240, 238, 233, 0.14);
+  --glass-fill: #d4d4d426;
+  --glass-burn: #201d1d;
   --header-h: 4.5rem;
   --radius: 1rem;
   --radius-sm: 0.75rem;
@@ -52,14 +60,20 @@ body {
 
 body {
   font-family: var(--font-sans);
-  color: var(--text);
-  background: var(--bg);
+  color: var(--ink);
+  background: var(--bg-hub);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
+body[data-view="hub"] {
+  color: var(--ink);
+  background: var(--bg-hub);
+}
+
 body[data-view="book"] {
+  color: var(--text-cyber);
   background: var(--bg-deep);
 }
 
@@ -102,17 +116,27 @@ img {
   top: 1rem;
 }
 
-/* —— Sticky frosted header (become-a-yogi glass remede) —— */
+/* —— Sticky frosted header (become-a-yogi glass remede) ——
+   Glass itself is theme-agnostic: translucent light fill + blur/saturate.
+   It samples whatever is behind (cream or night). Nav ink flips via data-theme-nav. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 100;
   height: var(--header-h);
-  color: var(--cream);
+  color: var(--ink);
+  transition: color 0.3s ease;
 }
 
-.view-hub .site-header,
-body[data-view="hub"] .site-header {
+/* Light page / light section under header → dark ink (readable on cream) */
+.site-header[data-theme-nav="light"],
+body[data-view="hub"] .site-header[data-theme-nav="light"] {
+  color: var(--ink);
+}
+
+/* Dark section or book cyber view → cream text */
+.site-header[data-theme-nav="dark"],
+body[data-view="book"] .site-header {
   color: var(--cream);
 }
 
@@ -132,6 +156,7 @@ body[data-menu="open"] .header-glass {
   opacity: 1;
 }
 
+/* Exact BAY glass stack: NO dark plate — only blur + rgba white/gray fill */
 .glass-effect {
   position: absolute;
   inset: 0;
@@ -139,18 +164,17 @@ body[data-menu="open"] .header-glass {
   overflow: hidden;
   isolation: isolate;
   pointer-events: none;
+  color: var(--glass-burn);
   -webkit-backdrop-filter: saturate(120%) blur(0.75em);
   backdrop-filter: saturate(120%) blur(0.75em);
-  background-color: rgba(10, 12, 12, 0.35);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
 }
 
 .glass-fill {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background-color: rgba(212, 212, 212, 0.15);
+  opacity: 1;
+  background-color: var(--glass-fill);
 }
 
 .glass-fill-burn {
@@ -159,7 +183,7 @@ body[data-menu="open"] .header-glass {
   border-radius: inherit;
   opacity: 0.05;
   mix-blend-mode: color-burn;
-  background-color: #201d1d;
+  background-color: currentColor;
 }
 
 .glass-highlight-soft {
@@ -248,13 +272,13 @@ body[data-menu="open"] .header-glass {
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(240, 238, 233, 0.78);
+  color: color-mix(in srgb, currentColor 78%, transparent);
   transition: color 0.2s ease;
 }
 
 .header-nav a:hover,
 .header-nav a:focus-visible {
-  color: var(--cream);
+  color: currentColor;
   outline: none;
 }
 
@@ -263,7 +287,7 @@ body[data-menu="open"] .header-glass {
   font-size: 0.625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(240, 238, 233, 0.45);
+  color: color-mix(in srgb, currentColor 45%, transparent);
   flex-shrink: 0;
 }
 
@@ -360,7 +384,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
 }
 
 .body-copy.soft {
-  color: var(--text-muted);
+  color: rgba(236, 236, 236, 0.72);
 }
 
 .body-copy.tight {
@@ -394,8 +418,28 @@ body[data-menu="open"] .nav-toggle span:last-child {
 .section-night {
   background:
     radial-gradient(ellipse 60% 40% at 85% 0%, rgba(255, 76, 36, 0.12), transparent 55%),
-    linear-gradient(180deg, #0a0e0e 0%, var(--bg) 50%, #080a0b 100%);
+    linear-gradient(180deg, #0a0e0e 0%, #07090a 50%, #080a0b 100%);
   color: var(--cream);
+}
+
+.section-night .display-title,
+.section-ember .display-title {
+  color: var(--cream);
+}
+
+.section-night .body-copy,
+.section-ember .body-copy {
+  color: rgba(240, 238, 233, 0.78);
+}
+
+.section-night .body-copy.soft,
+.section-ember .body-copy.soft {
+  color: rgba(236, 236, 236, 0.72);
+}
+
+.section-night .mono-label,
+.section-ember .mono-label {
+  color: rgba(240, 238, 233, 0.55);
 }
 
 .section-ember {
@@ -444,27 +488,52 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
 .btn-ghost {
   background: transparent;
-  color: var(--cream);
-  border: 1px solid rgba(240, 238, 233, 0.28);
+  color: var(--ink);
+  border: 1px solid rgba(26, 24, 22, 0.22);
 }
 
 .btn-ghost:hover,
 .btn-ghost:focus-visible {
-  border-color: rgba(240, 238, 233, 0.7);
+  border-color: rgba(26, 24, 22, 0.55);
   outline: none;
 }
 
-/* —— Hero —— */
+.section-night .btn-ghost,
+.section-ember .btn-ghost {
+  color: var(--cream);
+  border-color: rgba(240, 238, 233, 0.28);
+}
+
+.section-night .btn-ghost:hover,
+.section-night .btn-ghost:focus-visible,
+.section-ember .btn-ghost:hover,
+.section-ember .btn-ghost:focus-visible {
+  border-color: rgba(240, 238, 233, 0.7);
+}
+
+.btn-solid.on-cream {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+
+.btn-solid.on-cream:hover,
+.btn-solid.on-cream:focus-visible {
+  background: var(--ink-soft);
+}
+
+/* —— Hero (cream / light — hub must not look black) —— */
 .hero {
   position: relative;
   min-height: 100dvh;
   display: flex;
   align-items: stretch;
   background:
-    radial-gradient(ellipse 70% 55% at 75% 15%, rgba(255, 76, 36, 0.18), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 10% 85%, rgba(40, 120, 110, 0.14), transparent 50%),
-    linear-gradient(180deg, #0a0e0e 0%, var(--bg) 55%, #080a0b 100%);
+    radial-gradient(ellipse 70% 55% at 78% 12%, rgba(255, 76, 36, 0.12), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 8% 88%, rgba(40, 120, 110, 0.1), transparent 50%),
+    linear-gradient(180deg, #f4f2ed 0%, var(--cream) 55%, #ebe8e1 100%);
   overflow: hidden;
+  color: var(--ink);
 }
 
 .hero-stage {
@@ -489,7 +558,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   font-size: clamp(2.4rem, 7vw, 4.05rem);
   letter-spacing: -0.01em;
   line-height: 1.08;
-  color: var(--cream);
+  color: var(--ink);
 }
 
 .hero-title span {
@@ -500,7 +569,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   margin: 0 0 2rem;
   font-size: 1.0625rem;
   line-height: 1.55;
-  color: rgba(240, 238, 233, 0.78);
+  color: var(--ink-muted);
   max-width: 38ch;
 }
 
@@ -542,26 +611,31 @@ body[data-menu="open"] .nav-toggle span:last-child {
   width: min(100%, 18rem);
   aspect-ratio: 4 / 5;
   border-radius: 1.1rem;
-  border: 1px solid rgba(240, 238, 233, 0.18);
+  border: 1px solid rgba(26, 24, 22, 0.12);
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-    linear-gradient(180deg, rgba(26, 24, 22, 0.35), rgba(7, 9, 10, 0.7));
+    linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.18)),
+    rgba(240, 238, 233, 0.45);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 24px 60px rgba(0, 0, 0, 0.35);
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 24px 60px rgba(26, 24, 22, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 1.35rem;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  color: var(--ink);
+  -webkit-backdrop-filter: saturate(120%) blur(0.75em);
+  backdrop-filter: saturate(120%) blur(0.75em);
+}
+
+.hero-frame .mono-label {
+  color: rgba(26, 24, 22, 0.55);
 }
 
 .hero-frame-title {
   font-family: var(--font-mono);
   font-size: 2rem;
   letter-spacing: -0.02em;
-  color: var(--cream);
+  color: var(--ink);
 }
 
 @keyframes orbDrift {
@@ -626,6 +700,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.03);
+  color: var(--cream);
   transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
@@ -708,7 +783,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   flex: 1;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--text-muted);
+  color: rgba(236, 236, 236, 0.72);
 }
 
 .book-card-cta {
@@ -734,7 +809,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
 .book-card-cta.is-muted {
   border-color: rgba(255, 255, 255, 0.12);
   background: transparent;
-  color: var(--text-dim);
+  color: var(--text-cyber-dim);
   cursor: default;
 }
 
@@ -847,7 +922,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--text-muted);
+  color: rgba(236, 236, 236, 0.72);
 }
 
 /* —— Dharma / talks —— */
@@ -880,7 +955,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   margin: 0;
   flex: 1;
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: rgba(236, 236, 236, 0.72);
   line-height: 1.5;
 }
 
@@ -974,6 +1049,10 @@ body[data-menu="open"] .nav-toggle span:last-child {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.site-footer .mono-label {
+  color: rgba(240, 238, 233, 0.55);
+}
+
 .footer-inner {
   display: flex;
   flex-direction: column;
@@ -1038,7 +1117,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   align-items: center;
   justify-content: center;
   background: var(--bg-loader);
-  color: var(--text-soft);
+  color: var(--text-cyber-soft);
 }
 
 .loader[hidden] {
@@ -1083,13 +1162,13 @@ body[data-menu="open"] .nav-toggle span:last-child {
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   opacity: 0;
-  color: var(--text-soft);
+  color: var(--text-cyber-soft);
   font-family: var(--font-mono);
 }
 
 .loader-pct {
   margin-top: 0.55rem;
-  color: var(--text-dim);
+  color: var(--text-cyber-dim);
 }
 
 .loader.is-on .loader-icon,
@@ -1172,7 +1251,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-cyber-dim);
   min-height: 1.2em;
   white-space: pre-wrap;
 }
@@ -1185,7 +1264,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
   letter-spacing: -0.035em;
   line-height: 0.92;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--text-cyber);
   min-height: 1.1em;
   white-space: pre-wrap;
 }
@@ -1202,14 +1281,14 @@ body[data-menu="open"] .nav-toggle span:last-child {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 1.7;
-  color: var(--text-soft);
+  color: var(--text-cyber-soft);
   max-width: 32rem;
   min-height: 3.4em;
   white-space: pre-wrap;
 }
 
 .scramble-paragraph.muted {
-  color: var(--text-dim);
+  color: var(--text-cyber-dim);
 }
 
 .view-book.is-blank [data-scramble]:not(.is-resolved) {
@@ -1226,19 +1305,19 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
 .book-kicker.is-resolved,
 .book-subtitle.is-resolved {
-  color: var(--text-dim);
+  color: var(--text-cyber-dim);
 }
 
 .book-heading.is-resolved {
-  color: var(--text);
+  color: var(--text-cyber);
 }
 
 .scramble-paragraph.is-resolved {
-  color: var(--text-soft);
+  color: var(--text-cyber-soft);
 }
 
 .scramble-paragraph.muted.is-resolved {
-  color: var(--text-dim);
+  color: var(--text-cyber-dim);
 }
 
 .book-actions {
@@ -1262,12 +1341,12 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
 .btn-ghost-mono {
   padding: 0.55rem 0.85rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-light);
   border-radius: 999px;
   font-size: 0.625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-soft);
+  color: var(--text-cyber-soft);
   background: rgba(255, 255, 255, 0.03);
   font-family: var(--font-mono);
 }
@@ -1275,7 +1354,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
 .btn-ghost-mono:hover,
 .btn-ghost-mono:focus-visible {
   border-color: rgba(255, 76, 36, 0.5);
-  color: var(--text);
+  color: var(--text-cyber);
   outline: none;
 }
 
@@ -1284,12 +1363,17 @@ body[data-menu="open"] .nav-toggle span:last-child {
   font-size: 0.625rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-cyber-dim);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass-effect {
-    background: rgba(10, 14, 14, 0.94);
+    background: rgba(240, 238, 233, 0.92);
+  }
+
+  body[data-view="book"] .glass-effect,
+  .site-header[data-theme-nav="dark"] .glass-effect {
+    background: rgba(10, 14, 14, 0.92);
   }
 }
 
@@ -1346,15 +1430,23 @@ body[data-menu="open"] .nav-toggle span:last-child {
     gap: 1rem;
     padding: 1.25rem 1.35rem;
     border-radius: 1rem;
-    background: rgba(10, 12, 12, 0.92);
-    border: 1px solid var(--glass-border);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    background: rgba(240, 238, 233, 0.82);
+    border: 1px solid rgba(26, 24, 22, 0.12);
+    color: var(--ink);
+    -webkit-backdrop-filter: saturate(120%) blur(0.75em);
+    backdrop-filter: saturate(120%) blur(0.75em);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     transform: translateY(-0.4rem);
     transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+  }
+
+  .site-header[data-theme-nav="dark"] .header-nav,
+  body[data-view="book"] .header-nav {
+    background: rgba(10, 12, 12, 0.88);
+    border-color: rgba(240, 238, 233, 0.14);
+    color: var(--cream);
   }
 
   body[data-menu="open"] .header-nav {
