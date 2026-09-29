@@ -1,9 +1,9 @@
 /* Ignara Universe hub
-   HOME: cream/light (#f0eee9 + ink) like become-a-yogi — NOT a black hub.
-   Glass: BAY remede — backdrop blur/saturate + #d4d4d426 fill (no dark plate).
-   Nav ink flips light/dark via data-theme-nav as sections scroll under header.
-   Book-2 cyber stage stays dark (loader + scramble). Spanish LA neutro.
-   No hotlinked photos, logos, or proprietary font files. */
+   HOME: cream/light (#f0eee9 + ink) so Apple liquid-glass header can be tested while scrolling.
+   Glass: visionOS / Apple Liquid Glass — backdrop blur+saturate+brightness, translucent fill
+   (samples cream AND night; no fake dark plate), specular, inner edge, soft shadow,
+   chromatic rainbow fringe (CSS rim + SVG feDisplacementMap/feColorMatrix in Chromium).
+   Nav ink flips light/dark via data-theme-nav. Book-2 loader+scramble preserved. Spanish LA neutro. */
 
 :root {
   --cream: #f0eee9;
@@ -30,9 +30,10 @@
   --line: rgba(26, 24, 22, 0.14);
   --line-light: rgba(255, 255, 255, 0.12);
   --line-dark: rgba(26, 24, 22, 0.14);
-  --glass-fill: #d4d4d426;
-  --glass-burn: #201d1d;
+  --glass-fill: rgba(255, 255, 255, 0.12);
+  --glass-fill-dark: rgba(255, 255, 255, 0.06);
   --header-h: 4.5rem;
+  --glass-radius: 1.15rem;
   --radius: 1rem;
   --radius-sm: 0.75rem;
   --max: 72rem;
@@ -116,9 +117,19 @@ img {
   top: 1rem;
 }
 
-/* —— Sticky frosted header (become-a-yogi glass remede) ——
-   Glass itself is theme-agnostic: translucent light fill + blur/saturate.
-   It samples whatever is behind (cream or night). Nav ink flips via data-theme-nav. */
+/* —— Sticky Apple / visionOS liquid-glass header ——
+   Translucent fill samples whatever is behind (cream OR night) — no dark plate.
+   Chromium: SVG feDisplacementMap edge refraction + RGB channel split fringe.
+   All browsers: blur/saturate/brightness + specular + CSS rainbow rim (mix-blend).
+   Nav ink flips via data-theme-nav. */
+.liquid-glass-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -142,12 +153,13 @@ body[data-view="book"] .site-header {
 
 .header-glass {
   position: absolute;
-  inset: 0.55rem 0.75rem;
-  border-radius: var(--radius);
-  overflow: hidden;
+  inset: 0.5rem 0.7rem;
+  border-radius: var(--glass-radius);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.4s ease;
+  /* depth shadow lives on the outer shell so overflow:hidden doesn't clip it */
+  filter: drop-shadow(0 10px 28px rgba(15, 18, 22, 0.18));
 }
 
 .site-header[data-scrolled="true"] .header-glass,
@@ -156,7 +168,6 @@ body[data-menu="open"] .header-glass {
   opacity: 1;
 }
 
-/* Exact BAY glass stack: NO dark plate — only blur + rgba white/gray fill */
 .glass-effect {
   position: absolute;
   inset: 0;
@@ -164,65 +175,190 @@ body[data-menu="open"] .header-glass {
   overflow: hidden;
   isolation: isolate;
   pointer-events: none;
-  color: var(--glass-burn);
-  -webkit-backdrop-filter: saturate(120%) blur(0.75em);
-  backdrop-filter: saturate(120%) blur(0.75em);
 }
 
-.glass-fill {
+/* Core material: translucent white fill + frost. Samples backdrop live. */
+.glass-material {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  opacity: 1;
-  background-color: var(--glass-fill);
+  background:
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.08) 42%,
+      rgba(255, 255, 255, 0.04) 100%
+    ),
+    var(--glass-fill);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  -webkit-backdrop-filter: blur(18px) saturate(185%) brightness(1.08);
+  backdrop-filter: blur(18px) saturate(185%) brightness(1.08);
 }
 
-.glass-fill-burn {
+/* Chromium: real edge refraction + chromatic aberration via SVG filters */
+@supports (backdrop-filter: url(#lg-chroma)) {
+  .glass-material {
+    -webkit-backdrop-filter: url(#lg-chroma) blur(6px) saturate(175%) brightness(1.06);
+    backdrop-filter: url(#lg-chroma) blur(6px) saturate(175%) brightness(1.06);
+    background:
+      linear-gradient(
+        165deg,
+        rgba(255, 255, 255, 0.18) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+      ),
+      rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Specular sheen — top-left catch light (fresnel-ish) */
+.glass-specular {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  opacity: 0.05;
-  mix-blend-mode: color-burn;
-  background-color: currentColor;
+  background:
+    linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.18) 20%,
+      transparent 46%
+    ),
+    radial-gradient(
+      120% 80% at 12% 0%,
+      rgba(255, 255, 255, 0.35),
+      transparent 55%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.9;
+  pointer-events: none;
 }
 
-.glass-highlight-soft {
+/* Inner edge / rim light + subtle bottom thickness */
+.glass-inner-edge {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  mix-blend-mode: overlay;
-  box-shadow: inset -0.28125em -0.28125em 0.09375em -0.328125em rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.22),
+    inset 1px 0 0 rgba(255, 255, 255, 0.28),
+    inset -1px 0 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 18px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
 }
 
-.glass-highlight-strong {
+/* Rainbow chromatic fringe — dual-layer CSS approximation (everywhere).
+   1) Masked ~1.5px spectral rim  2) Soft outer halo bleed.
+   On LIGHT/cream: multiply + higher opacity so fringe refracts visibly.
+   On DARK: screen + lower opacity so it stays a subtle caustic. */
+.glass-chroma-rim {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0.28125em 0.28125em 0.09375em -0.328125em rgba(255, 255, 252, 0.8);
+  padding: 1.5px;
+  background:
+    conic-gradient(
+      from 210deg,
+      #ff4d8d 0deg,
+      #ffc857 55deg,
+      #5dffc0 110deg,
+      #5aa8ff 170deg,
+      #b56bff 230deg,
+      #ff6b4a 290deg,
+      #ff4d8d 360deg
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  mix-blend-mode: multiply;
+  opacity: 0.78;
+  pointer-events: none;
+  filter: saturate(1.35) brightness(1.05);
 }
 
-.glass-edge-light {
+.glass-chroma-rim::after {
+  content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   border-radius: inherit;
+  padding: 3px;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 70, 140, 0.35),
+      rgba(255, 210, 70, 0.22),
+      rgba(70, 255, 200, 0.28),
+      rgba(90, 160, 255, 0.32),
+      rgba(180, 100, 255, 0.35),
+      rgba(255, 70, 140, 0.22)
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
   mix-blend-mode: plus-lighter;
-  box-shadow: inset 0.1875em 0.28125em 0.09375em -0.1875em rgba(179, 179, 179, 0.5);
+  opacity: 0.55;
+  filter: blur(1.1px);
+  pointer-events: none;
 }
 
-.glass-edge-dark {
+/* Soft outer contact shadow (drawn inside the clipped shell for a thin foot) */
+.glass-shadow {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  mix-blend-mode: overlay;
-  box-shadow: inset -0.1875em -0.28125em 0.09375em -0.1875em rgba(179, 179, 179, 0.3);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25),
+    0 8px 24px rgba(20, 22, 28, 0.12);
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
 }
 
-.glass-inner-glow {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  mix-blend-mode: darken;
-  box-shadow: inset 0 0 1.75em rgba(242, 242, 242, 0.3);
+/* Slightly clearer fill when glass sits over dark sections (still translucent) */
+.site-header[data-theme-nav="dark"] .glass-material,
+body[data-view="book"] .glass-material {
+  background:
+    linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.05) 45%,
+      rgba(255, 255, 255, 0.03) 100%
+    ),
+    var(--glass-fill-dark);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.site-header[data-theme-nav="dark"] .glass-chroma-rim,
+body[data-view="book"] .glass-chroma-rim {
+  opacity: 0.42;
+  mix-blend-mode: screen;
+  filter: saturate(1.15) brightness(1.15);
+}
+
+.site-header[data-theme-nav="dark"] .glass-chroma-rim::after,
+body[data-view="book"] .glass-chroma-rim::after {
+  opacity: 0.35;
+  mix-blend-mode: screen;
+}
+
+.site-header[data-theme-nav="light"] .glass-chroma-rim {
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+}
+
+.site-header[data-theme-nav="light"] .glass-chroma-rim::after {
+  opacity: 0.65;
+  mix-blend-mode: plus-lighter;
 }
 
 .header-inner {
@@ -1367,13 +1503,31 @@ body[data-menu="open"] .nav-toggle span:last-child {
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass-effect {
+  .glass-material {
     background: rgba(240, 238, 233, 0.92);
   }
 
-  body[data-view="book"] .glass-effect,
-  .site-header[data-theme-nav="dark"] .glass-effect {
+  body[data-view="book"] .glass-material,
+  .site-header[data-theme-nav="dark"] .glass-material {
     background: rgba(10, 14, 14, 0.92);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-material {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: rgba(240, 238, 233, 0.94);
+  }
+
+  body[data-view="book"] .glass-material,
+  .site-header[data-theme-nav="dark"] .glass-material {
+    background: rgba(10, 14, 14, 0.94);
+  }
+
+  .glass-chroma-rim,
+  .glass-specular {
+    opacity: 0.25;
   }
 }
 
@@ -1429,12 +1583,15 @@ body[data-menu="open"] .nav-toggle span:last-child {
     align-items: flex-start;
     gap: 1rem;
     padding: 1.25rem 1.35rem;
-    border-radius: 1rem;
-    background: rgba(240, 238, 233, 0.82);
-    border: 1px solid rgba(26, 24, 22, 0.12);
+    border-radius: var(--glass-radius);
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      0 12px 32px rgba(20, 22, 28, 0.14);
     color: var(--ink);
-    -webkit-backdrop-filter: saturate(120%) blur(0.75em);
-    backdrop-filter: saturate(120%) blur(0.75em);
+    -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.06);
+    backdrop-filter: blur(18px) saturate(180%) brightness(1.06);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -1444,8 +1601,8 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
   .site-header[data-theme-nav="dark"] .header-nav,
   body[data-view="book"] .header-nav {
-    background: rgba(10, 12, 12, 0.88);
-    border-color: rgba(240, 238, 233, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.2);
     color: var(--cream);
   }
 
