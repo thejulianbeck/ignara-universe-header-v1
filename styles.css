@@ -15,6 +15,8 @@
   --radius: 1rem;
   --font-sans: "DM Sans", system-ui, -apple-system, Segoe UI, sans-serif;
   --font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  /* Same mono as become-a-yogi (Google Fonts) */
+  --font-mono: "Fragment Mono", Menlo, monospace;
 }
 
 *,
@@ -117,8 +119,6 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
 }
 
 .brand-mark {
@@ -130,7 +130,11 @@ a {
 }
 
 .brand-text {
-  font-size: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 .nav-desktop {
