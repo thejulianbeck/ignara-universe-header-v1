@@ -31,6 +31,18 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* SVG backdrop-filter url(#lg-chroma) breaks frost on iOS Safari. Enable only on
+     Chromium desktop-ish engines; Safari / iPhone keep CSS-only blur+fill. */
+  (function enableChromiumLiquidChroma() {
+    var ua = navigator.userAgent || "";
+    var isIOS = /iP(hone|od|ad)/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var isSafari = /Safari/.test(ua) && !/Chrome|Chromium|Edg|CriOS|FxiOS/.test(ua);
+    var isChromium = /Chrome|Chromium|Edg\//.test(ua) && !/EdgA|EdgiOS|CriOS/.test(ua);
+    if (isChromium && !isIOS && !isSafari) {
+      document.documentElement.setAttribute("data-liquid-chroma", "svg");
+    }
+  })();
+
   /* —— Frosted glass: visible on scroll; forced on book view ——
      Theme-nav flips ink/cream so glass stays readable on cream OR night bands. */
   function updateGlass() {

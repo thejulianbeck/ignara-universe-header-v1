@@ -1,8 +1,10 @@
 /* Ignara Universe hub
    HOME: cream/light (#f0eee9 + ink) so Apple liquid-glass header can be tested while scrolling.
-   Glass: visionOS / Apple Liquid Glass — backdrop blur+saturate+brightness, translucent fill
-   (samples cream AND night; no fake dark plate), specular, inner edge, soft shadow,
-   chromatic rainbow fringe (CSS rim + SVG feDisplacementMap/feColorMatrix in Chromium).
+   Glass: Safari-first frosted liquid glass — CSS -webkit-backdrop-filter + backdrop-filter
+   (blur ≥16–20px + saturate), translucent cream/white fill so frost reads even if blur
+   softens. No ancestor filter/opacity/isolation that kills iOS backdrop sampling.
+   Specular + CSS rainbow rim everywhere; SVG feDisplacementMap chroma is Chromium-only
+   progressive enhancement (html[data-liquid-chroma="svg"]), never primary on Safari.
    Nav ink flips light/dark via data-theme-nav. Book-2 loader+scramble preserved. Spanish LA neutro. */
 
 :root {
@@ -30,8 +32,8 @@
   --line: rgba(26, 24, 22, 0.14);
   --line-light: rgba(255, 255, 255, 0.12);
   --line-dark: rgba(26, 24, 22, 0.14);
-  --glass-fill: rgba(255, 255, 255, 0.12);
-  --glass-fill-dark: rgba(255, 255, 255, 0.06);
+  --glass-fill: rgba(255, 255, 255, 0.62);
+  --glass-fill-dark: rgba(255, 255, 255, 0.28);
   --header-h: 4.5rem;
   --glass-radius: 1.15rem;
   --radius: 1rem;
@@ -65,7 +67,7 @@ body {
   background: var(--bg-hub);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* Do NOT set overflow-x:hidden here — it breaks sticky backdrop-filter on iOS Safari */
 }
 
 body[data-view="hub"] {
@@ -117,11 +119,13 @@ img {
   top: 1rem;
 }
 
-/* —— Sticky Apple / visionOS liquid-glass header ——
+/* —— Sticky Apple / visionOS liquid-glass header (Safari iOS first) ——
    Translucent fill samples whatever is behind (cream OR night) — no dark plate.
-   Chromium: SVG feDisplacementMap edge refraction + RGB channel split fringe.
-   All browsers: blur/saturate/brightness + specular + CSS rainbow rim (mix-blend).
-   Nav ink flips via data-theme-nav. */
+   CRITICAL for iPhone Safari: CSS-only -webkit-backdrop-filter blur+saturate on
+   .glass-material; no ancestor filter/opacity/isolation; solid frost fill.
+   CSS rainbow rim everywhere. SVG url(#lg-chroma) ONLY when html[data-liquid-chroma="svg"]
+   (Chromium progressive enhancement) — never as @supports primary (Safari often
+   matches then breaks blur). Nav ink flips via data-theme-nav. */
 .liquid-glass-defs {
   position: absolute;
   width: 0;
@@ -134,9 +138,12 @@ img {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: var(--header-h);
+  height: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
   color: var(--ink);
   transition: color 0.3s ease;
+  /* No transform/filter/opacity on this sticky shell — any of those on an
+     ancestor makes iOS Safari sample an empty backdrop for .glass-material. */
 }
 
 /* Light page / light section under header → dark ink (readable on cream) */
@@ -153,31 +160,36 @@ body[data-view="book"] .site-header {
 
 .header-glass {
   position: absolute;
-  inset: 0.5rem 0.7rem;
+  /* sit below safe-area padding so the pill clears the notch */
+  top: calc(0.5rem + env(safe-area-inset-top, 0px));
+  right: 0.7rem;
+  bottom: 0.5rem;
+  left: 0.7rem;
   border-radius: var(--glass-radius);
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  /* depth shadow lives on the outer shell so overflow:hidden doesn't clip it */
-  filter: drop-shadow(0 10px 28px rgba(15, 18, 22, 0.18));
+  /* NO opacity / filter / transform on this ancestor — those disable iOS backdrop-filter.
+     Fade .glass-material and siblings instead. Depth via box-shadow (not filter). */
+  box-shadow: none;
+  transition: box-shadow 0.4s ease;
 }
 
 .site-header[data-scrolled="true"] .header-glass,
 .site-header[data-force-glass="true"] .header-glass,
 body[data-menu="open"] .header-glass {
-  opacity: 1;
+  box-shadow: 0 10px 28px rgba(15, 18, 22, 0.16);
 }
 
 .glass-effect {
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  /* overflow:hidden OK on the clip shell; do NOT use isolation:isolate here —
+     it creates an empty backdrop and kills frosted blur on Safari. */
   overflow: hidden;
-  isolation: isolate;
   pointer-events: none;
 }
 
-/* Core material: translucent white fill + frost. Samples backdrop live. */
+/* Core material: frosted fill + live backdrop blur. Primary path for all browsers. */
 .glass-material {
   position: absolute;
   inset: 0;
@@ -185,30 +197,34 @@ body[data-menu="open"] .header-glass {
   background:
     linear-gradient(
       165deg,
-      rgba(255, 255, 255, 0.28) 0%,
-      rgba(255, 255, 255, 0.08) 42%,
-      rgba(255, 255, 255, 0.04) 100%
+      rgba(255, 255, 255, 0.72) 0%,
+      rgba(255, 255, 255, 0.48) 42%,
+      rgba(250, 248, 244, 0.42) 100%
     ),
     var(--glass-fill);
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  -webkit-backdrop-filter: blur(18px) saturate(185%) brightness(1.08);
-  backdrop-filter: blur(18px) saturate(185%) brightness(1.08);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  /* Safari needs the -webkit- prefix; keep both. Blur ≥16px so frost is obvious on iPhone. */
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
+  /* Valid compositing target without ancestor filter */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: backdrop-filter;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
-/* Chromium: real edge refraction + chromatic aberration via SVG filters */
-@supports (backdrop-filter: url(#lg-chroma)) {
-  .glass-material {
-    -webkit-backdrop-filter: url(#lg-chroma) blur(6px) saturate(175%) brightness(1.06);
-    backdrop-filter: url(#lg-chroma) blur(6px) saturate(175%) brightness(1.06);
-    background:
-      linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.18) 0%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.03) 100%
-      ),
-      rgba(255, 255, 255, 0.06);
-  }
+.site-header[data-scrolled="true"] .glass-material,
+.site-header[data-force-glass="true"] .glass-material,
+body[data-menu="open"] .glass-material {
+  opacity: 1;
+}
+
+/* Chromium-only: SVG edge refraction. Gated by JS class — NOT @supports url(),
+   which Safari can match while breaking -webkit-backdrop-filter blur. */
+html[data-liquid-chroma="svg"] .glass-material {
+  -webkit-backdrop-filter: blur(18px) saturate(175%) brightness(1.06);
+  backdrop-filter: url(#lg-chroma) blur(18px) saturate(175%) brightness(1.06);
 }
 
 /* Specular sheen — top-left catch light (fresnel-ish) */
@@ -229,8 +245,15 @@ body[data-menu="open"] .header-glass {
       transparent 55%
     );
   mix-blend-mode: screen;
-  opacity: 0.9;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.site-header[data-scrolled="true"] .glass-specular,
+.site-header[data-force-glass="true"] .glass-specular,
+body[data-menu="open"] .glass-specular {
+  opacity: 0.9;
 }
 
 /* Inner edge / rim light + subtle bottom thickness */
@@ -245,6 +268,14 @@ body[data-menu="open"] .header-glass {
     inset -1px 0 0 rgba(255, 255, 255, 0.18),
     inset 0 0 18px rgba(255, 255, 255, 0.08);
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.site-header[data-scrolled="true"] .glass-inner-edge,
+.site-header[data-force-glass="true"] .glass-inner-edge,
+body[data-menu="open"] .glass-inner-edge {
+  opacity: 1;
 }
 
 /* Rainbow chromatic fringe — dual-layer CSS approximation (everywhere).
@@ -255,7 +286,7 @@ body[data-menu="open"] .header-glass {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1.5px;
+  padding: 2px;
   background:
     conic-gradient(
       from 210deg,
@@ -276,9 +307,16 @@ body[data-menu="open"] .header-glass {
     linear-gradient(#000 0 0);
   mask-composite: exclude;
   mix-blend-mode: multiply;
-  opacity: 0.78;
+  /* filter on this sibling is fine; never put filter on an ancestor of .glass-material */
+  opacity: 0;
   pointer-events: none;
-  filter: saturate(1.35) brightness(1.05);
+  transition: opacity 0.4s ease;
+}
+
+.site-header[data-scrolled="true"] .glass-chroma-rim,
+.site-header[data-force-glass="true"] .glass-chroma-rim,
+body[data-menu="open"] .glass-chroma-rim {
+  opacity: 0.88;
 }
 
 .glass-chroma-rim::after {
@@ -321,28 +359,36 @@ body[data-menu="open"] .header-glass {
     0 8px 24px rgba(20, 22, 28, 0.12);
   pointer-events: none;
   mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.site-header[data-scrolled="true"] .glass-shadow,
+.site-header[data-force-glass="true"] .glass-shadow,
+body[data-menu="open"] .glass-shadow {
   opacity: 0.55;
 }
 
-/* Slightly clearer fill when glass sits over dark sections (still translucent) */
+/* Dark sections: still frosted, slightly clearer white veil so blur reads on night bands */
 .site-header[data-theme-nav="dark"] .glass-material,
 body[data-view="book"] .glass-material {
   background:
     linear-gradient(
       165deg,
-      rgba(255, 255, 255, 0.16) 0%,
-      rgba(255, 255, 255, 0.05) 45%,
-      rgba(255, 255, 255, 0.03) 100%
+      rgba(255, 255, 255, 0.38) 0%,
+      rgba(255, 255, 255, 0.18) 45%,
+      rgba(255, 255, 255, 0.12) 100%
     ),
     var(--glass-fill-dark);
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
-.site-header[data-theme-nav="dark"] .glass-chroma-rim,
-body[data-view="book"] .glass-chroma-rim {
-  opacity: 0.42;
+.site-header[data-theme-nav="dark"][data-scrolled="true"] .glass-chroma-rim,
+.site-header[data-theme-nav="dark"][data-force-glass="true"] .glass-chroma-rim,
+body[data-view="book"] .site-header[data-force-glass="true"] .glass-chroma-rim,
+body[data-menu="open"] .site-header[data-theme-nav="dark"] .glass-chroma-rim {
+  opacity: 0.5;
   mix-blend-mode: screen;
-  filter: saturate(1.15) brightness(1.15);
 }
 
 .site-header[data-theme-nav="dark"] .glass-chroma-rim::after,
@@ -351,8 +397,10 @@ body[data-view="book"] .glass-chroma-rim::after {
   mix-blend-mode: screen;
 }
 
-.site-header[data-theme-nav="light"] .glass-chroma-rim {
-  opacity: 0.9;
+.site-header[data-theme-nav="light"][data-scrolled="true"] .glass-chroma-rim,
+.site-header[data-theme-nav="light"][data-force-glass="true"] .glass-chroma-rim,
+body[data-menu="open"] .site-header[data-theme-nav="light"] .glass-chroma-rim {
+  opacity: 0.92;
   mix-blend-mode: multiply;
 }
 
@@ -368,7 +416,7 @@ body[data-view="book"] .glass-chroma-rim::after {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  height: 100%;
+  height: var(--header-h);
   max-width: var(--max);
   margin: 0 auto;
   padding: 0 1.5rem;
@@ -456,6 +504,8 @@ body[data-menu="open"] .nav-toggle span:last-child {
 /* —— Views —— */
 .view {
   min-height: 100dvh;
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 .view[hidden] {
@@ -470,7 +520,9 @@ body[data-menu="open"] .nav-toggle span:last-child {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
-  line-height: 1.2;
+  line-height: 1.35;
+  position: relative;
+  z-index: 1;
 }
 
 .eyebrow.dark {
@@ -676,7 +728,8 @@ body[data-menu="open"] .nav-toggle span:last-child {
   width: 100%;
   max-width: var(--max);
   margin: 0 auto;
-  padding: 7rem 1.5rem 4.5rem;
+  /* Clear sticky glass pill + safe area so red eyebrow never tucks under the bar */
+  padding: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 2.75rem) 1.5rem 4.5rem;
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: 3rem;
@@ -1535,7 +1588,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
 @media (max-width: 991px) {
   .hero-stage {
     grid-template-columns: 1fr;
-    padding-top: 6rem;
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 2.25rem);
   }
 
   .hero-aside {
@@ -1578,20 +1631,22 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
   .header-nav {
     position: fixed;
-    inset: calc(var(--header-h) + 0.25rem) 0.75rem auto;
+    inset: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 0.25rem) 0.75rem auto;
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
     padding: 1.25rem 1.35rem;
     border-radius: var(--glass-radius);
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.55);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.55),
       0 12px 32px rgba(20, 22, 28, 0.14);
     color: var(--ink);
-    -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.06);
-    backdrop-filter: blur(18px) saturate(180%) brightness(1.06);
+    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
+    backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -1648,6 +1703,11 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
   .loader.is-leaving,
   .header-glass,
+  .glass-material,
+  .glass-specular,
+  .glass-inner-edge,
+  .glass-chroma-rim,
+  .glass-shadow,
   .book-actions,
   .book-card,
   .world-card {
