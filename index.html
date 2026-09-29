@@ -3,115 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ignara Universe — Header v1</title>
-  <meta name="description" content="Demo del header con efecto frosted-glass para Ignara Universe (comunidad / fan art / merch)." />
+  <title>Ignara Universe — Hub</title>
+  <meta name="description" content="Hub de libros de Ignara Universe. Entrá a Ignara dos." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fragment+Mono:ital,wght@0,400;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <header class="site-header" id="site-header" data-scrolled="false">
+<body data-view="hub">
+  <header class="site-header" id="site-header">
     <div class="header-glass" aria-hidden="true">
       <div class="glass-fill"></div>
-      <div class="glass-highlight"></div>
-      <div class="glass-edge"></div>
     </div>
     <div class="header-inner">
-      <a class="brand" href="#inicio" aria-label="Ignara Universe — inicio">
+      <a class="brand" href="#hub" id="brand-home" aria-label="Ignara Universe — hub">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-text">Ignara Universe</span>
       </a>
-
-      <nav class="nav-desktop" aria-label="Principal">
-        <a href="#inicio">Inicio</a>
-        <a href="#comunidad">Comunidad</a>
-        <a href="#fan-art">Fan Art</a>
-        <a href="#merch">Merch</a>
-        <a href="#universo">Universo</a>
-      </nav>
-
-      <div class="header-actions">
-        <a class="btn-ghost" href="#comunidad">Unirte</a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-mobile" aria-label="Abrir menú">
-          <span></span><span></span>
-        </button>
-      </div>
+      <span class="header-meta" id="header-meta">hub</span>
     </div>
   </header>
 
-  <nav class="nav-mobile" id="nav-mobile" hidden>
-    <a href="#inicio">Inicio</a>
-    <a href="#comunidad">Comunidad</a>
-    <a href="#fan-art">Fan Art</a>
-    <a href="#merch">Merch</a>
-    <a href="#universo">Universo</a>
-  </nav>
-
-  <main>
-    <section class="panel panel-hero" id="inicio">
-      <p class="eyebrow">Hub de fans · v1 draft</p>
-      <h1>Ignara Universe</h1>
-      <p class="lede">
-        Comunidad, fan art y merch — no el lorebook.
-        Desplázate para ver el header de vidrio esmerilado sobre fondos que cambian.
-      </p>
-      <a class="btn-primary" href="#comunidad">Explorar el hub</a>
-    </section>
-
-    <section class="panel panel-ember" id="comunidad">
-      <h2>Comunidad</h2>
-      <p>Espacio placeholder para foros, eventos y charlas entre fans. El vidrio del header debería difuminar este rojo-ámbar al pasar.</p>
-      <div class="cards">
-        <article><h3>Canales</h3><p>Salas temáticas, roles y normas (placeholder).</p></article>
-        <article><h3>Eventos</h3><p>Lecturas en vivo, Q&amp;A y meetups (placeholder).</p></article>
-        <article><h3>Creadores</h3><p>Perfiles de artistas y escritores (placeholder).</p></article>
-      </div>
-    </section>
-
-    <section class="panel panel-violet" id="fan-art">
-      <h2>Fan Art</h2>
-      <p>Galería de ejemplo. Fondos saturados ayudan a notar el blur y la saturación del glass.</p>
-      <div class="gallery">
-        <div class="tile">Pieza 01</div>
-        <div class="tile">Pieza 02</div>
-        <div class="tile">Pieza 03</div>
-        <div class="tile">Pieza 04</div>
-      </div>
-    </section>
-
-    <section class="panel panel-teal" id="merch">
-      <h2>Merch</h2>
-      <p>Catálogo ficticio: posters, pins, ropa. Solo para demostrar el scroll bajo el header.</p>
-      <ul class="merch-list">
-        <li>Poster mapa · edición limitada</li>
-        <li>Pin set · constelaciones</li>
-        <li>Hoodie · marca Ignara</li>
-        <li>Tote · tipografía serif</li>
+  <!-- 1) Hub -->
+  <main id="view-hub" class="view view-hub" aria-label="Nuestros libros">
+    <section class="hub">
+      <p class="eyebrow">Ignara Universe</p>
+      <h1 class="hub-title">Nuestros libros</h1>
+      <p class="hub-lede">Tres puertas. Solo una está abierta por ahora.</p>
+      <ul class="book-list" role="list">
+        <li>
+          <button type="button" class="book-item is-disabled" disabled aria-disabled="true">
+            <span class="book-index">01</span>
+            <span class="book-name">Ignara uno</span>
+            <span class="book-status">próximamente</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="book-item is-active" id="enter-book-2" aria-label="Entrar a Ignara dos">
+            <span class="book-index">02</span>
+            <span class="book-name">Ignara dos</span>
+            <span class="book-status">entrar →</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="book-item is-disabled" disabled aria-disabled="true">
+            <span class="book-index">03</span>
+            <span class="book-name">Ignara tres</span>
+            <span class="book-status">próximamente</span>
+          </button>
+        </li>
       </ul>
-    </section>
-
-    <section class="panel panel-night" id="universo">
-      <h2>Universo</h2>
-      <p>
-        Enlace conceptual al lore / universo narrativo (este hub no es el lorebook).
-        Sigue bajando: el header sticky mantiene el efecto frosted-glass.
-      </p>
-      <div class="spacer-block">
-        <p>Bloque alto 1 — atmósfera oscura</p>
-      </div>
-      <div class="spacer-block alt">
-        <p>Bloque alto 2 — contraste claro sobre el blur</p>
-      </div>
-      <div class="spacer-block">
-        <p>Bloque alto 3 — fin del demo</p>
-      </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <p>Ignara Universe · header frosted-glass v1 · demo local / GitHub Pages</p>
-  </footer>
+  <!-- Loading overlay -->
+  <div id="loader" class="loader" hidden aria-live="polite" aria-busy="true">
+    <div class="loader-inner">
+      <div class="loader-icon" id="loader-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2.5 22 20.5H2L12 2.5Z" stroke="currentColor" stroke-width="1.25" fill="currentColor" fill-opacity="0.18"/>
+          <path d="M12 9v5.5M12 17.2h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="loader-text" id="loader-text">Loading_ignara_dos_</div>
+      <div class="loader-pct" id="loader-pct">0%_</div>
+    </div>
+  </div>
+
+  <!-- 2) Book entry -->
+  <main id="view-book" class="view view-book" hidden aria-label="Ignara dos">
+    <section class="book-stage">
+      <div class="book-atmosphere" aria-hidden="true"></div>
+      <div class="book-frame">
+        <p class="book-corner">alerta // acceso</p>
+        <p class="book-kicker" data-scramble data-delay="0">Ignara Universe presenta</p>
+        <h1 class="book-heading" data-scramble data-delay="200">Ignara dos</h1>
+        <p class="book-subtitle" data-scramble data-delay="450">protocolo de entrada · capítulo cero</p>
+        <div class="book-body">
+          <p class="scramble-paragraph" id="scramble-lead" data-scramble data-delay="700" data-duration="2200">
+            Cruzás el umbral. La ciudad no duerme: cables, neón y memoria filtrada.
+            Ignara dos no te cuenta el mundo; te deja caer adentro.
+            Respirá. El texto se desencripta. Lo que sigue ya te está mirando.
+          </p>
+          <p class="scramble-paragraph muted" data-scramble data-delay="1600" data-duration="1800">
+            Placeholder narrativo: aquí empieza el libro 2. Calles mojadas, radios
+            encriptadas, un nombre que no deberías decir en voz alta.
+          </p>
+        </div>
+        <div class="book-actions">
+          <button type="button" class="btn-ghost-mono" id="back-hub">← volver al hub</button>
+          <span class="book-signal" aria-hidden="true">signal_ok</span>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
