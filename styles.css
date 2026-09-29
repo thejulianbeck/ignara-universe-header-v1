@@ -32,8 +32,17 @@
   --line: rgba(26, 24, 22, 0.14);
   --line-light: rgba(255, 255, 255, 0.12);
   --line-dark: rgba(26, 24, 22, 0.14);
-  --glass-fill: rgba(255, 255, 255, 0.62);
-  --glass-fill-dark: rgba(255, 255, 255, 0.28);
+  /* Live lab knobs (control panel + localStorage) — keep defaults = current look */
+  --glass-blur: 20px;
+  --glass-saturate: 180%;
+  --glass-brightness: 1.06;
+  --glass-fill-opacity: 0.62;
+  --glass-fill-opacity-dark: 0.28;
+  --glass-border-opacity: 0.55;
+  --glass-border-opacity-dark: 0.35;
+  --glass-chroma-opacity: 0.88;
+  --glass-fill: rgba(255, 255, 255, var(--glass-fill-opacity));
+  --glass-fill-dark: rgba(255, 255, 255, var(--glass-fill-opacity-dark));
   --header-h: 4.5rem;
   --glass-radius: 1.15rem;
   --radius: 1rem;
@@ -202,10 +211,11 @@ body[data-menu="open"] .header-glass {
       rgba(250, 248, 244, 0.42) 100%
     ),
     var(--glass-fill);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  /* Safari needs the -webkit- prefix; keep both. Blur ≥16px so frost is obvious on iPhone. */
-  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
-  backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
+  border: 1px solid rgba(255, 255, 255, var(--glass-border-opacity));
+  /* Safari needs the -webkit- prefix; keep both. Vars so lab sliders update live.
+     Never put url(#svg) here — iOS Safari breaks frost with SVG backdrop-filter. */
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
   /* Valid compositing target without ancestor filter */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
@@ -223,8 +233,8 @@ body[data-menu="open"] .glass-material {
 /* Chromium-only: SVG edge refraction. Gated by JS class — NOT @supports url(),
    which Safari can match while breaking -webkit-backdrop-filter blur. */
 html[data-liquid-chroma="svg"] .glass-material {
-  -webkit-backdrop-filter: blur(18px) saturate(175%) brightness(1.06);
-  backdrop-filter: url(#lg-chroma) blur(18px) saturate(175%) brightness(1.06);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
+  backdrop-filter: url(#lg-chroma) blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
 }
 
 /* Specular sheen — top-left catch light (fresnel-ish) */
@@ -316,7 +326,7 @@ body[data-menu="open"] .glass-inner-edge {
 .site-header[data-scrolled="true"] .glass-chroma-rim,
 .site-header[data-force-glass="true"] .glass-chroma-rim,
 body[data-menu="open"] .glass-chroma-rim {
-  opacity: 0.88;
+  opacity: var(--glass-chroma-opacity);
 }
 
 .glass-chroma-rim::after {
@@ -380,14 +390,14 @@ body[data-view="book"] .glass-material {
       rgba(255, 255, 255, 0.12) 100%
     ),
     var(--glass-fill-dark);
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, var(--glass-border-opacity-dark));
 }
 
 .site-header[data-theme-nav="dark"][data-scrolled="true"] .glass-chroma-rim,
 .site-header[data-theme-nav="dark"][data-force-glass="true"] .glass-chroma-rim,
 body[data-view="book"] .site-header[data-force-glass="true"] .glass-chroma-rim,
 body[data-menu="open"] .site-header[data-theme-nav="dark"] .glass-chroma-rim {
-  opacity: 0.5;
+  opacity: calc(var(--glass-chroma-opacity) * 0.57);
   mix-blend-mode: screen;
 }
 
@@ -400,7 +410,7 @@ body[data-view="book"] .glass-chroma-rim::after {
 .site-header[data-theme-nav="light"][data-scrolled="true"] .glass-chroma-rim,
 .site-header[data-theme-nav="light"][data-force-glass="true"] .glass-chroma-rim,
 body[data-menu="open"] .site-header[data-theme-nav="light"] .glass-chroma-rim {
-  opacity: 0.92;
+  opacity: var(--glass-chroma-opacity);
   mix-blend-mode: multiply;
 }
 
@@ -1637,14 +1647,14 @@ body[data-menu="open"] .nav-toggle span:last-child {
     gap: 1rem;
     padding: 1.25rem 1.35rem;
     border-radius: var(--glass-radius);
-    background: rgba(255, 255, 255, 0.62);
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, var(--glass-fill-opacity));
+    border: 1px solid rgba(255, 255, 255, var(--glass-border-opacity));
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.55),
       0 12px 32px rgba(20, 22, 28, 0.14);
     color: var(--ink);
-    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
-    backdrop-filter: blur(20px) saturate(180%) brightness(1.06);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     opacity: 0;
@@ -1692,6 +1702,110 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
   .display-title {
     max-width: none;
+  }
+}
+
+
+/* —— Lab: live glass control panel (hub, mobile-first) —— */
+.section-lab {
+  background:
+    radial-gradient(ellipse 60% 50% at 90% 0%, rgba(255, 76, 36, 0.08), transparent 55%),
+    linear-gradient(180deg, #f4f2ed 0%, var(--cream) 100%);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.lab-panel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1.15rem 1.15rem 1.25rem;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(26, 24, 22, 0.12);
+  box-shadow: 0 10px 28px rgba(20, 22, 28, 0.06);
+}
+
+.lab-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem 0.75rem;
+  align-items: center;
+}
+
+.lab-row label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  grid-column: 1 / -1;
+}
+
+.lab-row input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+  height: 2rem;
+  margin: 0;
+}
+
+.lab-value {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  min-width: 4.5rem;
+  text-align: right;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.lab-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+.lab-toggle input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+}
+
+.lab-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.35rem;
+}
+
+.lab-actions .btn-solid,
+.lab-actions .btn-ghost {
+  min-height: 2.75rem;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.875rem;
+}
+
+.lab-note {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+
+.lab-status {
+  margin: 0;
+  min-height: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+}
+
+@media (min-width: 640px) {
+  .lab-panel {
+    padding: 1.35rem 1.5rem 1.5rem;
   }
 }
 

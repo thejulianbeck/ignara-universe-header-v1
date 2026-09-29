@@ -112,7 +112,8 @@
     hub.hidden = name !== "hub";
     book.hidden = name !== "book";
     headerMeta.textContent = name === "book" ? "ignara dos" : "hub";
-    setForceGlass(name === "book");
+    var labForce = document.getElementById("lab-force-glass");
+    setForceGlass(name === "book" || (name === "hub" && labForce && labForce.checked));
     setMenu(false);
     updateGlass();
     sampleNavTheme();
@@ -535,6 +536,186 @@
       else window.scrollTo(0, 0);
     }
   });
+
+
+  /* —— Live glass lab: CSS vars → .glass-material, persist + copy —— */
+  (function initGlassLab() {
+    const panel = document.getElementById("glass-lab");
+    if (!panel) return;
+
+    const STORAGE_KEY = "ignara-glass-lab-v1";
+    const root = document.documentElement;
+
+    const DEFAULTS = {
+      "--glass-blur": { value: 20, unit: "px" },
+      "--glass-saturate": { value: 180, unit: "%" },
+      "--glass-brightness": { value: 1.06, unit: "" },
+      "--glass-fill-opacity": { value: 0.62, unit: "" },
+      "--glass-border-opacity": { value: 0.55, unit: "" },
+      "--glass-chroma-opacity": { value: 0.88, unit: "" },
+    };
+
+    const inputs = Array.from(panel.querySelectorAll("input[data-glass-var]"));
+    const forceToggle = document.getElementById("lab-force-glass");
+    const copyBtn = document.getElementById("lab-copy");
+    const resetBtn = document.getElementById("lab-reset");
+    const statusEl = document.getElementById("lab-status");
+    let statusTimer = 0;
+
+    function formatValue(raw, unit, step) {
+      const n = Number(raw);
+      if (!Number.isFinite(n)) return String(raw) + unit;
+      const decimals = String(step || "").includes(".")
+        ? (String(step).split(".")[1] || "").length
+        : Number.isInteger(n)
+          ? 0
+          : 2;
+      const shown = decimals > 0 ? n.toFixed(decimals) : String(Math.round(n));
+      return shown + unit;
+    }
+
+    function setStatus(msg) {
+      if (!statusEl) return;
+      statusEl.textContent = msg || "";
+      window.clearTimeout(statusTimer);
+      if (msg) {
+        statusTimer = window.setTimeout(() => {
+          statusEl.textContent = "";
+        }, 2400);
+      }
+    }
+
+    function applyInput(input, persist) {
+      const cssVar = input.getAttribute("data-glass-var");
+      const unit = input.getAttribute("data-unit") || "";
+      const cssValue = formatValue(input.value, unit, input.step);
+      root.style.setProperty(cssVar, cssValue);
+      const valueEl = panel.querySelector('[data-glass-value][data-for="' + input.id + '"]');
+      if (valueEl) valueEl.textContent = cssValue;
+      if (persist !== false) saveState();
+    }
+
+    function readState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function currentSnapshot() {
+      const vars = {};
+      inputs.forEach((input) => {
+        const cssVar = input.getAttribute("data-glass-var");
+        const unit = input.getAttribute("data-unit") || "";
+        vars[cssVar] = formatValue(input.value, unit, input.step);
+      });
+      return {
+        vars: vars,
+        forceGlass: !!(forceToggle && forceToggle.checked),
+      };
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSnapshot()));
+      } catch (err) {
+        /* private mode / quota — ignore */
+      }
+    }
+
+    function applyForceGlass() {
+      if (!forceToggle) return;
+      setForceGlass(forceToggle.checked);
+    }
+
+    function loadState() {
+      const saved = readState();
+      if (!saved || !saved.vars) return;
+      inputs.forEach((input) => {
+        const cssVar = input.getAttribute("data-glass-var");
+        const unit = input.getAttribute("data-unit") || "";
+        let stored = saved.vars[cssVar];
+        if (stored == null) return;
+        const numeric = String(stored).replace(unit, "").trim();
+        if (numeric === "" || Number.isNaN(Number(numeric))) return;
+        input.value = numeric;
+        applyInput(input, false);
+      });
+      if (forceToggle && typeof saved.forceGlass === "boolean") {
+        forceToggle.checked = saved.forceGlass;
+      }
+    }
+
+    function resetDefaults() {
+      inputs.forEach((input) => {
+        const cssVar = input.getAttribute("data-glass-var");
+        const def = DEFAULTS[cssVar];
+        if (!def) return;
+        input.value = String(def.value);
+        applyInput(input, false);
+      });
+      if (forceToggle) forceToggle.checked = true;
+      applyForceGlass();
+      saveState();
+      setStatus("Valores restablecidos");
+    }
+
+    function buildCssSnippet(vars) {
+      const lines = Object.keys(vars).map(function (k) {
+        return "  " + k + ": " + vars[k] + ";";
+      });
+      return ":root {\n" + lines.join("\n") + "\n}";
+    }
+
+    async function copyValues() {
+      const snap = currentSnapshot();
+      const payload =
+        buildCssSnippet(snap.vars) +
+        "\n\n" +
+        JSON.stringify(snap.vars, null, 2);
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(payload);
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = payload;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        setStatus("Valores copiados");
+      } catch (err) {
+        setStatus("No se pudo copiar — selecciónalos a mano");
+        console.warn("[ignara] copy failed", err);
+      }
+    }
+
+    inputs.forEach((input) => {
+      applyInput(input, false);
+      input.addEventListener("input", () => applyInput(input, true));
+      input.addEventListener("change", () => applyInput(input, true));
+    });
+
+    if (forceToggle) {
+      forceToggle.addEventListener("change", () => {
+        applyForceGlass();
+        saveState();
+      });
+    }
+
+    if (copyBtn) copyBtn.addEventListener("click", copyValues);
+    if (resetBtn) resetBtn.addEventListener("click", resetDefaults);
+
+    loadState();
+    applyForceGlass();
+  })();
 
   prepareBookBlank();
   setView("hub");
