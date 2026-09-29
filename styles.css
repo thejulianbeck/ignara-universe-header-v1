@@ -13,6 +13,7 @@
   --text: #ececec;
   --text-soft: #cdcdcd;
   --text-dim: #7f7f7f;
+  --text-muted: rgba(236, 236, 236, 0.72);
   --accent: #ff4f28;
   --accent-dim: rgba(255, 79, 40, 0.22);
   --line: rgba(255, 255, 255, 0.12);
@@ -176,7 +177,7 @@ button {
   display: none !important;
 }
 
-/* —— Hub —— */
+/* —— Hub books —— */
 .hub {
   min-height: 100dvh;
   display: flex;
@@ -281,35 +282,144 @@ button {
   color: var(--accent);
 }
 
-/* Scroll strips so glass remede is visible when scrolling the hub */
-.hub-scroll-strip {
+/* —— Hub scroll panels (Comunidad / Fan Art / Merch / Universo) —— */
+.panel {
+  min-height: 100vh;
+  padding: 6rem 1.5rem 4.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: none;
+  padding-inline: max(1.5rem, calc((100% - 40rem) / 2 + 1.5rem));
+}
+
+.panel h2 {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.85rem, 5vw, 2.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.panel > p {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.panel-ember {
+  background:
+    linear-gradient(180deg, rgba(7, 9, 10, 0.15), rgba(7, 9, 10, 0.45)),
+    radial-gradient(circle at 30% 40%, #8b2e1f, #3a1210 55%, #120808 100%);
+}
+
+.panel-violet {
+  background:
+    radial-gradient(ellipse at 80% 30%, rgba(180, 120, 255, 0.35), transparent 50%),
+    linear-gradient(135deg, #1a1030, #2a1848 40%, #0e0a18);
+}
+
+.panel-teal {
+  background:
+    radial-gradient(circle at 20% 70%, rgba(40, 180, 160, 0.35), transparent 45%),
+    linear-gradient(160deg, #06201c, #0a2e2a 50%, #061416);
+}
+
+.panel-night {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(90, 110, 200, 0.25), transparent 55%),
+    linear-gradient(180deg, #0a0c18, #05060c 60%, #101018);
+  min-height: 140vh;
+}
+
+.cards {
   display: grid;
-  gap: 0;
+  gap: 1rem;
+  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  max-width: 40rem;
 }
 
-.strip-panel {
-  min-height: 42vh;
+.cards article {
+  padding: 1.25rem;
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.strip-ember {
-  background:
-    radial-gradient(ellipse at 30% 40%, rgba(255, 79, 40, 0.28), transparent 55%),
-    linear-gradient(180deg, #1a0c0a, #0c0808);
+.cards h3 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
 }
 
-.strip-teal {
-  background:
-    radial-gradient(ellipse at 70% 50%, rgba(40, 140, 130, 0.28), transparent 50%),
-    linear-gradient(180deg, #0a1413, #071010);
+.cards p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
-.strip-violet {
-  background:
-    radial-gradient(ellipse at 40% 60%, rgba(90, 60, 160, 0.22), transparent 50%),
-    linear-gradient(180deg, #0c0b14, #07070c);
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 2rem;
+  max-width: 40rem;
 }
 
-/* —— Loader (FW loading ritual remede) —— */
+.tile {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  border-radius: 0.85rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.merch-list {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: 28rem;
+}
+
+.merch-list li {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
+
+.spacer-block {
+  margin-top: 2.5rem;
+  min-height: 40vh;
+  display: grid;
+  place-items: center;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.spacer-block.alt {
+  background: rgba(220, 210, 255, 0.12);
+}
+
+.spacer-block p {
+  margin: 0;
+}
+
+/* —— Loader (label + % only; no stage line) —— */
 .loader {
   position: fixed;
   inset: 0;
@@ -356,8 +466,7 @@ button {
 }
 
 .loader-text,
-.loader-pct,
-.loader-stage {
+.loader-pct {
   margin-top: 1.375rem;
   font-size: 0.75rem;
   letter-spacing: 0.02em;
@@ -373,17 +482,9 @@ button {
   color: var(--text-dim);
 }
 
-.loader-stage {
-  margin-top: 0.85rem;
-  font-size: 0.625rem;
-  color: var(--text-dim);
-  letter-spacing: 0.1em;
-}
-
 .loader.is-on .loader-icon,
 .loader.is-on .loader-text,
-.loader.is-on .loader-pct,
-.loader.is-on .loader-stage {
+.loader.is-on .loader-pct {
   opacity: 1;
   transition: opacity 0.4s ease;
 }
@@ -455,10 +556,6 @@ button {
   text-align: left;
 }
 
-.view-book.is-blank .book-frame > :not(.book-corner):not(.book-actions) {
-  /* chrome corner stays; scramble nodes start empty */
-}
-
 .book-corner {
   position: absolute;
   top: -1.75rem;
@@ -477,7 +574,7 @@ button {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-dim);
-  min-height: 1em;
+  min-height: 1.2em;
   white-space: pre-wrap;
 }
 
@@ -489,6 +586,7 @@ button {
   letter-spacing: -0.035em;
   line-height: 0.92;
   text-transform: uppercase;
+  color: var(--text);
   min-height: 1.1em;
   white-space: pre-wrap;
 }
@@ -511,6 +609,39 @@ button {
 }
 
 .scramble-paragraph.muted {
+  color: var(--text-dim);
+}
+
+/* Scramble visibility contract:
+   - While .is-blank: keep layout height, do NOT hide forever
+   - After resolve / when not blank: force readable text */
+.view-book.is-blank [data-scramble]:not(.is-resolved) {
+  /* reserve space; content is "" until scramble paints */
+  opacity: 1;
+  visibility: visible;
+  color: inherit;
+}
+
+.view-book:not(.is-blank) [data-scramble],
+[data-scramble].is-resolved {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.book-kicker.is-resolved,
+.book-subtitle.is-resolved {
+  color: var(--text-dim);
+}
+
+.book-heading.is-resolved {
+  color: var(--text);
+}
+
+.scramble-paragraph.is-resolved {
+  color: var(--text-soft);
+}
+
+.scramble-paragraph.muted.is-resolved {
   color: var(--text-dim);
 }
 

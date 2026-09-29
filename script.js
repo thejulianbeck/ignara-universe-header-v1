@@ -4,6 +4,10 @@
    * Scramble cadence remedes their SHOW animation:
    *   blank (spaces) → random noise glyphs → resolve left→right,
    * with a delayResolve gap so noise leads the settle wave.
+   *
+   * data-delay  = start offset in seconds BEFORE the animation begins (stagger)
+   * data-duration = animation length in seconds
+   * Internal revealDelay stays ~0 so the resolve wave always completes.
    */
   const GLYPHS =
     " !#$&%()*+0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
@@ -14,7 +18,6 @@
   const loaderIcon = document.getElementById("loader-icon");
   const loaderText = document.getElementById("loader-text");
   const loaderPct = document.getElementById("loader-pct");
-  const loaderStage = document.getElementById("loader-stage");
   const enterBtn = document.getElementById("enter-book-2");
   const backBtn = document.getElementById("back-hub");
   const brandHome = document.getElementById("brand-home");
@@ -63,129 +66,202 @@
     return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   }
 
+  function readFinal(el) {
+    const raw = el.getAttribute("data-final") || el.dataset.final || el.dataset.finalText || "";
+    const cleaned = String(raw).replace(/\s+/g, " ").trim();
+    if (cleaned) {
+      el.setAttribute("data-final", cleaned);
+      el.dataset.final = cleaned;
+      return cleaned;
+    }
+    return "";
+  }
+
+  function commitFinal(el, finalText) {
+    el.textContent = finalText;
+    el.classList.add("is-resolved");
+    el.style.opacity = "1";
+    el.style.visibility = "visible";
+    el.style.color = "";
+  }
+
   /**
    * Blank → noise → resolve (followingwildfire txt-shuffle SHOW remede).
-   * - Until reveal wave: character is space (invisible).
-   * - Between reveal and resolve: random glyph.
-   * - After resolve wave: final character.
-   * delay / delayResolve are fractions of duration (FW defaults: delay=0, delayResolve≈0.2).
+   * options.startDelay: seconds before animation starts (stagger across nodes)
+   * options.duration: seconds of the SHOW window
+   * options.delayResolve: fraction of duration between reveal and resolve waves
+   * options.revealDelay: fraction before reveal starts INSIDE the window (keep low)
    */
   function scrambleText(el, options) {
     const opts = Object.assign(
       {
         duration: 1.4,
-        delay: 0,
+        startDelay: 0,
+        revealDelay: 0,
         delayResolve: 0.22,
         fps: 24,
       },
       options || {}
     );
 
-    const finalText = (el.dataset.final || el.dataset.finalText || el.textContent || "")
-      .replace(/\s+/g, " ")
-      .trim();
-    el.dataset.final = finalText;
-
+    const finalText = readFinal(el);
     if (!finalText) {
       el.textContent = "";
       return Promise.resolve();
     }
 
+    // Start blank — never flash final copy then glitch
+    el.textContent = "";
+    el.classList.remove("is-resolved");
+
     if (reduceMotion) {
-      el.textContent = finalText;
+      commitFinal(el, finalText);
       return Promise.resolve();
     }
 
-    // Start blank — never flash final copy then glitch
-    el.textContent = "";
+    const durationMs = Math.max(200, opts.duration * 1000);
+    const startDelayMs = Math.max(0, opts.startDelay * 1000);
+    // Keep reveal+resolve inside the window: revealDelay + delayResolve < 0.85
+    const revealDelay = clamp01(Math.min(opts.revealDelay, 0.15));
+    const delayResolve = clamp01(Math.min(opts.delayResolve, 0.35));
 
     return new Promise((resolve) => {
-      const chars = finalText.split("");
-      const order = chars.map((_, i) => i); // left→right (FW direction RIGHT)
-      const frameMs = 1000 / opts.fps;
-      const durationMs = opts.duration * 1000;
-      const start = performance.now();
-      let lastPaint = 0;
+      let raf = 0;
+      let settled = false;
 
-      function paint(c) {
-        // c is normalized 0..1 over duration (before delay offset)
-        const hRaw = clamp01(c - opts.delay);
-        const h = quartOut(hRaw);
-        const fRaw = clamp01(c - opts.delay - opts.delayResolve);
-        const f = quadInOut((1 / (1 - opts.delayResolve)) * fRaw);
+      function finish() {
+        if (settled) return;
+        settled = true;
+        if (raf) cancelAnimationFrame(raf);
+        commitFinal(el, finalText);
+        resolve();
+      }
 
-        const revealCount = Math.round(h * chars.length);
-        const resolveCount = Math.round(f * chars.length);
+      // Hard safety: never leave text empty
+      const safety = window.setTimeout(finish, startDelayMs + durationMs + 400);
 
-        let out = "";
-        for (let i = 0; i < chars.length; i++) {
-          const rank = order[i];
-          let ch = chars[i];
-          if (rank >= revealCount) {
-            ch = " ";
-          } else if (ch !== " " && rank >= resolveCount) {
-            ch = randomGlyph();
+      window.setTimeout(() => {
+        const chars = finalText.split("");
+        const order = chars.map((_, i) => i); // left→right
+        const frameMs = 1000 / opts.fps;
+        const start = performance.now();
+        let lastPaint = 0;
+
+        function paint(c) {
+          const hRaw = clamp01(c - revealDelay);
+          const h = quartOut(hRaw);
+          const fRaw = clamp01(c - revealDelay - delayResolve);
+          const denom = Math.max(0.01, 1 - delayResolve);
+          const f = quadInOut((1 / denom) * fRaw);
+
+          const revealCount = Math.round(h * chars.length);
+          const resolveCount = Math.round(f * chars.length);
+
+          let out = "";
+          for (let i = 0; i < chars.length; i++) {
+            const rank = order[i];
+            let ch = chars[i];
+            if (rank >= revealCount) {
+              ch = " ";
+            } else if (ch !== " " && rank >= resolveCount) {
+              ch = randomGlyph();
+            }
+            out += ch;
           }
-          out += ch;
+          el.textContent = out;
         }
-        el.textContent = out;
-      }
 
-      function tick(now) {
-        if (now - lastPaint < frameMs && now - start < durationMs) {
-          requestAnimationFrame(tick);
-          return;
+        function tick(now) {
+          if (settled) return;
+          if (now - lastPaint < frameMs && now - start < durationMs) {
+            raf = requestAnimationFrame(tick);
+            return;
+          }
+          lastPaint = now;
+          const c = Math.min(1, (now - start) / durationMs);
+          paint(c);
+          if (c < 1) {
+            raf = requestAnimationFrame(tick);
+          } else {
+            window.clearTimeout(safety);
+            finish();
+          }
         }
-        lastPaint = now;
-        const c = Math.min(1, (now - start) / durationMs);
-        paint(c);
-        if (c < 1) {
-          requestAnimationFrame(tick);
-        } else {
-          el.textContent = finalText;
-          resolve();
-        }
-      }
 
-      paint(0);
-      requestAnimationFrame(tick);
+        paint(0);
+        raf = requestAnimationFrame(tick);
+      }, startDelayMs);
     });
   }
 
   function prepareBookBlank() {
     book.classList.add("is-blank");
     book.querySelectorAll("[data-scramble]").forEach((node) => {
-      if (!node.dataset.final && node.textContent.trim()) {
-        node.dataset.final = node.textContent.replace(/\s+/g, " ").trim();
-      }
+      readFinal(node); // ensure data-final is canonical before clearing
       node.textContent = "";
+      node.classList.remove("is-resolved");
+      node.style.opacity = "";
+      node.style.visibility = "";
+      node.style.color = "";
     });
     bookActions.classList.add("is-deferred");
     bookActions.classList.remove("is-ready");
   }
 
+  function forceAllFinals() {
+    book.querySelectorAll("[data-scramble]").forEach((node) => {
+      const finalText = readFinal(node);
+      if (finalText) commitFinal(node, finalText);
+    });
+  }
+
   function scrambleAllInBook() {
-    const nodes = book.querySelectorAll("[data-scramble]");
-    const jobs = [];
+    const nodes = Array.from(book.querySelectorAll("[data-scramble]"));
+    // Verify every node has a final before starting
     nodes.forEach((node) => {
-      const delay = Number(node.dataset.delay || 0);
+      if (!readFinal(node)) {
+        console.warn("[ignara] scramble node missing data-final", node);
+      }
+    });
+
+    const jobs = nodes.map((node) => {
+      const startDelay = Number(node.dataset.delay || 0);
       const duration = Number(node.dataset.duration || 1.4);
-      jobs.push(scrambleText(node, { delay, duration, delayResolve: 0.22 }));
+      return scrambleText(node, {
+        startDelay,
+        duration,
+        revealDelay: 0,
+        delayResolve: 0.22,
+      });
     });
-    return Promise.all(jobs).then(() => {
-      book.classList.remove("is-blank");
-      bookActions.classList.remove("is-deferred");
-      bookActions.classList.add("is-ready");
-    });
+
+    return Promise.all(jobs)
+      .catch((err) => {
+        console.warn("[ignara] scramble failed, forcing finals", err);
+        forceAllFinals();
+      })
+      .then(() => {
+        // Belt-and-suspenders: if any node is still empty, force final
+        nodes.forEach((node) => {
+          const finalText = readFinal(node);
+          if (finalText && !node.textContent.trim()) {
+            commitFinal(node, finalText);
+          }
+        });
+        book.classList.remove("is-blank");
+        bookActions.classList.remove("is-deferred");
+        bookActions.classList.add("is-ready");
+      });
   }
 
   /* —— Real-ish loading: weighted Promise stages + min dwell ——
    * Weights (documented for Julián):
    *   fonts          40%  — Fragment Mono + Space Grotesk via document.fonts
    *   stylesheet/css 20%  — styles.css fetch (cache-aware)
-   *   glyph buffer   15%  — build scramble charset / seed strings (honest prep)
+   *   glyph buffer   15%  — build scramble charset / seed strings
    *   init view      15%  — blank book nodes + prepare scramble finals
-   *   min dwell      10%  — floor so the ritual never flashes (~1.2–2.5s total)
+   *   min dwell      10%  — floor so the ritual never flashes
+   * UI shows ONLY Loading_ignara_dos_ + percentage (no stage labels).
    */
   const LOAD_WEIGHTS = {
     fonts: 40,
@@ -196,7 +272,6 @@
   };
 
   function easeDisplay(current, target) {
-    // Smooth chase toward real progress; never pure setInterval 1..100
     const delta = target - current;
     if (Math.abs(delta) < 0.35) return target;
     return current + delta * 0.18;
@@ -227,7 +302,6 @@
   }
 
   function decodeGlyphBuffer() {
-    // Honest prep work for scramble: expand charset, prebuild noise pools
     return new Promise((resolve) => {
       const pool = [];
       const rounds = 48;
@@ -241,7 +315,6 @@
         if (i < rounds) {
           requestAnimationFrame(step);
         } else {
-          // Touch pool so engines keep the work
           window.__ignaraGlyphPool = pool;
           resolve();
         }
@@ -252,8 +325,8 @@
 
   function initBookView() {
     prepareBookBlank();
-    // Prefetch final strings into dataset (already in HTML) + force layout
     book.querySelectorAll("[data-scramble]").forEach((n) => {
+      readFinal(n);
       void n.offsetHeight;
     });
     return wait(60);
@@ -267,11 +340,15 @@
       loaderIcon.classList.add("is-glitch");
       loaderText.textContent = "Loading_ignara_dos_";
       loaderPct.textContent = "0%_";
-      loaderStage.textContent = "fuentes";
 
-      // Brief scramble on the loading label (starts blank → resolve)
-      loaderText.dataset.final = "Loading_ignara_dos_";
-      scrambleText(loaderText, { duration: reduceMotion ? 0.05 : 0.9, delay: 0, delayResolve: 0.2, fps: 20 });
+      loaderText.setAttribute("data-final", "Loading_ignara_dos_");
+      scrambleText(loaderText, {
+        duration: reduceMotion ? 0.05 : 0.9,
+        startDelay: 0,
+        revealDelay: 0,
+        delayResolve: 0.2,
+        fps: 20,
+      });
 
       const progress = { fonts: 0, assets: 0, glyphs: 0, init: 0, dwell: 0 };
       let displayPct = 0;
@@ -291,10 +368,6 @@
         );
       }
 
-      function setStage(label) {
-        loaderStage.textContent = label;
-      }
-
       function paintPct() {
         const target = Math.min(100, weightedTotal() * 100);
         displayPct = easeDisplay(displayPct, target);
@@ -304,54 +377,24 @@
       }
       requestAnimationFrame(paintPct);
 
-      const stages = [
-        {
-          key: "fonts",
-          label: "fuentes",
-          run: () =>
-            loadFonts().then(() => {
-              progress.fonts = 1;
-            }),
-        },
-        {
-          key: "assets",
-          label: "hoja_de_estilo",
-          run: () =>
-            loadStylesheet().then(() => {
-              progress.assets = 1;
-            }),
-        },
-        {
-          key: "glyphs",
-          label: "buffer_glifos",
-          run: () =>
-            decodeGlyphBuffer().then(() => {
-              progress.glyphs = 1;
-            }),
-        },
-        {
-          key: "init",
-          label: "preparar_vista",
-          run: () =>
-            initBookView().then(() => {
-              progress.init = 1;
-            }),
-        },
-      ];
-
       (async () => {
-        // Run fonts + assets in parallel; then glyph decode; then init
-        setStage("fuentes + assets");
-        await Promise.all([stages[0].run(), stages[1].run()]);
-        setStage(stages[2].label);
-        await stages[2].run();
-        setStage(stages[3].label);
-        await stages[3].run();
+        await Promise.all([
+          loadFonts().then(() => {
+            progress.fonts = 1;
+          }),
+          loadStylesheet().then(() => {
+            progress.assets = 1;
+          }),
+        ]);
+        await decodeGlyphBuffer().then(() => {
+          progress.glyphs = 1;
+        });
+        await initBookView().then(() => {
+          progress.init = 1;
+        });
 
-        // Min dwell: map remaining time into the 10% dwell weight
         const elapsed = performance.now() - startedAt;
         const dwellNeed = Math.max(0, MIN_MS - elapsed);
-        setStage("sincronizar");
         const dwellStart = performance.now();
         const dwellTarget = Math.max(dwellNeed, reduceMotion ? 0 : 220);
         while (performance.now() - dwellStart < dwellTarget) {
@@ -361,7 +404,6 @@
         }
         progress.dwell = 1;
 
-        // Cap total so a slow network still finishes cleanly
         const totalElapsed = performance.now() - startedAt;
         if (totalElapsed > MAX_MS) {
           Object.keys(progress).forEach((k) => {
@@ -371,7 +413,6 @@
 
         displayPct = 100;
         loaderPct.textContent = "100%_";
-        setStage("listo");
         loaderIcon.classList.remove("is-glitch");
         finished = true;
 
@@ -391,8 +432,25 @@
     await runLoader();
     setView("book");
     window.scrollTo(0, 0);
-    // Book starts blank (only chrome corner); then scramble reveal
-    await scrambleAllInBook();
+    try {
+      await scrambleAllInBook();
+    } catch (err) {
+      console.warn("[ignara] enterBook2 scramble error", err);
+      forceAllFinals();
+      book.classList.remove("is-blank");
+      bookActions.classList.remove("is-deferred");
+      bookActions.classList.add("is-ready");
+    }
+    // Final visibility check after a beat
+    window.setTimeout(() => {
+      const empty = Array.from(book.querySelectorAll("[data-scramble]")).filter(
+        (n) => !n.textContent.trim() && readFinal(n)
+      );
+      if (empty.length) {
+        forceAllFinals();
+        book.classList.remove("is-blank");
+      }
+    }, 100);
     enterBtn.disabled = false;
   }
 

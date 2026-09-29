@@ -30,7 +30,7 @@
 
   <!-- 1) Hub -->
   <main id="view-hub" class="view view-hub" aria-label="Nuestros libros">
-    <section class="hub">
+    <section class="hub" id="hub">
       <p class="eyebrow">Ignara Universe</p>
       <h1 class="hub-title">Nuestros libros</h1>
       <p class="hub-lede">Tres puertas. Solo una está abierta por ahora.</p>
@@ -58,15 +58,59 @@
         </li>
       </ul>
     </section>
-    <!-- Extra scroll room so frosted glass can appear on scroll (become-a-yogi remede) -->
-    <section class="hub-scroll-strip" aria-hidden="true">
-      <div class="strip-panel strip-ember"></div>
-      <div class="strip-panel strip-teal"></div>
-      <div class="strip-panel strip-violet"></div>
+
+    <!-- Scroll sections so frosted glass reads over changing backgrounds -->
+    <section class="panel panel-ember" id="comunidad">
+      <h2>Comunidad</h2>
+      <p>Espacio placeholder para foros, eventos y charlas entre fans. El vidrio del header debería difuminar este rojo-ámbar al pasar.</p>
+      <div class="cards">
+        <article><h3>Canales</h3><p>Salas temáticas, roles y normas (placeholder).</p></article>
+        <article><h3>Eventos</h3><p>Lecturas en vivo, Q&amp;A y meetups (placeholder).</p></article>
+        <article><h3>Creadores</h3><p>Perfiles de artistas y escritores (placeholder).</p></article>
+      </div>
+    </section>
+
+    <section class="panel panel-violet" id="fan-art">
+      <h2>Fan Art</h2>
+      <p>Galería de ejemplo. Fondos saturados ayudan a notar el blur y la saturación del glass.</p>
+      <div class="gallery">
+        <div class="tile">Pieza 01</div>
+        <div class="tile">Pieza 02</div>
+        <div class="tile">Pieza 03</div>
+        <div class="tile">Pieza 04</div>
+      </div>
+    </section>
+
+    <section class="panel panel-teal" id="merch">
+      <h2>Merch</h2>
+      <p>Catálogo ficticio: posters, pins, ropa. Solo para demostrar el scroll bajo el header.</p>
+      <ul class="merch-list">
+        <li>Poster mapa · edición limitada</li>
+        <li>Pin set · constelaciones</li>
+        <li>Hoodie · marca Ignara</li>
+        <li>Tote · tipografía mono</li>
+      </ul>
+    </section>
+
+    <section class="panel panel-night" id="universo">
+      <h2>Universo</h2>
+      <p>
+        Enlace conceptual al lore / universo narrativo (este hub no es el lorebook).
+        Sigue bajando: el header sticky mantiene el efecto frosted-glass.
+      </p>
+      <div class="spacer-block">
+        <p>Bloque alto 1 — atmósfera oscura</p>
+      </div>
+      <div class="spacer-block alt">
+        <p>Bloque alto 2 — contraste claro sobre el blur</p>
+      </div>
+      <div class="spacer-block">
+        <p>Bloque alto 3 — fin del demo</p>
+      </div>
     </section>
   </main>
 
-  <!-- Loading overlay -->
+  <!-- Loading overlay: label + percentage only -->
   <div id="loader" class="loader" hidden aria-live="polite" aria-busy="true">
     <div class="loader-inner">
       <div class="loader-icon" id="loader-icon" aria-hidden="true">
@@ -77,24 +121,26 @@
       </div>
       <div class="loader-text" id="loader-text">Loading_ignara_dos_</div>
       <div class="loader-pct" id="loader-pct">0%_</div>
-      <div class="loader-stage" id="loader-stage">preparando</div>
     </div>
   </div>
 
-  <!-- 2) Book entry — content blank until scramble; finals live in data-final -->
+  <!-- 2) Book entry — nodes blank; finals in data-final; reveal after loader -->
   <main id="view-book" class="view view-book is-blank" hidden aria-label="Ignara dos">
     <section class="book-stage">
       <div class="book-atmosphere" aria-hidden="true"></div>
       <div class="book-frame">
         <p class="book-corner">alerta // acceso</p>
-        <p class="book-kicker" data-scramble data-delay="0.05" data-duration="1.1" data-final="Ignara Universe presenta"></p>
-        <h1 class="book-heading" data-scramble data-delay="0.12" data-duration="1.35" data-final="Ignara dos"></h1>
-        <p class="book-subtitle" data-scramble data-delay="0.28" data-duration="1.2" data-final="protocolo de entrada · capítulo cero"></p>
+        <p class="book-kicker" data-scramble data-delay="0" data-duration="1.15"
+           data-final="Ignara Universe presenta"></p>
+        <h1 class="book-heading" data-scramble data-delay="0.18" data-duration="1.4"
+            data-final="Ignara dos"></h1>
+        <p class="book-subtitle" data-scramble data-delay="0.35" data-duration="1.25"
+           data-final="protocolo de entrada · capítulo cero"></p>
         <div class="book-body">
-          <p class="scramble-paragraph" id="scramble-lead" data-scramble data-delay="0.45" data-duration="2.1"
-             data-final="Cruzas el umbral. La ciudad no duerme: cables, neón y memoria filtrada. Ignara dos no te cuenta el mundo; te deja caer adentro. Respira. El texto se desencripta. Lo que sigue ya te está mirando."></p>
-          <p class="scramble-paragraph muted" data-scramble data-delay="0.95" data-duration="1.8"
-             data-final="Placeholder narrativo: aquí empieza el libro 2. Calles mojadas, radios encriptadas, un nombre que no deberías decir en voz alta."></p>
+          <p class="scramble-paragraph" id="scramble-lead" data-scramble data-delay="0.55" data-duration="2.0"
+             data-final="Señal detectada. La ciudad no duerme: cables, neón y memoria filtrada. Ignara dos no te cuenta el mundo; te deja caer adentro. Respira. El texto se desencripta. Lo que sigue ya te está mirando."></p>
+          <p class="scramble-paragraph muted" data-scramble data-delay="0.9" data-duration="1.85"
+             data-final="Placeholder narrativo (inspirado en un ritual de alerta): calles mojadas, radios encriptadas, un nombre que no deberías decir en voz alta. Aquí empieza el libro 2."></p>
         </div>
         <div class="book-actions is-deferred" id="book-actions">
           <button type="button" class="btn-ghost-mono" id="back-hub">← volver al hub</button>
