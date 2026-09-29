@@ -1718,7 +1718,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
 .lab-panel {
   display: grid;
-  gap: 1rem;
+  gap: 1.15rem;
   margin-top: 1.5rem;
   padding: 1.15rem 1.15rem 1.25rem;
   border-radius: var(--radius);
@@ -1727,11 +1727,195 @@ body[data-menu="open"] .nav-toggle span:last-child {
   box-shadow: 0 10px 28px rgba(20, 22, 28, 0.06);
 }
 
+/* Large live preview: same CSS vars / glass layers as sticky header,
+   sitting over a loud light+dark backdrop so blur/tint/border/chroma read. */
+.lab-preview {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0 0 0.35rem;
+}
+
+.lab-preview-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+}
+
+.lab-preview-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.lab-preview-hint {
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+}
+
+.lab-preview-stage {
+  position: relative;
+  isolation: auto; /* do NOT create a filter root that kills backdrop sampling */
+  min-height: 11.5rem;
+  border-radius: calc(var(--glass-radius) + 0.35rem);
+  overflow: hidden;
+  border: 1px solid rgba(26, 24, 22, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.lab-preview-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* photo-like gradients + stripes + light/dark patches */
+  background:
+    radial-gradient(ellipse 55% 70% at 18% 30%, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(ellipse 50% 55% at 82% 70%, rgba(12, 14, 22, 0.92), transparent 62%),
+    linear-gradient(
+      125deg,
+      #ff7a59 0%,
+      #ffd166 18%,
+      #7dffb3 36%,
+      #5aa8ff 54%,
+      #c084fc 72%,
+      #ff4d8d 90%,
+      #ff7a59 100%
+    );
+}
+
+.lab-preview-stripes {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background: repeating-linear-gradient(
+    -18deg,
+    rgba(255, 255, 255, 0.55) 0 10px,
+    rgba(255, 76, 36, 0.35) 10px 20px,
+    rgba(90, 168, 255, 0.4) 20px 30px,
+    rgba(26, 24, 22, 0.28) 30px 40px,
+    rgba(255, 210, 70, 0.45) 40px 50px
+  );
+  mix-blend-mode: soft-light;
+}
+
+.lab-preview-photo {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.5), transparent 35%),
+    radial-gradient(circle at 70% 25%, rgba(255, 200, 80, 0.45), transparent 40%),
+    radial-gradient(circle at 60% 80%, rgba(80, 140, 255, 0.4), transparent 45%);
+  mix-blend-mode: overlay;
+  opacity: 0.9;
+}
+
+.lab-preview-dark {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 42%;
+  background:
+    linear-gradient(200deg, #1a1820 0%, #0c0e16 55%, #2a2030 100%);
+  opacity: 0.88;
+  mix-blend-mode: multiply;
+}
+
+.lab-preview-light {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 38%;
+  background:
+    linear-gradient(160deg, #fffdf8 0%, #f0eee9 45%, #ffe8d6 100%);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+.lab-preview-bar {
+  position: absolute;
+  left: 0.85rem;
+  right: 0.85rem;
+  top: 50%;
+  height: 4.35rem;
+  margin-top: -2.175rem;
+  border-radius: var(--glass-radius);
+  /* NO opacity/filter/transform on this shell — iOS backdrop-filter needs a clean ancestor */
+  z-index: 1;
+}
+
+.lab-preview-bar .glass-effect {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+/* Force glass layers ON in the preview (header still gated by scroll/force) */
+.lab-preview-bar .glass-material {
+  opacity: 1;
+}
+
+.lab-preview-bar .glass-specular {
+  opacity: 0.9;
+}
+
+.lab-preview-bar .glass-inner-edge {
+  opacity: 1;
+}
+
+.lab-preview-bar .glass-chroma-rim {
+  opacity: var(--glass-chroma-opacity);
+  mix-blend-mode: multiply;
+}
+
+.lab-preview-bar .glass-shadow {
+  opacity: 0.55;
+}
+
+.lab-preview-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0 1.15rem;
+  pointer-events: none;
+  color: var(--ink);
+}
+
+.lab-preview-brand {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.lab-preview-meta {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  text-align: right;
+}
+
 .lab-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.35rem 0.75rem;
+  gap: 0.4rem;
   align-items: center;
+}
+
+.lab-row-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .lab-row label {
@@ -1740,23 +1924,30 @@ body[data-menu="open"] .nav-toggle span:last-child {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--ink-muted);
-  grid-column: 1 / -1;
+  margin: 0;
 }
 
 .lab-row input[type="range"] {
   width: 100%;
   accent-color: var(--accent);
-  height: 2rem;
+  height: 2.15rem;
   margin: 0;
 }
 
 .lab-value {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  min-width: 4.5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  min-width: 4.75rem;
   text-align: right;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.lab-value[data-pulse] {
+  color: var(--accent);
 }
 
 .lab-toggle {
@@ -1806,6 +1997,26 @@ body[data-menu="open"] .nav-toggle span:last-child {
 @media (min-width: 640px) {
   .lab-panel {
     padding: 1.35rem 1.5rem 1.5rem;
+  }
+
+  .lab-preview-stage {
+    min-height: 13.5rem;
+  }
+
+  .lab-preview-bar {
+    height: 4.85rem;
+    margin-top: -2.425rem;
+    left: 1.25rem;
+    right: 1.25rem;
+  }
+
+  .lab-preview-brand {
+    font-size: 1.125rem;
+  }
+
+  .lab-value {
+    font-size: 1.35rem;
+    min-width: 5.25rem;
   }
 }
 

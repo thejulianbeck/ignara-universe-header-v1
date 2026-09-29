@@ -538,13 +538,14 @@
   });
 
 
-  /* —— Live glass lab: CSS vars → .glass-material, persist + copy —— */
+  /* —— Live glass lab: CSS vars → :root (+ preview + sticky header), persist + copy —— */
   (function initGlassLab() {
     const panel = document.getElementById("glass-lab");
     if (!panel) return;
 
     const STORAGE_KEY = "ignara-glass-lab-v1";
     const root = document.documentElement;
+    const previewBar = document.getElementById("lab-preview-bar");
 
     const DEFAULTS = {
       "--glass-blur": { value: 20, unit: "px" },
@@ -587,11 +588,21 @@
 
     function applyInput(input, persist) {
       const cssVar = input.getAttribute("data-glass-var");
+      if (!cssVar) return;
       const unit = input.getAttribute("data-unit") || "";
       const cssValue = formatValue(input.value, unit, input.step);
+      /* Write on :root so sticky header AND lab preview (same vars) update live */
       root.style.setProperty(cssVar, cssValue);
+      /* Belt-and-suspenders: also set on the preview shell for immediate paint */
+      if (previewBar) previewBar.style.setProperty(cssVar, cssValue);
       const valueEl = panel.querySelector('[data-glass-value][data-for="' + input.id + '"]');
-      if (valueEl) valueEl.textContent = cssValue;
+      if (valueEl) {
+        valueEl.textContent = cssValue;
+        valueEl.setAttribute("data-pulse", "1");
+        window.requestAnimationFrame(function () {
+          valueEl.removeAttribute("data-pulse");
+        });
+      }
       if (persist !== false) saveState();
     }
 
@@ -699,8 +710,17 @@
 
     inputs.forEach((input) => {
       applyInput(input, false);
-      input.addEventListener("input", () => applyInput(input, true));
-      input.addEventListener("change", () => applyInput(input, true));
+      /* input = live drag; change = commit; touchmove helps some iOS WebViews */
+      input.addEventListener("input", function () { applyInput(input, true); });
+      input.addEventListener("change", function () { applyInput(input, true); });
+    });
+
+    /* Capture-phase fallback if a range somehow loses bubbling */
+    panel.addEventListener("input", function (ev) {
+      const t = ev.target;
+      if (t && t.matches && t.matches("input[data-glass-var]")) {
+        applyInput(t, true);
+      }
     });
 
     if (forceToggle) {

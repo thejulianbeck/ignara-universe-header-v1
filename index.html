@@ -132,41 +132,83 @@
           <p class="eyebrow dark">Lab · header</p>
           <h2 class="display-title dark">Ajusta el vidrio líquido en vivo</h2>
           <p class="body-copy dark">
-            Mueve los controles y mira el header. En iPhone Safari el desenfoque
-            usa <code>-webkit-backdrop-filter</code> (sin SVG). Tus valores se
-            guardan en este dispositivo; cópialos cuando te gusten para fijarlos.
+            Mueve los controles y mira la barra de vista previa abajo (y el header
+            de arriba). El fondo contrastante hace obvio el blur, el tinte, el borde
+            y el cromático. En iPhone Safari el desenfoque usa
+            <code>-webkit-backdrop-filter</code> (sin SVG). Tus valores se guardan
+            en este dispositivo; cópialos cuando te gusten para fijarlos.
           </p>
 
           <div class="lab-panel" id="glass-lab" data-glass-lab>
+            <div class="lab-preview" aria-label="Vista previa en vivo del vidrio">
+              <div class="lab-preview-head">
+                <span class="lab-preview-kicker">Vista previa · en vivo</span>
+                <span class="lab-preview-hint">Mueve un slider — el cambio se ve aquí al instante</span>
+              </div>
+              <div class="lab-preview-stage">
+                <div class="lab-preview-backdrop" aria-hidden="true">
+                  <div class="lab-preview-stripes"></div>
+                  <div class="lab-preview-photo"></div>
+                  <div class="lab-preview-dark"></div>
+                  <div class="lab-preview-light"></div>
+                </div>
+                <div class="lab-preview-bar" id="lab-preview-bar" data-lab-preview>
+                  <div class="glass-effect">
+                    <div class="glass-material"></div>
+                    <div class="glass-specular"></div>
+                    <div class="glass-inner-edge"></div>
+                    <div class="glass-chroma-rim"></div>
+                    <div class="glass-shadow"></div>
+                  </div>
+                  <div class="lab-preview-content">
+                    <span class="lab-preview-brand">Ignara · vidrio</span>
+                    <span class="lab-preview-meta">blur · tinte · borde · chroma</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="lab-row">
-              <label for="lab-blur">Desenfoque (blur)</label>
+              <div class="lab-row-top">
+                <label for="lab-blur">Desenfoque (blur)</label>
+                <span class="lab-value" data-glass-value data-for="lab-blur">20px</span>
+              </div>
               <input type="range" id="lab-blur" data-glass-var="--glass-blur" data-unit="px" min="0" max="40" step="1" value="20" />
-              <span class="lab-value" data-glass-value data-for="lab-blur">20px</span>
             </div>
             <div class="lab-row">
-              <label for="lab-saturate">Saturación</label>
+              <div class="lab-row-top">
+                <label for="lab-saturate">Saturación</label>
+                <span class="lab-value" data-glass-value data-for="lab-saturate">180%</span>
+              </div>
               <input type="range" id="lab-saturate" data-glass-var="--glass-saturate" data-unit="%" min="100" max="250" step="1" value="180" />
-              <span class="lab-value" data-glass-value data-for="lab-saturate">180%</span>
             </div>
             <div class="lab-row">
-              <label for="lab-brightness">Brillo</label>
+              <div class="lab-row-top">
+                <label for="lab-brightness">Brillo</label>
+                <span class="lab-value" data-glass-value data-for="lab-brightness">1.06</span>
+              </div>
               <input type="range" id="lab-brightness" data-glass-var="--glass-brightness" data-unit="" min="0.8" max="1.4" step="0.01" value="1.06" />
-              <span class="lab-value" data-glass-value data-for="lab-brightness">1.06</span>
             </div>
             <div class="lab-row">
-              <label for="lab-fill">Opacidad del relleno (tinte blanco)</label>
+              <div class="lab-row-top">
+                <label for="lab-fill">Opacidad del relleno (tinte blanco)</label>
+                <span class="lab-value" data-glass-value data-for="lab-fill">0.62</span>
+              </div>
               <input type="range" id="lab-fill" data-glass-var="--glass-fill-opacity" data-unit="" min="0" max="1" step="0.01" value="0.62" />
-              <span class="lab-value" data-glass-value data-for="lab-fill">0.62</span>
             </div>
             <div class="lab-row">
-              <label for="lab-border">Opacidad del borde</label>
+              <div class="lab-row-top">
+                <label for="lab-border">Opacidad del borde</label>
+                <span class="lab-value" data-glass-value data-for="lab-border">0.55</span>
+              </div>
               <input type="range" id="lab-border" data-glass-var="--glass-border-opacity" data-unit="" min="0" max="1" step="0.01" value="0.55" />
-              <span class="lab-value" data-glass-value data-for="lab-border">0.55</span>
             </div>
             <div class="lab-row">
-              <label for="lab-chroma">Opacidad del borde cromático</label>
+              <div class="lab-row-top">
+                <label for="lab-chroma">Opacidad del borde cromático</label>
+                <span class="lab-value" data-glass-value data-for="lab-chroma">0.88</span>
+              </div>
               <input type="range" id="lab-chroma" data-glass-var="--glass-chroma-opacity" data-unit="" min="0" max="1" step="0.01" value="0.88" />
-              <span class="lab-value" data-glass-value data-for="lab-chroma">0.88</span>
             </div>
 
             <label class="lab-toggle">
@@ -180,7 +222,8 @@
             </div>
             <p class="lab-status" id="lab-status" aria-live="polite"></p>
             <p class="lab-note">
-              Tip: desplázate sobre crema y noche para ver cómo responde el frost.
+              Tip: la vista previa usa las mismas variables CSS que el header sticky.
+              Desplázate también sobre crema y noche para ver el frost real.
               «Copiar valores» te deja un snippet CSS / JSON listo para enviar.
             </p>
           </div>
