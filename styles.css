@@ -4,7 +4,7 @@
    (.glass / .glass__noise / .glass__specular). Safari-first: sticky host
    (.site-header) SEPARATE from material (.glass) — no backdrop-filter on
    the sticky/fixed positioning node. Nav ink flips via data-theme-nav.
-   Book-2 loader+scramble preserved. Spanish LA neutro. */
+   Book-2 loader preserved; post-load remede of followingwildfire landing. Spanish LA neutro. */
 
 
 :root {
@@ -27,7 +27,7 @@
   --text-cyber-soft: #cdcdcd;
   --text-cyber-dim: #7f7f7f;
   --text-cyber-muted: rgba(236, 236, 236, 0.72);
-  --accent: #ff4c24;
+  --accent: #ff4f28;
   --accent-dim: rgba(255, 76, 36, 0.22);
   --line: rgba(26, 24, 22, 0.14);
   --line-light: rgba(255, 255, 255, 0.12);
@@ -40,6 +40,7 @@
   --max-copy: 40rem;
   --font-mono: "Fragment Mono", ui-monospace, Menlo, monospace;
   --font-sans: "Inter", system-ui, Arial, sans-serif;
+  --font-display: "Chakra Petch", "Inter", system-ui, sans-serif;
   --ease: cubic-bezier(0.625, 0.05, 0, 1);
 }
 
@@ -75,7 +76,13 @@ body[data-view="hub"] {
 
 body[data-view="book"] {
   color: var(--text-cyber);
-  background: var(--bg-deep);
+  background: var(--bg-loader);
+  overflow-x: hidden;
+}
+
+/* Hide Ignara Universe sticky header + chrome on Ignara dos post-load */
+body[data-view="book"] .site-header {
+  display: none !important;
 }
 
 body[data-menu="open"] {
@@ -1172,184 +1179,453 @@ body[data-menu="open"] .nav-toggle span:last-child {
   42%, 100% { opacity: 1; }
 }
 
-/* —— Book 2 stage —— */
-.book-stage {
-  position: relative;
-  min-height: 140dvh;
-  padding: 2.5rem 1.35rem 4rem;
-  overflow: hidden;
+/* —— Ignara dos post-loader landing (remede FW after-load layout) —— */
+.view-book {
+  min-height: 100dvh;
+  background: var(--bg-loader);
+  color: var(--text-cyber);
 }
 
-.book-atmosphere {
+.idos-landing {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+
+.idos-bg {
   position: absolute;
   inset: 0;
-  pointer-events: none;
+  z-index: 0;
   background:
-    radial-gradient(ellipse at center, #0e1019 20%, transparent 70%),
-    linear-gradient(180deg, #0e1a19 0%, #080a0b 55%, #050607 100%);
+    radial-gradient(ellipse at 50% 45%, #0e1019 0%, transparent 55%),
+    linear-gradient(180deg, #0e1a19 0%, #101010 55%, #0a0c0c 100%);
 }
 
-.book-atmosphere::before {
+.idos-bg::after {
   content: "";
   position: absolute;
   inset: 0;
   background-image: linear-gradient(90deg, #7f7f7f, #7f7f7f 50%, transparent 0, transparent);
-  background-size: 4px 1px;
-  background-repeat: repeat;
-  opacity: 0.035;
-  mix-blend-mode: soft-light;
+  background-size: 3px 1px;
+  opacity: 0.03;
+  pointer-events: none;
 }
 
-.book-atmosphere::after {
-  content: "";
+.idos-cards {
   position: absolute;
-  inset: -20%;
-  background:
-    radial-gradient(circle at 70% 20%, rgba(255, 76, 36, 0.16), transparent 35%),
-    radial-gradient(circle at 20% 80%, rgba(60, 180, 160, 0.08), transparent 40%);
-  filter: blur(2px);
-}
-
-.book-frame {
-  position: relative;
+  inset: 0;
   z-index: 1;
-  max-width: 36rem;
-  margin: 12vh auto 0;
-  text-align: left;
+  pointer-events: none;
+  perspective: 900px;
+  transform-style: preserve-3d;
 }
 
-.book-corner {
+.idos-card {
   position: absolute;
-  top: -1.75rem;
+  left: var(--x);
+  top: var(--y);
+  width: 11.5rem;
+  height: 16.875rem;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(67, 67, 67, 0.5);
+  border-radius: 0.1875rem;
+  background: #0e1a19;
+  transform: translateZ(var(--z)) rotate(var(--rot));
+  opacity: 0.85;
+}
+
+.idos-card-media {
+  flex: 1;
+  min-height: 0;
+  background-color: #1a1a1a;
+  opacity: 0.9;
+}
+
+.idos-card-media--a {
+  background:
+    linear-gradient(160deg, rgba(255, 79, 40, 0.35), transparent 55%),
+    linear-gradient(25deg, #1a2422, #0c1211 60%, #2a1814);
+}
+.idos-card-media--b {
+  background:
+    linear-gradient(200deg, rgba(60, 180, 160, 0.2), transparent 50%),
+    linear-gradient(140deg, #121816, #0a1010 70%, #1c1410);
+}
+.idos-card-media--c {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 79, 40, 0.4), transparent 45%),
+    linear-gradient(180deg, #181818, #0e1a19);
+}
+.idos-card-media--d {
+  background:
+    linear-gradient(90deg, rgba(205, 205, 205, 0.08) 1px, transparent 1px),
+    linear-gradient(#101614, #1a1210);
+  background-size: 12px 12px, auto;
+}
+.idos-card-media--e {
+  background:
+    linear-gradient(45deg, #0e1a19 25%, #1a2220 25%, #1a2220 50%, #0e1a19 50%, #0e1a19 75%, #1a2220 75%);
+  background-size: 28px 28px;
+  opacity: 0.7;
+}
+.idos-card-media--f {
+  background:
+    radial-gradient(ellipse at center, #2a2018 0%, #0e1a19 70%);
+}
+
+.idos-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 1.5rem;
+  padding: 0.3125rem 0.6875rem;
+  border-top: 1px solid rgba(67, 67, 67, 0.5);
+  color: #7f7f7f;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.idos-top {
+  position: absolute;
+  top: 0;
   left: 0;
+  z-index: 5;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  pointer-events: none;
+  background: linear-gradient(180deg, #0e1a19 5%, hsla(0, 0%, 6%, 0));
+  height: 10rem;
+}
+
+@media (min-width: 1024px) {
+  .idos-top {
+    padding: 2rem 2.25rem;
+  }
+}
+
+.idos-tip {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: left;
+  color: #cdcdcd;
+}
+
+.idos-tip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #cdcdcd;
+  border: 1px solid #434343;
+  border-radius: 0.15rem;
+  flex-shrink: 0;
+}
+
+.idos-tip-text {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1.15;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: #7f7f7f;
+}
+
+.idos-corner {
   margin: 0;
+  font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
-  font-family: var(--font-mono);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
-.book-kicker,
-.book-subtitle {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-cyber-dim);
-  min-height: 1.2em;
-  white-space: pre-wrap;
-}
-
-.book-heading {
-  margin: 0.85rem 0 0.9rem;
-  font-family: var(--font-mono);
-  font-size: clamp(2.6rem, 10vw, 4.25rem);
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
-  text-transform: uppercase;
-  color: var(--text-cyber);
-  min-height: 1.1em;
-  white-space: pre-wrap;
-}
-
-.book-body {
-  margin-top: 2.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.35rem;
-}
-
-.scramble-paragraph {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1.7;
-  color: var(--text-cyber-soft);
-  max-width: 32rem;
-  min-height: 3.4em;
-  white-space: pre-wrap;
-}
-
-.scramble-paragraph.muted {
-  color: var(--text-cyber-dim);
-}
-
-.view-book.is-blank [data-scramble]:not(.is-resolved) {
-  opacity: 1;
-  visibility: visible;
-  color: inherit;
-}
-
-.view-book:not(.is-blank) [data-scramble],
-[data-scramble].is-resolved {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.book-kicker.is-resolved,
-.book-subtitle.is-resolved {
-  color: var(--text-cyber-dim);
-}
-
-.book-heading.is-resolved {
-  color: var(--text-cyber);
-}
-
-.scramble-paragraph.is-resolved {
-  color: var(--text-cyber-soft);
-}
-
-.scramble-paragraph.muted.is-resolved {
-  color: var(--text-cyber-dim);
-}
-
-.book-actions {
-  margin-top: 3rem;
+.idos-cta {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.idos-cta-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(40rem, 92vw);
+  padding: 3rem 1.5rem;
+  background: radial-gradient(ellipse at center, #0e1019 25%, hsla(0, 0%, 6%, 0) 71%);
   opacity: 0;
   transition: opacity 0.45s ease;
 }
 
-.book-actions.is-ready {
+.idos-cta-inner.is-ready {
   opacity: 1;
 }
 
-.book-actions.is-deferred {
+.idos-cta-inner.is-deferred {
   opacity: 0;
   pointer-events: none;
 }
 
-.btn-ghost-mono {
-  padding: 0.55rem 0.85rem;
-  border: 1px solid var(--line-light);
-  border-radius: 999px;
-  font-size: 0.625rem;
+.idos-presents {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-cyber-soft);
-  background: rgba(255, 255, 255, 0.03);
-  font-family: var(--font-mono);
+  color: #7f7f7f;
+  min-height: 1em;
 }
 
-.btn-ghost-mono:hover,
-.btn-ghost-mono:focus-visible {
-  border-color: rgba(255, 76, 36, 0.5);
-  color: var(--text-cyber);
+.idos-title {
+  margin: 1.25rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 12vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: #ececec;
+  min-height: 1em;
+}
+
+.idos-sub {
+  margin: 1.375rem 0 0;
+  max-width: 21.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: #7f7f7f;
+  min-height: 4.5em;
+}
+
+.idos-enter {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8.125rem;
+  height: 8.125rem;
+  margin-top: 1.875rem;
+  color: #cdcdcd;
+}
+
+@media (max-height: 600px) {
+  .idos-enter {
+    width: 6.25rem;
+    height: 6.25rem;
+    margin-top: 0.75rem;
+  }
+  .idos-sub {
+    margin-top: 0.75rem;
+  }
+  .idos-tip {
+    opacity: 0;
+  }
+}
+
+.idos-enter-bg,
+.idos-enter-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.idos-enter-orange {
+  fill: none;
+  stroke-dasharray: 377;
+  stroke-dashoffset: 90;
+  transform-origin: center;
+  transition: stroke-dashoffset 0.55s var(--ease);
+}
+
+.idos-enter-ring,
+.idos-enter-ring-outer {
+  fill: none;
+  transform-origin: center;
+}
+
+.idos-enter-ring-outer {
+  transform: rotate(-75deg);
+}
+
+.idos-enter-ring {
+  transform: rotate(45deg);
+}
+
+.idos-enter-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.15rem;
+}
+
+.idos-enter:hover .idos-enter-orange,
+.idos-enter:focus-visible .idos-enter-orange {
+  stroke-dashoffset: 0;
+}
+
+.idos-enter:hover .idos-enter-label,
+.idos-enter:focus-visible .idos-enter-label {
+  color: #fff;
+}
+
+.idos-enter:focus-visible {
   outline: none;
 }
 
-.book-signal {
+.idos-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 2.5rem 1rem 2.875rem;
+  opacity: 0;
+  transition: opacity 0.45s ease 0.1s;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgba(14, 26, 25, 0.85) 55%, #0e1a19 100%);
+}
+
+.view-book:not(.is-blank) .idos-footer {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-height: 600px) {
+  .idos-footer {
+    padding-bottom: 2.25rem;
+  }
+}
+
+.idos-back {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #7f7f7f;
+  padding: 0.4rem 0.5rem;
+  pointer-events: auto;
+  transition: color 0.2s ease;
+}
+
+.idos-back:hover,
+.idos-back:focus-visible {
+  color: #cdcdcd;
+  outline: none;
+}
+
+/* Below-fold protocol section (ENTER scrolls here) */
+.idos-protocol {
+  position: relative;
+  z-index: 2;
+  min-height: 70vh;
+  padding: 5rem 1.35rem 6rem;
+  background: linear-gradient(180deg, #101010 0%, #0e1a19 40%, #050708 100%);
+  text-align: left;
+}
+
+.idos-protocol-inner {
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.idos-protocol-kicker {
+  margin: 0;
   font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-cyber-dim);
+  color: var(--accent);
+}
+
+.idos-protocol-title {
+  margin: 1rem 0 1.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  line-height: 0.85;
+  text-transform: uppercase;
+  color: #ececec;
+}
+
+.idos-protocol-body {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: #cdcdcd;
+}
+
+.idos-protocol-body--dim {
+  color: #7f7f7f;
+}
+
+.idos-protocol-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7f7f7f;
+}
+
+@media (max-width: 767px) {
+  .idos-card {
+    width: 7.5rem;
+    height: 11rem;
+    opacity: 0.55;
+  }
+  .idos-cards .idos-card:nth-child(n + 5) {
+    display: none;
+  }
+  .idos-corner {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idos-cta-inner,
+  .idos-footer,
+  .idos-enter-orange {
+    transition: none;
+  }
 }
 
 /* Fallback without backdrop-filter is in glass-lab-preset.css (.glass → tint 0.88).

@@ -101,7 +101,8 @@
     book.hidden = name !== "book";
     headerMeta.textContent = name === "book" ? "ignara dos" : "hub";
     var labForce = document.getElementById("lab-force-glass");
-    setForceGlass(name === "book" || (name === "hub" && labForce && labForce.checked));
+    /* Sticky header is hidden on book; only force glass on hub lab toggle */
+    setForceGlass(name === "hub" && labForce && labForce.checked);
     setMenu(false);
     updateGlass();
     sampleNavTheme();
@@ -254,8 +255,10 @@
       node.style.visibility = "";
       node.style.color = "";
     });
-    bookActions.classList.add("is-deferred");
-    bookActions.classList.remove("is-ready");
+    if (bookActions) {
+      bookActions.classList.add("is-deferred");
+      bookActions.classList.remove("is-ready");
+    }
   }
 
   function forceAllFinals() {
@@ -297,14 +300,16 @@
           }
         });
         book.classList.remove("is-blank");
-        bookActions.classList.remove("is-deferred");
-        bookActions.classList.add("is-ready");
+        if (bookActions) {
+          bookActions.classList.remove("is-deferred");
+          bookActions.classList.add("is-ready");
+        }
       });
   }
 
   /* —— Real-ish loading: weighted Promise stages + min dwell ——
    * Weights:
-   *   fonts          40%  — Fragment Mono + Inter via document.fonts
+   *   fonts          40%  — Fragment Mono + Inter + Chakra Petch via document.fonts
    *   stylesheet/css 20%  — styles.css fetch (cache-aware)
    *   glyph buffer   15%  — build scramble charset / seed strings
    *   init view      15%  — blank book nodes + prepare scramble finals
@@ -338,6 +343,8 @@
       document.fonts.load('400 1em "Inter"'),
       document.fonts.load('500 1em "Inter"'),
       document.fonts.load('600 1em "Inter"'),
+      document.fonts.load('700 1em "Chakra Petch"'),
+      document.fonts.load('600 1em "Chakra Petch"'),
       document.fonts.ready,
     ]).then(() => wait(40));
   }
@@ -488,8 +495,10 @@
       console.warn("[ignara] enterBook2 scramble error", err);
       forceAllFinals();
       book.classList.remove("is-blank");
-      bookActions.classList.remove("is-deferred");
-      bookActions.classList.add("is-ready");
+      if (bookActions) {
+        bookActions.classList.remove("is-deferred");
+        bookActions.classList.add("is-ready");
+      }
     }
     window.setTimeout(() => {
       const empty = Array.from(book.querySelectorAll("[data-scramble]")).filter(
@@ -512,7 +521,18 @@
 
   if (enterBtn) enterBtn.addEventListener("click", enterBook2);
   if (footerEnter) footerEnter.addEventListener("click", enterBook2);
-  backBtn.addEventListener("click", goHub);
+  if (backBtn) backBtn.addEventListener("click", goHub);
+
+  const idosEnter = document.getElementById("idos-enter");
+  if (idosEnter) {
+    idosEnter.addEventListener("click", () => {
+      const target = document.getElementById("idos-protocolo");
+      if (target) {
+        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      }
+    });
+  }
+
   brandHome.addEventListener("click", (e) => {
     e.preventDefault();
     if (body.dataset.view !== "hub") {

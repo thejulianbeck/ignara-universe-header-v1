@@ -7,8 +7,8 @@
   <meta name="description" content="Hub de Ignara Universe. Libros, puertas y comunidad. Entra a Ignara dos." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="glass-lab-preset.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -594,31 +594,103 @@
     </div>
   </div>
 
-  <!-- 2) Book entry — nodes blank; finals in data-final; reveal after loader -->
+  <!-- 2) Ignara dos — post-loader landing (remede of followingwildfire.com layout/type/buttons; no photos/logos/fonts copied) -->
   <main id="view-book" class="view view-book is-blank" hidden aria-label="Ignara dos">
-    <section class="book-stage">
-      <div class="book-atmosphere" aria-hidden="true"></div>
-      <div class="book-frame">
-        <p class="book-corner">alerta // acceso</p>
-        <p class="book-kicker" data-scramble data-delay="0" data-duration="1.15"
-           data-final="Ignara Universe presenta"></p>
-        <h1 class="book-heading" data-scramble data-delay="0.18" data-duration="1.4"
-            data-final="Ignara dos"></h1>
-        <p class="book-subtitle" data-scramble data-delay="0.35" data-duration="1.25"
-           data-final="protocolo de entrada · capítulo cero"></p>
-        <div class="book-body">
-          <p class="scramble-paragraph" id="scramble-lead" data-scramble data-delay="0.55" data-duration="2.0"
-             data-final="Señal detectada. La ciudad no duerme: cables, neón y memoria filtrada. Ignara dos no te cuenta el mundo; te deja caer adentro. Respira. El texto se desencripta. Lo que sigue ya te está mirando."></p>
-          <p class="scramble-paragraph muted" data-scramble data-delay="0.9" data-duration="1.85"
-             data-final="Placeholder narrativo (inspirado en un ritual de alerta): calles mojadas, radios encriptadas, un nombre que no deberías decir en voz alta. Aquí empieza el libro 2."></p>
+    <section class="idos-landing" aria-label="Entrada a Ignara dos">
+      <div class="idos-bg" aria-hidden="true"></div>
+
+      <div class="idos-cards" aria-hidden="true">
+        <article class="idos-card" style="--x:12%; --y:18%; --z:-40px; --rot:-8deg;">
+          <div class="idos-card-media idos-card-media--a"></div>
+          <div class="idos-card-foot"><span>nodo_07</span><span>señal</span></div>
+        </article>
+        <article class="idos-card" style="--x:68%; --y:12%; --z:-20px; --rot:6deg;">
+          <div class="idos-card-media idos-card-media--b"></div>
+          <div class="idos-card-foot"><span>nodo_02</span><span>vivo</span></div>
+        </article>
+        <article class="idos-card" style="--x:78%; --y:52%; --z:-55px; --rot:10deg;">
+          <div class="idos-card-media idos-card-media--c"></div>
+          <div class="idos-card-foot"><span>nodo_11</span><span>eco</span></div>
+        </article>
+        <article class="idos-card" style="--x:4%; --y:48%; --z:-30px; --rot:-5deg;">
+          <div class="idos-card-media idos-card-media--d"></div>
+          <div class="idos-card-foot"><span>nodo_04</span><span>neón</span></div>
+        </article>
+        <article class="idos-card" style="--x:22%; --y:78%; --z:-70px; --rot:4deg;">
+          <div class="idos-card-media idos-card-media--e"></div>
+          <div class="idos-card-foot"><span>nodo_09</span><span>ruta</span></div>
+        </article>
+        <article class="idos-card" style="--x:55%; --y:28%; --z:-10px; --rot:-3deg;">
+          <div class="idos-card-media idos-card-media--f"></div>
+          <div class="idos-card-foot"><span>nodo_01</span><span>ok</span></div>
+        </article>
+      </div>
+
+      <header class="idos-top">
+        <div class="idos-tip">
+          <span class="idos-tip-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.5 8.5v3a5.5 5.5 0 0 0 11 0v-3" stroke="currentColor" stroke-width="1.25"/>
+              <path d="M2.5 9.5h2v2h-2v-2Zm13 0h2v2h-2v-2Z" fill="currentColor"/>
+              <path d="M10 14.5v2" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="idos-tip-text">
+            <span>Usa auriculares</span>
+            <span>para la mejor experiencia_</span>
+          </span>
         </div>
-        <div class="book-actions is-deferred" id="book-actions">
-          <button type="button" class="btn-ghost-mono" id="back-hub">← volver al hub</button>
-          <span class="book-signal" aria-hidden="true">signal_ok</span>
+        <p class="idos-corner" aria-hidden="true">alerta</p>
+      </header>
+
+      <div class="idos-cta">
+        <div class="idos-cta-inner" id="book-actions">
+          <p class="idos-presents" data-scramble data-delay="0" data-duration="1.0"
+             data-final="Presenta"></p>
+          <h1 class="idos-title" data-scramble data-delay="0.15" data-duration="1.35"
+              data-final="Ignara dos"></h1>
+          <p class="idos-sub" data-scramble data-delay="0.35" data-duration="1.6"
+             data-final="Durante la temporada de señales en la ciudad, Ignara dos analiza la memoria filtrada de calles, radios y neón. Es un protocolo narrativo: te deja caer adentro para entrenar atención, imaginación y nervios antes de que el ruido tome el control."></p>
+          <button type="button" class="idos-enter" id="idos-enter" aria-label="Entrar a Ignara dos">
+            <span class="idos-enter-bg" aria-hidden="true">
+              <svg class="idos-enter-svg" width="130" height="130" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle class="idos-enter-orange" cx="65" cy="65" r="60" stroke="#FF4F28" stroke-width="4"/>
+                <circle class="idos-enter-ring" cx="65" cy="65" r="56" stroke="#434343" stroke-width="1"/>
+                <circle class="idos-enter-ring-outer" cx="65" cy="65" r="64" stroke="#434343" stroke-width="1"/>
+              </svg>
+            </span>
+            <span class="idos-enter-label">Entrar</span>
+          </button>
+        </div>
+      </div>
+
+      <footer class="idos-footer">
+        <button type="button" class="idos-back" id="back-hub">[volver al hub]</button>
+      </footer>
+    </section>
+
+    <section class="idos-protocol" id="idos-protocolo" aria-label="Protocolo de Ignara dos">
+      <div class="idos-protocol-inner">
+        <p class="idos-protocol-kicker">protocolo · capítulo cero</p>
+        <h2 class="idos-protocol-title">La ciudad no duerme</h2>
+        <p class="idos-protocol-body">
+          Cables, neón y memoria filtrada. Ignara dos no te cuenta el mundo; te deja caer adentro.
+          Respira. El texto se desencripta. Lo que sigue ya te está mirando.
+        </p>
+        <p class="idos-protocol-body idos-protocol-body--dim">
+          Placeholder narrativo: calles mojadas, radios encriptadas, un nombre que no deberías decir
+          en voz alta. Aquí empieza el libro 2. Practica con disciplina: claridad al escribir,
+          constancia al leer, integridad a lo largo del tiempo.
+        </p>
+        <div class="idos-protocol-meta">
+          <span>signal_ok</span>
+          <span>acceso · abierto</span>
         </div>
       </div>
     </section>
   </main>
+
+  
 
   <script src="script.js"></script>
 </body>
