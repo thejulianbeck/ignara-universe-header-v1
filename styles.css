@@ -203,9 +203,11 @@ body[data-menu="open"] .header-glass.glass {
 }
 
 .brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
   flex-shrink: 0;
 }
 
