@@ -247,6 +247,7 @@
 
   function prepareBookBlank() {
     book.classList.add("is-blank");
+    book.classList.remove("is-revealing");
     book.querySelectorAll("[data-scramble]").forEach((node) => {
       readFinal(node);
       node.textContent = "";
@@ -274,7 +275,19 @@
       if (!readFinal(node)) {
         console.warn("[ignara] scramble node missing data-final", node);
       }
+      /* Hold blank glyphs so the wildfire blank-first beat is visible. */
+      node.textContent = "";
+      node.classList.remove("is-resolved");
     });
+
+    /* Reveal the landing under clear text BEFORE scramble — opacity was
+       previously held at 0 until resolve finished, so the SHOW wave was invisible. */
+    book.classList.remove("is-blank");
+    book.classList.add("is-revealing");
+    if (bookActions) {
+      bookActions.classList.remove("is-deferred");
+      bookActions.classList.add("is-ready");
+    }
 
     const jobs = nodes.map((node) => {
       const startDelay = Number(node.dataset.delay || 0);
@@ -284,6 +297,7 @@
         duration,
         revealDelay: 0,
         delayResolve: 0.22,
+        fps: 24,
       });
     });
 
@@ -299,7 +313,7 @@
             commitFinal(node, finalText);
           }
         });
-        book.classList.remove("is-blank");
+        book.classList.remove("is-blank", "is-revealing");
         if (bookActions) {
           bookActions.classList.remove("is-deferred");
           bookActions.classList.add("is-ready");
@@ -502,7 +516,7 @@
     } catch (err) {
       console.warn("[ignara] enterBook2 scramble error", err);
       forceAllFinals();
-      book.classList.remove("is-blank");
+      book.classList.remove("is-blank", "is-revealing");
       if (bookActions) {
         bookActions.classList.remove("is-deferred");
         bookActions.classList.add("is-ready");
@@ -514,7 +528,7 @@
       );
       if (empty.length) {
         forceAllFinals();
-        book.classList.remove("is-blank");
+        book.classList.remove("is-blank", "is-revealing");
       }
     }, 100);
     if (enterBtn) enterBtn.disabled = false;

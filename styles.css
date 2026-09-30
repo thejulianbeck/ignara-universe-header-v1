@@ -1386,6 +1386,23 @@ body[data-menu="open"] .nav-toggle span:last-child {
   pointer-events: none;
 }
 
+/* Blank→scramble→resolve needs monospace space glyphs to hold width. */
+.idos-landing [data-scramble] {
+  white-space: pre-wrap;
+}
+
+.idos-card-foot [data-scramble] {
+  white-space: pre;
+  min-width: 2.5em;
+}
+
+.idos-enter-label[data-scramble] {
+  white-space: pre;
+  min-width: 3.5em;
+  display: inline-block;
+  text-align: center;
+}
+
 .idos-presents {
   margin: 0;
   font-family: var(--font-mono);
@@ -1519,9 +1536,16 @@ body[data-menu="open"] .nav-toggle span:last-child {
   background: linear-gradient(180deg, transparent 0%, rgba(14, 26, 25, 0.85) 55%, #0e1a19 100%);
 }
 
-.view-book:not(.is-blank) .idos-footer {
+.view-book:not(.is-blank) .idos-footer,
+.view-book.is-revealing .idos-footer {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Instantly show CTA once reveal starts (do not wait for scramble to finish). */
+.view-book.is-revealing .idos-cta-inner {
+  opacity: 1;
+  transition-duration: 0.2s;
 }
 
 @media (max-height: 600px) {
