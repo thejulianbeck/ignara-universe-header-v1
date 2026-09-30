@@ -259,6 +259,7 @@ body[data-menu="open"] .header-glass.glass {
 }
 
 .header-meta {
+  display: none;
   font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.08em;
@@ -269,6 +270,10 @@ body[data-menu="open"] .header-glass.glass {
 
 .nav-toggle {
   display: none;
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
   width: 2.25rem;
   height: 2.25rem;
   flex-direction: column;
