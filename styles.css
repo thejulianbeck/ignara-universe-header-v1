@@ -202,14 +202,17 @@ body[data-menu="open"] .header-glass.glass {
   align-items: center;
   gap: 0.65rem;
   flex-shrink: 0;
+  /* Optical inset: wordmark has almost no sidebearing, so gap from the
+     pill's inner left edge ≈ 1.25× logo height (not the same as text padding). */
+  margin-left: 0.65rem;
 }
 
 
 .brand-logo {
   display: block;
-  height: 0.85rem;
+  height: 1.05rem;
   width: auto;
-  max-width: 7.5rem;
+  max-width: 8.5rem;
   color: inherit;
   flex-shrink: 0;
 }
