@@ -1,0 +1,82 @@
+/* Glass Lab locked liquid-glass material — copy TAL CUAL; do not reinterpret.
+   Source: glass-lab-header Lock defaults (Julián screenshots). */
+
+:root {
+  --glass-opacity: 0.15;
+  --glass-blur: 10px;
+  --glass-saturate: 1.15;
+  --glass-brightness: 1.10;
+  --glass-contrast: 1.05;
+  --glass-border-opacity: 0.35;
+  --glass-border-width: 0.25px;
+  --glass-specular: 0;
+  --glass-noise: 0.12;
+  --glass-radius: 20px;
+  --glass-inner-shadow: 0.20;
+  --glass-outer-shadow: 0;
+
+  --tint: 255, 255, 255;
+}
+
+/* ——— THE MATERIAL ——— */
+.glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: rgba(var(--tint), var(--glass-opacity));
+  border: var(--glass-border-width) solid
+    rgba(255, 255, 255, var(--glass-border-opacity));
+  border-radius: var(--glass-radius);
+  box-shadow:
+    0 10px 36px rgba(0, 0, 0, calc(var(--glass-outer-shadow) * 0.55)),
+    0 1px 0 rgba(255, 255, 255, calc(var(--glass-outer-shadow) * 0.4)),
+    inset 0 1px 0 rgba(255, 255, 255, calc(var(--glass-inner-shadow) * 0.7)),
+    inset 0 -1px 0 rgba(0, 0, 0, calc(var(--glass-inner-shadow) * 0.18));
+  -webkit-backdrop-filter:
+    blur(var(--glass-blur))
+    saturate(var(--glass-saturate))
+    brightness(var(--glass-brightness))
+    contrast(var(--glass-contrast));
+  backdrop-filter:
+    blur(var(--glass-blur))
+    saturate(var(--glass-saturate))
+    brightness(var(--glass-brightness))
+    contrast(var(--glass-contrast));
+  transform: translateZ(0);
+  will-change: backdrop-filter;
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgba(var(--tint), 0.88);
+  }
+}
+
+.glass__noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--glass-noise);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.glass__specular {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 2;
+  opacity: var(--glass-specular);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.12) 28%,
+    rgba(255, 255, 255, 0) 52%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  mix-blend-mode: soft-light;
+}

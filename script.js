@@ -31,18 +31,6 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* SVG backdrop-filter url(#lg-chroma) breaks frost on iOS Safari. Enable only on
-     Chromium desktop-ish engines; Safari / iPhone keep CSS-only blur+fill. */
-  (function enableChromiumLiquidChroma() {
-    var ua = navigator.userAgent || "";
-    var isIOS = /iP(hone|od|ad)/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    var isSafari = /Safari/.test(ua) && !/Chrome|Chromium|Edg|CriOS|FxiOS/.test(ua);
-    var isChromium = /Chrome|Chromium|Edg\//.test(ua) && !/EdgA|EdgiOS|CriOS/.test(ua);
-    if (isChromium && !isIOS && !isSafari) {
-      document.documentElement.setAttribute("data-liquid-chroma", "svg");
-    }
-  })();
-
   /* —— Frosted glass: visible on scroll; forced on book view ——
      Theme-nav flips ink/cream so glass stays readable on cream OR night bands. */
   function updateGlass() {
@@ -538,22 +526,31 @@
   });
 
 
-  /* —— Live glass lab: CSS vars → :root (+ preview + sticky header), persist + copy —— */
+  /* —— Live glass lab: Glass Lab Lock vars → :root (+ preview + sticky header) ——
+     New storage key so old ignara-glass-lab-v1 values cannot clobber Lock defaults. */
   (function initGlassLab() {
     const panel = document.getElementById("glass-lab");
     if (!panel) return;
 
-    const STORAGE_KEY = "ignara-glass-lab-v1";
+    const STORAGE_KEY = "ignara-glass-lab-lock-v2";
+    const LEGACY_KEYS = ["ignara-glass-lab-v1"];
     const root = document.documentElement;
     const previewBar = document.getElementById("lab-preview-bar");
 
+    /* Locked defaults from Glass Lab (Julián screenshots / Lock preset) */
     const DEFAULTS = {
-      "--glass-blur": { value: 20, unit: "px" },
-      "--glass-saturate": { value: 180, unit: "%" },
-      "--glass-brightness": { value: 1.06, unit: "" },
-      "--glass-fill-opacity": { value: 0.62, unit: "" },
-      "--glass-border-opacity": { value: 0.55, unit: "" },
-      "--glass-chroma-opacity": { value: 0.88, unit: "" },
+      "--glass-opacity": { value: 0.15, unit: "" },
+      "--glass-blur": { value: 10, unit: "px" },
+      "--glass-saturate": { value: 1.15, unit: "" },
+      "--glass-brightness": { value: 1.1, unit: "" },
+      "--glass-contrast": { value: 1.05, unit: "" },
+      "--glass-border-opacity": { value: 0.35, unit: "" },
+      "--glass-border-width": { value: 0.25, unit: "px" },
+      "--glass-specular": { value: 0, unit: "" },
+      "--glass-noise": { value: 0.12, unit: "" },
+      "--glass-radius": { value: 20, unit: "px" },
+      "--glass-inner-shadow": { value: 0.2, unit: "" },
+      "--glass-outer-shadow": { value: 0, unit: "" },
     };
 
     const inputs = Array.from(panel.querySelectorAll("input[data-glass-var]"));
@@ -562,6 +559,14 @@
     const resetBtn = document.getElementById("lab-reset");
     const statusEl = document.getElementById("lab-status");
     let statusTimer = 0;
+
+    try {
+      LEGACY_KEYS.forEach(function (k) {
+        localStorage.removeItem(k);
+      });
+    } catch (err) {
+      /* ignore */
+    }
 
     function formatValue(raw, unit, step) {
       const n = Number(raw);
@@ -580,7 +585,7 @@
       statusEl.textContent = msg || "";
       window.clearTimeout(statusTimer);
       if (msg) {
-        statusTimer = window.setTimeout(() => {
+        statusTimer = window.setTimeout(function () {
           statusEl.textContent = "";
         }, 2400);
       }
@@ -591,9 +596,7 @@
       if (!cssVar) return;
       const unit = input.getAttribute("data-unit") || "";
       const cssValue = formatValue(input.value, unit, input.step);
-      /* Write on :root so sticky header AND lab preview (same vars) update live */
       root.style.setProperty(cssVar, cssValue);
-      /* Belt-and-suspenders: also set on the preview shell for immediate paint */
       if (previewBar) previewBar.style.setProperty(cssVar, cssValue);
       const valueEl = panel.querySelector('[data-glass-value][data-for="' + input.id + '"]');
       if (valueEl) {
@@ -618,7 +621,7 @@
 
     function currentSnapshot() {
       const vars = {};
-      inputs.forEach((input) => {
+      inputs.forEach(function (input) {
         const cssVar = input.getAttribute("data-glass-var");
         const unit = input.getAttribute("data-unit") || "";
         vars[cssVar] = formatValue(input.value, unit, input.step);
@@ -645,7 +648,7 @@
     function loadState() {
       const saved = readState();
       if (!saved || !saved.vars) return;
-      inputs.forEach((input) => {
+      inputs.forEach(function (input) {
         const cssVar = input.getAttribute("data-glass-var");
         const unit = input.getAttribute("data-unit") || "";
         let stored = saved.vars[cssVar];
@@ -661,7 +664,7 @@
     }
 
     function resetDefaults() {
-      inputs.forEach((input) => {
+      inputs.forEach(function (input) {
         const cssVar = input.getAttribute("data-glass-var");
         const def = DEFAULTS[cssVar];
         if (!def) return;
@@ -671,7 +674,7 @@
       if (forceToggle) forceToggle.checked = true;
       applyForceGlass();
       saveState();
-      setStatus("Valores restablecidos");
+      setStatus("Lock restablecido");
     }
 
     function buildCssSnippet(vars) {
@@ -708,14 +711,14 @@
       }
     }
 
-    inputs.forEach((input) => {
+    /* First paint: apply Lock HTML defaults (CSS preset already on :root).
+       Then optionally overlay v2 storage — never the legacy key. */
+    inputs.forEach(function (input) {
       applyInput(input, false);
-      /* input = live drag; change = commit; touchmove helps some iOS WebViews */
       input.addEventListener("input", function () { applyInput(input, true); });
       input.addEventListener("change", function () { applyInput(input, true); });
     });
 
-    /* Capture-phase fallback if a range somehow loses bubbling */
     panel.addEventListener("input", function (ev) {
       const t = ev.target;
       if (t && t.matches && t.matches("input[data-glass-var]")) {
@@ -724,7 +727,7 @@
     });
 
     if (forceToggle) {
-      forceToggle.addEventListener("change", () => {
+      forceToggle.addEventListener("change", function () {
         applyForceGlass();
         saveState();
       });
@@ -736,6 +739,7 @@
     loadState();
     applyForceGlass();
   })();
+
 
   prepareBookBlank();
   setView("hub");

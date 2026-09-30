@@ -9,64 +9,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="glass-lab-preset.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body data-view="hub">
   <a class="skip-link" href="#main">Saltar al contenido</a>
 
-  <!-- Liquid glass SVG filters (Chromium-only via html[data-liquid-chroma=svg]; Safari uses CSS blur+frost) -->
-  <svg class="liquid-glass-defs" width="0" height="0" aria-hidden="true" focusable="false">
-    <defs>
-      <!-- Edge bevel refraction via feDisplacementMap + feImage bevel map (alpha 255) -->
-      <filter id="lg-refract" color-interpolation-filters="sRGB" x="-8%" y="-40%" width="116%" height="180%">
-        <feImage result="map" preserveAspectRatio="none" x="0" y="0" width="100%" height="100%"
-          href="data:image/png;base64,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" />
-        <feDisplacementMap in="SourceGraphic" in2="map" scale="28" xChannelSelector="R" yChannelSelector="G" result="disp" />
-        <feGaussianBlur in="disp" stdDeviation="0.35" result="soft" />
-        <feMerge><feMergeNode in="soft" /></feMerge>
-      </filter>
-      <!-- Chromatic / rainbow fringe: split RGB, displace each channel differently, recombine -->
-      <filter id="lg-chroma" color-interpolation-filters="sRGB" x="-10%" y="-50%" width="120%" height="200%">
-        <feImage result="map" preserveAspectRatio="none" x="0" y="0" width="100%" height="100%"
-          href="data:image/png;base64,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" />
-        <!-- Base displace (G) -->
-        <feDisplacementMap in="SourceGraphic" in2="map" scale="22" xChannelSelector="R" yChannelSelector="G" result="base" />
-        <!-- R channel: stronger edge push -->
-        <feDisplacementMap in="SourceGraphic" in2="map" scale="34" xChannelSelector="R" yChannelSelector="G" result="dispR" />
-        <feColorMatrix in="dispR" type="matrix" result="R"
-          values="1 0 0 0 0
-                  0 0 0 0 0
-                  0 0 0 0 0
-                  0 0 0 1 0" />
-        <!-- G channel -->
-        <feColorMatrix in="base" type="matrix" result="G"
-          values="0 0 0 0 0
-                  0 1 0 0 0
-                  0 0 0 0 0
-                  0 0 0 1 0" />
-        <!-- B channel: weaker / opposite bias -->
-        <feDisplacementMap in="SourceGraphic" in2="map" scale="14" xChannelSelector="R" yChannelSelector="G" result="dispB" />
-        <feColorMatrix in="dispB" type="matrix" result="B"
-          values="0 0 0 0 0
-                  0 0 0 0 0
-                  0 0 1 0 0
-                  0 0 0 1 0" />
-        <feBlend in="R" in2="G" mode="screen" result="RG" />
-        <feBlend in="RG" in2="B" mode="screen" result="RGB" />
-        <feGaussianBlur in="RGB" stdDeviation="0.25" result="out" />
-        <feMerge><feMergeNode in="out" /></feMerge>
-      </filter>
-    </defs>
-  </svg>
 
   <header class="site-header" id="site-header" data-scrolled="false" data-force-glass="false" data-theme-nav="light">
-    <div class="header-glass" aria-hidden="true">
-      <div class="glass-effect">
-        <div class="glass-material"></div>
-        <div class="glass-specular"></div>
-        <div class="glass-inner-edge"></div>
-        <div class="glass-chroma-rim"></div>
-        <div class="glass-shadow"></div>
+    <!-- Sticky host = .site-header; positioning host = .header-glass-host; material = inner .glass (Safari-safe) -->
+    <div class="header-glass-host" aria-hidden="true">
+      <div class="glass header-glass">
+        <span class="glass__noise" aria-hidden="true"></span>
+        <span class="glass__specular" aria-hidden="true"></span>
       </div>
     </div>
     <div class="header-inner">
@@ -126,24 +81,24 @@
       </section>
 
 
-      <!-- Lab: live liquid-glass knobs (iPhone Safari testing) -->
+      <!-- Lab: live Glass Lab material knobs (same locked .glass preset as sticky header) -->
       <section class="section section-lab" id="lab-vidrio" data-theme-section="light">
         <div class="section-inner">
           <p class="eyebrow dark">Lab · header</p>
-          <h2 class="display-title dark">Ajusta el vidrio líquido en vivo</h2>
+          <h2 class="display-title dark">Material Glass Lab (Lock)</h2>
           <p class="body-copy dark">
-            Mueve los controles y mira la barra de vista previa abajo (y el header
-            de arriba). El fondo contrastante hace obvio el blur, el tinte, el borde
-            y el cromático. En iPhone Safari el desenfoque usa
-            <code>-webkit-backdrop-filter</code> (sin SVG). Tus valores se guardan
-            en este dispositivo; cópialos cuando te gusten para fijarlos.
+            El header sticky usa el material Liquid Glass del lab
+            (<code>glass-lab-preset.css</code>) tal cual. La vista previa de abajo
+            comparte las mismas variables. Defaults Lock: opacity 0.15, blur 10px,
+            saturate 1.15, brightness 1.10, contrast 1.05. En iPhone Safari el
+            desenfoque usa <code>-webkit-backdrop-filter</code>.
           </p>
 
           <div class="lab-panel" id="glass-lab" data-glass-lab>
             <div class="lab-preview" aria-label="Vista previa en vivo del vidrio">
               <div class="lab-preview-head">
-                <span class="lab-preview-kicker">Vista previa · en vivo</span>
-                <span class="lab-preview-hint">Mueve un slider — el cambio se ve aquí al instante</span>
+                <span class="lab-preview-kicker">Vista previa · Glass Lab Lock</span>
+                <span class="lab-preview-hint">Mismo material .glass que el header</span>
               </div>
               <div class="lab-preview-stage">
                 <div class="lab-preview-backdrop" aria-hidden="true">
@@ -153,16 +108,13 @@
                   <div class="lab-preview-light"></div>
                 </div>
                 <div class="lab-preview-bar" id="lab-preview-bar" data-lab-preview>
-                  <div class="glass-effect">
-                    <div class="glass-material"></div>
-                    <div class="glass-specular"></div>
-                    <div class="glass-inner-edge"></div>
-                    <div class="glass-chroma-rim"></div>
-                    <div class="glass-shadow"></div>
-                  </div>
-                  <div class="lab-preview-content">
-                    <span class="lab-preview-brand">Ignara · vidrio</span>
-                    <span class="lab-preview-meta">blur · tinte · borde · chroma</span>
+                  <div class="glass lab-preview-glass">
+                    <span class="glass__noise" aria-hidden="true"></span>
+                    <span class="glass__specular" aria-hidden="true"></span>
+                    <div class="lab-preview-content">
+                      <span class="lab-preview-brand">Ignara · Glass Lab</span>
+                      <span class="lab-preview-meta">Lock · blur 10 · opacity 0.15</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -170,45 +122,87 @@
 
             <div class="lab-row">
               <div class="lab-row-top">
-                <label for="lab-blur">Desenfoque (blur)</label>
-                <span class="lab-value" data-glass-value data-for="lab-blur">20px</span>
+                <label for="lab-opacity">Opacidad / tinte</label>
+                <span class="lab-value" data-glass-value data-for="lab-opacity">0.15</span>
               </div>
-              <input type="range" id="lab-blur" data-glass-var="--glass-blur" data-unit="px" min="0" max="40" step="1" value="20" />
+              <input type="range" id="lab-opacity" data-glass-var="--glass-opacity" data-unit="" min="0.05" max="0.95" step="0.01" value="0.15" />
             </div>
             <div class="lab-row">
               <div class="lab-row-top">
-                <label for="lab-saturate">Saturación</label>
-                <span class="lab-value" data-glass-value data-for="lab-saturate">180%</span>
+                <label for="lab-blur">Backdrop blur (px)</label>
+                <span class="lab-value" data-glass-value data-for="lab-blur">10px</span>
               </div>
-              <input type="range" id="lab-saturate" data-glass-var="--glass-saturate" data-unit="%" min="100" max="250" step="1" value="180" />
+              <input type="range" id="lab-blur" data-glass-var="--glass-blur" data-unit="px" min="0" max="60" step="1" value="10" />
             </div>
             <div class="lab-row">
               <div class="lab-row-top">
-                <label for="lab-brightness">Brillo</label>
-                <span class="lab-value" data-glass-value data-for="lab-brightness">1.06</span>
+                <label for="lab-saturate">Saturate</label>
+                <span class="lab-value" data-glass-value data-for="lab-saturate">1.15</span>
               </div>
-              <input type="range" id="lab-brightness" data-glass-var="--glass-brightness" data-unit="" min="0.8" max="1.4" step="0.01" value="1.06" />
+              <input type="range" id="lab-saturate" data-glass-var="--glass-saturate" data-unit="" min="0.5" max="2.5" step="0.05" value="1.15" />
             </div>
             <div class="lab-row">
               <div class="lab-row-top">
-                <label for="lab-fill">Opacidad del relleno (tinte blanco)</label>
-                <span class="lab-value" data-glass-value data-for="lab-fill">0.62</span>
+                <label for="lab-brightness">Brightness</label>
+                <span class="lab-value" data-glass-value data-for="lab-brightness">1.10</span>
               </div>
-              <input type="range" id="lab-fill" data-glass-var="--glass-fill-opacity" data-unit="" min="0" max="1" step="0.01" value="0.62" />
+              <input type="range" id="lab-brightness" data-glass-var="--glass-brightness" data-unit="" min="0.7" max="1.4" step="0.01" value="1.10" />
             </div>
             <div class="lab-row">
               <div class="lab-row-top">
-                <label for="lab-border">Opacidad del borde</label>
-                <span class="lab-value" data-glass-value data-for="lab-border">0.55</span>
+                <label for="lab-contrast">Contrast</label>
+                <span class="lab-value" data-glass-value data-for="lab-contrast">1.05</span>
               </div>
-              <input type="range" id="lab-border" data-glass-var="--glass-border-opacity" data-unit="" min="0" max="1" step="0.01" value="0.55" />
+              <input type="range" id="lab-contrast" data-glass-var="--glass-contrast" data-unit="" min="0.7" max="1.4" step="0.01" value="1.05" />
             </div>
             <div class="lab-row">
               <div class="lab-row-top">
-                <label for="lab-chroma">Opacidad del borde cromático</label>
-                <span class="lab-value" data-glass-value data-for="lab-chroma">0.88</span>
+                <label for="lab-border-opacity">Borde opacidad</label>
+                <span class="lab-value" data-glass-value data-for="lab-border-opacity">0.35</span>
               </div>
-              <input type="range" id="lab-chroma" data-glass-var="--glass-chroma-opacity" data-unit="" min="0" max="1" step="0.01" value="0.88" />
+              <input type="range" id="lab-border-opacity" data-glass-var="--glass-border-opacity" data-unit="" min="0" max="1" step="0.01" value="0.35" />
+            </div>
+            <div class="lab-row">
+              <div class="lab-row-top">
+                <label for="lab-border-width">Borde ancho (px)</label>
+                <span class="lab-value" data-glass-value data-for="lab-border-width">0.25px</span>
+              </div>
+              <input type="range" id="lab-border-width" data-glass-var="--glass-border-width" data-unit="px" min="0" max="3" step="0.25" value="0.25" />
+            </div>
+            <div class="lab-row">
+              <div class="lab-row-top">
+                <label for="lab-specular">Especular</label>
+                <span class="lab-value" data-glass-value data-for="lab-specular">0</span>
+              </div>
+              <input type="range" id="lab-specular" data-glass-var="--glass-specular" data-unit="" min="0" max="1" step="0.01" value="0" />
+            </div>
+            <div class="lab-row">
+              <div class="lab-row-top">
+                <label for="lab-noise">Noise / grain</label>
+                <span class="lab-value" data-glass-value data-for="lab-noise">0.12</span>
+              </div>
+              <input type="range" id="lab-noise" data-glass-var="--glass-noise" data-unit="" min="0" max="0.45" step="0.01" value="0.12" />
+            </div>
+            <div class="lab-row">
+              <div class="lab-row-top">
+                <label for="lab-radius">Radio de esquina (px)</label>
+                <span class="lab-value" data-glass-value data-for="lab-radius">20px</span>
+              </div>
+              <input type="range" id="lab-radius" data-glass-var="--glass-radius" data-unit="px" min="0" max="40" step="1" value="20" />
+            </div>
+            <div class="lab-row">
+              <div class="lab-row-top">
+                <label for="lab-inner-shadow">Sombra interna</label>
+                <span class="lab-value" data-glass-value data-for="lab-inner-shadow">0.20</span>
+              </div>
+              <input type="range" id="lab-inner-shadow" data-glass-var="--glass-inner-shadow" data-unit="" min="0" max="1" step="0.01" value="0.20" />
+            </div>
+            <div class="lab-row">
+              <div class="lab-row-top">
+                <label for="lab-outer-shadow">Sombra externa</label>
+                <span class="lab-value" data-glass-value data-for="lab-outer-shadow">0</span>
+              </div>
+              <input type="range" id="lab-outer-shadow" data-glass-var="--glass-outer-shadow" data-unit="" min="0" max="1" step="0.01" value="0" />
             </div>
 
             <label class="lab-toggle">
@@ -218,13 +212,13 @@
 
             <div class="lab-actions">
               <button type="button" class="btn-solid on-cream" id="lab-copy">Copiar valores</button>
-              <button type="button" class="btn-ghost" id="lab-reset">Restablecer</button>
+              <button type="button" class="btn-ghost" id="lab-reset">Restablecer Lock</button>
             </div>
             <p class="lab-status" id="lab-status" aria-live="polite"></p>
             <p class="lab-note">
-              Tip: la vista previa usa las mismas variables CSS que el header sticky.
-              Desplázate también sobre crema y noche para ver el frost real.
-              «Copiar valores» te deja un snippet CSS / JSON listo para enviar.
+              Tip: header y preview usan <code>.glass</code> de Glass Lab.
+              «Restablecer Lock» vuelve a los defaults bloqueados. El storage viejo
+              del lab anterior no se aplica.
             </p>
           </div>
         </div>
