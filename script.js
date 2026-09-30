@@ -2,15 +2,20 @@
   /**
    * Glyph set remede of followingwildfire txt-shuffle charset (not copied code).
    * Scramble cadence remedes their SHOW animation:
-   *   blank (spaces) → random noise glyphs → resolve left→right,
+   *   blank → random noise glyphs → resolve left→right,
    * with a delayResolve gap so noise leads the settle wave.
+   *
+   * Layout is reserved from frame 0: same char count and word-break spaces as
+   * the final string. Unrevealed letter slots use NBSP (non-collapsing mono
+   * advance) so the block never grows, shifts, or cascades vertically.
    *
    * data-delay  = start offset in seconds BEFORE the animation begins (stagger)
    * data-duration = animation length in seconds
    * Internal revealDelay stays ~0 so the resolve wave always completes.
    */
   const GLYPHS =
-    " !#$&%()*+0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+    "!#$&%()*+0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+  const NBSP = "\u00A0";
 
   const hub = document.getElementById("view-hub");
   const book = document.getElementById("view-book");
@@ -112,6 +117,15 @@
     return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
   }
 
+  /** Reserve final layout: spaces keep wrap points; letters hold NBSP slots. */
+  function reserveSlots(finalText) {
+    let out = "";
+    for (let i = 0; i < finalText.length; i++) {
+      out += finalText.charAt(i) === " " ? " " : NBSP;
+    }
+    return out;
+  }
+
   function clamp01(n) {
     return Math.max(0, Math.min(1, n));
   }
@@ -164,7 +178,8 @@
       return Promise.resolve();
     }
 
-    el.textContent = "";
+    /* Hold final-length slots from frame 0 so the line box never grows. */
+    el.textContent = reserveSlots(finalText);
     el.classList.remove("is-resolved");
 
     if (reduceMotion) {
@@ -211,10 +226,12 @@
           let out = "";
           for (let i = 0; i < chars.length; i++) {
             const rank = order[i];
-            let ch = chars[i];
+            const finalCh = chars[i];
+            let ch = finalCh;
             if (rank >= revealCount) {
-              ch = " ";
-            } else if (ch !== " " && rank >= resolveCount) {
+              /* Blank slot in place: NBSP for glyphs, real space for wrap points. */
+              ch = finalCh === " " ? " " : NBSP;
+            } else if (finalCh !== " " && rank >= resolveCount) {
               ch = randomGlyph();
             }
             out += ch;
@@ -249,8 +266,8 @@
     book.classList.add("is-blank");
     book.classList.remove("is-revealing");
     book.querySelectorAll("[data-scramble]").forEach((node) => {
-      readFinal(node);
-      node.textContent = "";
+      const finalText = readFinal(node);
+      node.textContent = finalText ? reserveSlots(finalText) : "";
       node.classList.remove("is-resolved");
       node.style.opacity = "";
       node.style.visibility = "";
@@ -272,11 +289,12 @@
   function scrambleAllInBook() {
     const nodes = Array.from(book.querySelectorAll("[data-scramble]"));
     nodes.forEach((node) => {
-      if (!readFinal(node)) {
+      const finalText = readFinal(node);
+      if (!finalText) {
         console.warn("[ignara] scramble node missing data-final", node);
       }
-      /* Hold blank glyphs so the wildfire blank-first beat is visible. */
-      node.textContent = "";
+      /* Reserve final-length blank slots so layout never expands on reveal. */
+      node.textContent = finalText ? reserveSlots(finalText) : "";
       node.classList.remove("is-resolved");
     });
 
@@ -309,7 +327,9 @@
       .then(() => {
         nodes.forEach((node) => {
           const finalText = readFinal(node);
-          if (finalText && !node.textContent.trim()) {
+          if (!finalText) return;
+          const shown = (node.textContent || "").replace(/\u00A0/g, " ").trim();
+          if (!shown || !node.classList.contains("is-resolved")) {
             commitFinal(node, finalText);
           }
         });
@@ -524,7 +544,12 @@
     }
     window.setTimeout(() => {
       const empty = Array.from(book.querySelectorAll("[data-scramble]")).filter(
-        (n) => !n.textContent.trim() && readFinal(n)
+        (n) => {
+          const finalText = readFinal(n);
+          if (!finalText) return false;
+          const shown = (n.textContent || "").replace(/\u00A0/g, " ").trim();
+          return !shown || !n.classList.contains("is-resolved");
+        }
       );
       if (empty.length) {
         forceAllFinals();

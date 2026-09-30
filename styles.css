@@ -1386,14 +1386,16 @@ body[data-menu="open"] .nav-toggle span:last-child {
   pointer-events: none;
 }
 
-/* Blank→scramble→resolve needs monospace space glyphs to hold width. */
+/* In-place scramble: pre-wrap + mono so NBSP/space slots keep final width & wraps. */
 .idos-landing [data-scramble] {
   white-space: pre-wrap;
+  font-variant-ligatures: none;
 }
 
 .idos-card-foot [data-scramble] {
   white-space: pre;
   min-width: 2.5em;
+  font-variant-ligatures: none;
 }
 
 .idos-enter-label[data-scramble] {
@@ -1401,6 +1403,12 @@ body[data-menu="open"] .nav-toggle span:last-child {
   min-width: 3.5em;
   display: inline-block;
   text-align: center;
+  font-variant-ligatures: none;
+}
+
+.idos-back[data-scramble] {
+  white-space: pre;
+  font-variant-ligatures: none;
 }
 
 .idos-presents {
