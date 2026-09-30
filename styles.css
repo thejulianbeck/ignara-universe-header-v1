@@ -1159,6 +1159,13 @@ body[data-menu="open"] .nav-toggle span:last-child {
   font-family: var(--font-mono);
 }
 
+.loader-text.scramble-locked {
+  display: block;
+  white-space: pre;
+  font-variant-ligatures: none;
+  font-kerning: none;
+}
+
 .loader-pct {
   margin-top: 0.55rem;
   color: var(--text-cyber-dim);
@@ -1386,16 +1393,88 @@ body[data-menu="open"] .nav-toggle span:last-child {
   pointer-events: none;
 }
 
-/* In-place scramble: pre-wrap + mono so NBSP/space slots keep final width & wraps. */
+/* Global scramble lock (loader + book): ghost sizes, face paints. */
+.scramble-locked {
+  position: relative;
+}
+
+.scramble-locked > .scramble-ghost {
+  display: block;
+  visibility: hidden;
+  white-space: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  pointer-events: none;
+}
+
+.scramble-locked > .scramble-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  white-space: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-align: inherit;
+}
+
+/* Scramble layout lock: ghost (final, invisible) owns the box; face paints glitch. */
 .idos-landing [data-scramble] {
+  position: relative;
   white-space: pre-wrap;
   font-variant-ligatures: none;
+  font-kerning: none;
+  font-feature-settings: "kern" 0, "liga" 0, "clig" 0;
+}
+
+.idos-landing [data-scramble].scramble-locked {
+  display: block;
+}
+
+.idos-landing [data-scramble] .scramble-ghost {
+  display: block;
+  visibility: hidden;
+  white-space: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  pointer-events: none;
+}
+
+.idos-landing [data-scramble] .scramble-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  white-space: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-align: inherit;
 }
 
 .idos-card-foot [data-scramble] {
+  display: inline-block;
   white-space: pre;
   min-width: 2.5em;
   font-variant-ligatures: none;
+  font-kerning: none;
+}
+
+.idos-card-foot [data-scramble].scramble-locked {
+  display: inline-block;
 }
 
 .idos-enter-label[data-scramble] {
@@ -1404,11 +1483,22 @@ body[data-menu="open"] .nav-toggle span:last-child {
   display: inline-block;
   text-align: center;
   font-variant-ligatures: none;
+  font-kerning: none;
+}
+
+.idos-enter-label[data-scramble].scramble-locked {
+  display: inline-block;
 }
 
 .idos-back[data-scramble] {
+  display: inline-block;
   white-space: pre;
   font-variant-ligatures: none;
+  font-kerning: none;
+}
+
+.idos-back[data-scramble].scramble-locked {
+  display: inline-block;
 }
 
 .idos-presents {
@@ -1437,6 +1527,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
 .idos-sub {
   margin: 1.375rem 0 0;
+  width: 100%;
   max-width: 21.25rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;

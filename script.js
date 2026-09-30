@@ -5,16 +5,19 @@
    *   blank → random noise glyphs → resolve left→right,
    * with a delayResolve gap so noise leads the settle wave.
    *
-   * Layout is reserved from frame 0: same char count and word-break spaces as
-   * the final string. Unrevealed letter slots use NBSP (non-collapsing mono
-   * advance) so the block never grows, shifts, or cascades vertically.
+   * Layout lock: every scramble target keeps a hidden ghost of the FINAL string
+   * that owns width/height/line breaks, plus an absolutely positioned face where
+   * the glitch paints. Mixed noise glyphs can tip soft-wrap by one line even when
+   * advances match; the ghost box never moves. Noise charset is mono ASCII only
+   * (never space). Fonts are awaited before book reveal so fallback metrics
+   * cannot resize the block mid-scramble.
    *
    * data-delay  = start offset in seconds BEFORE the animation begins (stagger)
    * data-duration = animation length in seconds
    * Internal revealDelay stays ~0 so the resolve wave always completes.
    */
   const GLYPHS =
-    "!#$&%()*+0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$%*+<=>?@[]^_{|}~";
   const NBSP = "\u00A0";
 
   const hub = document.getElementById("view-hub");
@@ -126,6 +129,41 @@
     return out;
   }
 
+  /** Ghost (final, invisible) sizes the box; face (absolute) paints the glitch. */
+  function ensureScrambleLock(el) {
+    let ghost = el.querySelector(":scope > .scramble-ghost");
+    let face = el.querySelector(":scope > .scramble-face");
+    if (ghost && face) {
+      el.classList.add("scramble-locked");
+      return { ghost, face };
+    }
+    el.textContent = "";
+    ghost = document.createElement("span");
+    ghost.className = "scramble-ghost";
+    ghost.setAttribute("aria-hidden", "true");
+    face = document.createElement("span");
+    face.className = "scramble-face";
+    face.setAttribute("aria-hidden", "true");
+    el.appendChild(ghost);
+    el.appendChild(face);
+    el.classList.add("scramble-locked");
+    return { ghost, face };
+  }
+
+  function scrambleFaceText(el) {
+    const face = el.querySelector(":scope > .scramble-face");
+    return face ? face.textContent || "" : el.textContent || "";
+  }
+
+  function paintScrambleSlots(el, finalText, faceText) {
+    const { ghost, face } = ensureScrambleLock(el);
+    ghost.textContent = finalText;
+    face.textContent = faceText;
+    if (finalText && !el.getAttribute("aria-label")) {
+      el.setAttribute("aria-label", finalText);
+    }
+  }
+
   function clamp01(n) {
     return Math.max(0, Math.min(1, n));
   }
@@ -150,7 +188,7 @@
   }
 
   function commitFinal(el, finalText) {
-    el.textContent = finalText;
+    paintScrambleSlots(el, finalText, finalText);
     el.classList.add("is-resolved");
     el.style.opacity = "1";
     el.style.visibility = "visible";
@@ -178,8 +216,8 @@
       return Promise.resolve();
     }
 
-    /* Hold final-length slots from frame 0 so the line box never grows. */
-    el.textContent = reserveSlots(finalText);
+    /* Ghost holds final metrics from frame 0; face starts as in-place blanks. */
+    paintScrambleSlots(el, finalText, reserveSlots(finalText));
     el.classList.remove("is-resolved");
 
     if (reduceMotion) {
@@ -236,7 +274,9 @@
             }
             out += ch;
           }
-          el.textContent = out;
+          const face = el.querySelector(":scope > .scramble-face");
+          if (face) face.textContent = out;
+          else el.textContent = out;
         }
 
         function tick(now) {
@@ -267,7 +307,8 @@
     book.classList.remove("is-revealing");
     book.querySelectorAll("[data-scramble]").forEach((node) => {
       const finalText = readFinal(node);
-      node.textContent = finalText ? reserveSlots(finalText) : "";
+      if (finalText) paintScrambleSlots(node, finalText, reserveSlots(finalText));
+      else node.textContent = "";
       node.classList.remove("is-resolved");
       node.style.opacity = "";
       node.style.visibility = "";
@@ -286,40 +327,56 @@
     });
   }
 
+  function awaitScrambleFonts() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+    return Promise.all([
+      document.fonts.load('400 0.625rem "IBM Plex Mono"'),
+      document.fonts.load('400 0.75rem "IBM Plex Mono"'),
+      document.fonts.load('400 0.875rem "IBM Plex Mono"'),
+      document.fonts.load('700 3rem "IBM Plex Mono"'),
+      document.fonts.load('700 4.5rem "IBM Plex Mono"'),
+      document.fonts.ready,
+    ]).catch(() => {});
+  }
+
   function scrambleAllInBook() {
     const nodes = Array.from(book.querySelectorAll("[data-scramble]"));
-    nodes.forEach((node) => {
-      const finalText = readFinal(node);
-      if (!finalText) {
-        console.warn("[ignara] scramble node missing data-final", node);
-      }
-      /* Reserve final-length blank slots so layout never expands on reveal. */
-      node.textContent = finalText ? reserveSlots(finalText) : "";
-      node.classList.remove("is-resolved");
-    });
 
-    /* Reveal the landing under clear text BEFORE scramble — opacity was
-       previously held at 0 until resolve finished, so the SHOW wave was invisible. */
-    book.classList.remove("is-blank");
-    book.classList.add("is-revealing");
-    if (bookActions) {
-      bookActions.classList.remove("is-deferred");
-      bookActions.classList.add("is-ready");
-    }
-
-    const jobs = nodes.map((node) => {
-      const startDelay = Number(node.dataset.delay || 0);
-      const duration = Number(node.dataset.duration || 1.4);
-      return scrambleText(node, {
-        startDelay,
-        duration,
-        revealDelay: 0,
-        delayResolve: 0.22,
-        fps: 24,
+    return awaitScrambleFonts().then(() => {
+      nodes.forEach((node) => {
+        const finalText = readFinal(node);
+        if (!finalText) {
+          console.warn("[ignara] scramble node missing data-final", node);
+        }
+        /* Ghost = final metrics; face = blank slots before the SHOW wave. */
+        if (finalText) paintScrambleSlots(node, finalText, reserveSlots(finalText));
+        else node.textContent = "";
+        node.classList.remove("is-resolved");
       });
-    });
 
-    return Promise.all(jobs)
+      /* Reveal the landing under clear text BEFORE scramble — opacity was
+         previously held at 0 until resolve finished, so the SHOW wave was invisible. */
+      book.classList.remove("is-blank");
+      book.classList.add("is-revealing");
+      if (bookActions) {
+        bookActions.classList.remove("is-deferred");
+        bookActions.classList.add("is-ready");
+      }
+
+      const jobs = nodes.map((node) => {
+        const startDelay = Number(node.dataset.delay || 0);
+        const duration = Number(node.dataset.duration || 1.4);
+        return scrambleText(node, {
+          startDelay,
+          duration,
+          revealDelay: 0,
+          delayResolve: 0.22,
+          fps: 24,
+        });
+      });
+
+      return Promise.all(jobs);
+    })
       .catch((err) => {
         console.warn("[ignara] scramble failed, forcing finals", err);
         forceAllFinals();
@@ -328,7 +385,7 @@
         nodes.forEach((node) => {
           const finalText = readFinal(node);
           if (!finalText) return;
-          const shown = (node.textContent || "").replace(/\u00A0/g, " ").trim();
+          const shown = scrambleFaceText(node).replace(/\u00A0/g, " ").trim();
           if (!shown || !node.classList.contains("is-resolved")) {
             commitFinal(node, finalText);
           }
@@ -547,7 +604,7 @@
         (n) => {
           const finalText = readFinal(n);
           if (!finalText) return false;
-          const shown = (n.textContent || "").replace(/\u00A0/g, " ").trim();
+          const shown = scrambleFaceText(n).replace(/\u00A0/g, " ").trim();
           return !shown || !n.classList.contains("is-resolved");
         }
       );
