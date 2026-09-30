@@ -2040,3 +2040,36 @@ body[data-menu="open"] .nav-toggle span:last-child {
     scroll-behavior: auto;
   }
 }
+
+
+/* —— Prueba del wordmark: material SVG sobre campo blanco —— */
+.section-wordmark-test {
+  background: #ffffff;
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-wordmark-test .display-title {
+  max-width: 18ch;
+}
+
+.wordmark-test-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+  padding: clamp(2rem, 6vw, 3.75rem) clamp(0.75rem, 3vw, 1.5rem);
+  background: #ffffff;
+  border-radius: calc(var(--radius) + 4px);
+  border: 1px solid rgba(26, 24, 22, 0.08);
+  box-shadow: 0 12px 36px rgba(20, 22, 28, 0.05);
+  overflow: visible;
+}
+
+.wordmark-test-svg {
+  display: block;
+  width: min(100%, 52rem);
+  height: auto;
+  overflow: visible;
+}
