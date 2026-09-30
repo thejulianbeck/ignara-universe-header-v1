@@ -172,6 +172,7 @@ body[data-view="book"] .site-header {
   inset: 0;
   width: 100%;
   height: 100%;
+  border-radius: 999px;
   opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
@@ -194,7 +195,9 @@ body[data-menu="open"] .header-glass.glass {
   height: var(--header-h);
   max-width: var(--max);
   margin: 0 auto;
-  padding: 0 1.5rem;
+  /* Right: 1.5rem page pad − 0.7rem pill inset + ~0.55rem to the menu bars.
+     Left matches that ink-to-edge gap (wordmark has no sidebearing). */
+  padding: 0 1.5rem 0 2.05rem;
 }
 
 .brand {
@@ -202,17 +205,14 @@ body[data-menu="open"] .header-glass.glass {
   align-items: center;
   gap: 0.65rem;
   flex-shrink: 0;
-  /* Optical inset: wordmark has almost no sidebearing, so gap from the
-     pill's inner left edge ≈ 1.25× logo height (not the same as text padding). */
-  margin-left: 0.65rem;
 }
 
 
 .brand-logo {
   display: block;
-  height: 1.05rem;
+  height: 1.22rem;
   width: auto;
-  max-width: 8.5rem;
+  max-width: 10rem;
   color: inherit;
   flex-shrink: 0;
 }
