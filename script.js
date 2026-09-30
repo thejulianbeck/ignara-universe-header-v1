@@ -474,13 +474,17 @@
         finished = true;
 
         await wait(reduceMotion ? 0 : 280);
-        loader.classList.add("is-leaving");
-        await wait(reduceMotion ? 0 : 350);
-        loader.hidden = true;
-        loader.classList.remove("is-on", "is-leaving");
+        // Keep loader covering; caller must switch to book before dismissLoader.
         resolve();
       })();
     });
+  }
+
+  async function dismissLoader() {
+    loader.classList.add("is-leaving");
+    await wait(reduceMotion ? 0 : 350);
+    loader.hidden = true;
+    loader.classList.remove("is-on", "is-leaving");
   }
 
   async function enterBook2() {
@@ -488,8 +492,11 @@
     if (footerEnter) footerEnter.disabled = true;
     prepareBookBlank();
     await runLoader();
+    // Activate book under the still-opaque loader so the leave fade never reveals hub.
     setView("book");
     window.scrollTo(0, 0);
+    void book.offsetHeight;
+    await dismissLoader();
     try {
       await scrambleAllInBook();
     } catch (err) {
