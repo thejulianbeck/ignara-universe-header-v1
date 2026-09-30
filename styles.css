@@ -204,6 +204,14 @@ body[data-menu="open"] .header-glass.glass {
   flex-shrink: 0;
 }
 
+
+.brand-logo {
+  display: block;
+  height: 1.15rem;
+  width: auto;
+  color: inherit;
+}
+
 .brand-mark {
   width: 0.65rem;
   height: 0.65rem;
