@@ -38,9 +38,9 @@
   --radius-sm: 0.75rem;
   --max: 72rem;
   --max-copy: 40rem;
-  --font-mono: "Fragment Mono", ui-monospace, Menlo, monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --font-sans: "Inter", system-ui, Arial, sans-serif;
-  --font-display: "Chakra Petch", "Inter", system-ui, sans-serif;
+  --font-display: "IBM Plex Mono", "Inter", system-ui, sans-serif;
   --ease: cubic-bezier(0.625, 0.05, 0, 1);
 }
 
@@ -1400,7 +1400,7 @@ body[data-menu="open"] .nav-toggle span:last-child {
 
 .idos-title {
   margin: 1.25rem 0 0;
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
   font-size: clamp(3rem, 12vw, 4.5rem);
   font-weight: 700;
   line-height: 0.8;
@@ -1546,64 +1546,6 @@ body[data-menu="open"] .nav-toggle span:last-child {
 .idos-back:focus-visible {
   color: #cdcdcd;
   outline: none;
-}
-
-/* Below-fold protocol section (ENTER scrolls here) */
-.idos-protocol {
-  position: relative;
-  z-index: 2;
-  min-height: 70vh;
-  padding: 5rem 1.35rem 6rem;
-  background: linear-gradient(180deg, #101010 0%, #0e1a19 40%, #050708 100%);
-  text-align: left;
-}
-
-.idos-protocol-inner {
-  max-width: 36rem;
-  margin: 0 auto;
-}
-
-.idos-protocol-kicker {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.idos-protocol-title {
-  margin: 1rem 0 1.5rem;
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 3rem);
-  font-weight: 700;
-  line-height: 0.85;
-  text-transform: uppercase;
-  color: #ececec;
-}
-
-.idos-protocol-body {
-  margin: 0 0 1.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1.55;
-  color: #cdcdcd;
-}
-
-.idos-protocol-body--dim {
-  color: #7f7f7f;
-}
-
-.idos-protocol-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 2.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #7f7f7f;
 }
 
 @media (max-width: 767px) {

@@ -309,7 +309,7 @@
 
   /* —— Real-ish loading: weighted Promise stages + min dwell ——
    * Weights:
-   *   fonts          40%  — Fragment Mono + Inter + Chakra Petch via document.fonts
+   *   fonts          40%  — IBM Plex Mono + Inter via document.fonts
    *   stylesheet/css 20%  — styles.css fetch (cache-aware)
    *   glyph buffer   15%  — build scramble charset / seed strings
    *   init view      15%  — blank book nodes + prepare scramble finals
@@ -339,12 +339,13 @@
       return wait(180);
     }
     return Promise.all([
-      document.fonts.load('400 1em "Fragment Mono"'),
+      document.fonts.load('400 1em "IBM Plex Mono"'),
+      document.fonts.load('500 1em "IBM Plex Mono"'),
+      document.fonts.load('600 1em "IBM Plex Mono"'),
+      document.fonts.load('700 1em "IBM Plex Mono"'),
       document.fonts.load('400 1em "Inter"'),
       document.fonts.load('500 1em "Inter"'),
       document.fonts.load('600 1em "Inter"'),
-      document.fonts.load('700 1em "Chakra Petch"'),
-      document.fonts.load('600 1em "Chakra Petch"'),
       document.fonts.ready,
     ]).then(() => wait(40));
   }
@@ -522,16 +523,6 @@
   if (enterBtn) enterBtn.addEventListener("click", enterBook2);
   if (footerEnter) footerEnter.addEventListener("click", enterBook2);
   if (backBtn) backBtn.addEventListener("click", goHub);
-
-  const idosEnter = document.getElementById("idos-enter");
-  if (idosEnter) {
-    idosEnter.addEventListener("click", () => {
-      const target = document.getElementById("idos-protocolo");
-      if (target) {
-        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-      }
-    });
-  }
 
   brandHome.addEventListener("click", (e) => {
     e.preventDefault();
