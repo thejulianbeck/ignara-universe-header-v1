@@ -4,7 +4,7 @@
    (.glass / .glass__noise / .glass__specular). Safari-first: sticky host
    (.site-header) SEPARATE from material (.glass) — no backdrop-filter on
    the sticky/fixed positioning node. Nav ink flips via data-theme-nav.
-   Book-2 loader preserved; Ignara tres seal loader (tplh-inspired). Spanish LA neutro. */
+   Book-2 loader preserved; Ignara tres seal = Phase 1 tplh wax-seal remake (Y/K). Spanish LA neutro. */
 
 
 :root {
@@ -44,6 +44,8 @@
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --font-sans: "Inter", system-ui, Arial, sans-serif;
   --font-display: "IBM Plex Mono", "Inter", system-ui, sans-serif;
+  --font-seal: "Playfair Display", "Cormorant Garamond", "Times New Roman", serif;
+  --seal-dim: #564e45;
   --ease: cubic-bezier(0.625, 0.05, 0, 1);
 }
 
@@ -2179,18 +2181,20 @@ body[data-menu="open"] .nav-toggle span:last-child {
 }
 
 
-/* —— Ignara tres seal loader (tplh-inspired wax seal; original paths) —— */
+/* —— Ignara tres seal loader — Phase 1 closest remake of tplh.net preloader ——
+   Motion/color/timing clone. Center monogram Y (180°) / K. Ring: YOICHI KOBAYASHI ×2.
+   Font substitute: Playfair Display (EngraversMTPro is licensed — do not hotlink). */
 .seal-loader {
+  width: 100%;
+  height: 100%;
   position: fixed;
   inset: 0;
-  z-index: 220;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 10000;
+  pointer-events: none;
   background: var(--bg-seal);
   color: var(--seal-gold);
-  opacity: 0;
-  pointer-events: none;
+  font-family: var(--font-seal);
+  opacity: 0.999;
 }
 
 .seal-loader[hidden] {
@@ -2198,119 +2202,357 @@ body[data-menu="open"] .nav-toggle span:last-child {
 }
 
 .seal-loader.is-on {
+  display: block;
+}
+
+.seal-loader.seal-enter {
+  opacity: 0.999;
+}
+
+.seal-loader.seal-enter-to {
   opacity: 1;
-  pointer-events: auto;
+  transition-duration: 1.6s;
+  transition-property: opacity;
 }
 
-.seal-loader-stage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: scale(0.6);
-  opacity: 0;
+.seal-loader.seal-leave-to {
+  opacity: 0.999;
+  transition-duration: 1.6s;
+  transition-delay: 0.8s;
 }
 
-.seal-loader.is-entering .seal-loader-stage {
-  animation: sealEnter 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.seal-loader.is-on:not(.is-entering):not(.is-leaving) .seal-loader-stage {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.seal-loader.is-leaving .seal-loader-stage {
-  animation: sealLeave 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.seal-loader.is-leaving {
-  transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.seal-mark {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* —— Progress ring (orbital glyphs) —— */
+.seal-progress {
+  position: absolute;
+  animation-name: seal-rotate;
+  animation-duration: 20s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 @media (min-width: 768px) {
-  .seal-mark {
+  .seal-progress {
+    width: 252px;
+    height: 252px;
+    top: calc(50% - 126px);
+    left: calc(50% - 126px);
+  }
+}
+
+@media (max-width: 767px) {
+  .seal-progress {
+    width: 150px;
+    height: 150px;
+    top: calc(50% - 75px);
+    left: calc(50% - 75px);
+  }
+}
+
+.seal-progress__inner {
+  width: 100%;
+  height: 100%;
+}
+
+.seal-enter .seal-progress__inner {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.seal-enter-to .seal-progress__inner {
+  transform: scale(1);
+  opacity: 1;
+  transition-duration: 1.4s;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-property: opacity, transform;
+}
+
+.seal-leave-to .seal-progress__inner {
+  opacity: 0;
+  transform: scale(1.8);
+  transition-duration: 1.4s;
+  transition-delay: 0.8s;
+  transition-timing-function: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  transition-property: opacity, transform;
+}
+
+.seal-progress svg {
+  display: block;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+@media (min-width: 768px) {
+  .seal-progress svg {
     width: 252px;
     height: 252px;
   }
 }
 
-.seal-ring {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  animation: sealSpin 20s linear infinite;
-  transform-origin: 50% 50%;
+@media (max-width: 767px) {
+  .seal-progress svg {
+    width: 150px;
+    height: 150px;
+  }
 }
 
-.seal-ring-text {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  fill: var(--seal-gold);
+.seal-progress .seal-mask-rotate-group {
+  transform: rotate(34deg);
+  transform-origin: 126px 126px;
+  transform-box: view-box;
+}
+
+.seal-progress .seal-mask-rotate-rect {
+  transform-origin: 126px 126px;
+  transform-box: view-box;
+}
+
+/* —— Year counter 19 | YK | 84 —— */
+.seal-counter {
+  height: 1.5em;
+  position: absolute;
+  top: calc(50% - 0.75em);
+  overflow: hidden;
+  font-family: var(--font-seal);
+  color: var(--seal-gold);
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {
-  .seal-ring-text {
-    font-size: 12.5px;
-    letter-spacing: 0.22em;
+  .seal-counter {
+    width: 112px;
+    left: calc(50% - 56px);
+    font-size: 16px;
+    font-size: 1rem;
   }
 }
 
-.seal-center {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: clamp(1.15rem, 3.6vw, 1.75rem);
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--seal-gold);
+@media (max-width: 767px) {
+  .seal-counter {
+    width: 68px;
+    left: calc(50% - 34px);
+  }
+}
+
+@media (min-width: 415px) and (max-width: 767px) {
+  .seal-counter {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 414px) {
+  .seal-counter {
+    font-size: 2.66667vw;
+  }
+}
+
+.seal-counter__col {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  transform: translateZ(0);
+}
+
+.seal-counter__col:first-of-type {
+  left: 0;
+}
+
+.seal-counter__col:nth-of-type(2) {
+  left: 1em;
+}
+
+.seal-counter__col:nth-of-type(3) {
+  right: 1em;
+}
+
+.seal-counter__col:nth-of-type(4) {
+  right: 0;
+}
+
+.seal-counter__row {
+  width: 1em;
+  height: 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+}
+
+.seal-enter .seal-counter {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.seal-enter-to .seal-counter {
+  transform: scale(1);
+  opacity: 1;
+  transition-duration: 1.4s;
+  transition-delay: 0.1s;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-property: opacity, transform;
+}
+
+.seal-leave-to .seal-counter {
+  opacity: 0;
+  transform: scale(1.4);
+  transition-duration: 1.4s;
+  transition-delay: 0.9s;
+  transition-timing-function: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  transition-property: opacity, transform;
+}
+
+.seal-enter .seal-counter__col {
+  transform: translate3d(0, 1.5em, 0);
+}
+
+.seal-enter-to .seal-counter__col {
+  transform: translateZ(0);
+  transition-duration: 1s;
+}
+
+.seal-enter-to .seal-counter__col:first-of-type {
+  transition-delay: 0s;
+}
+
+.seal-enter-to .seal-counter__col:nth-of-type(2) {
+  transition-delay: 0.08s;
+}
+
+.seal-enter-to .seal-counter__col:nth-of-type(3) {
+  transition-delay: 0.16s;
+}
+
+.seal-enter-to .seal-counter__col:nth-of-type(4) {
+  transition-delay: 0.24s;
+}
+
+.seal-leave-to .seal-counter__col {
+  transform: translate3d(0, calc(-100% + 1.5em), 0);
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(1, 0, 0, 1);
+}
+
+.seal-leave-to .seal-counter__col:first-of-type {
+  transition-delay: 0s;
+}
+
+.seal-leave-to .seal-counter__col:nth-of-type(2) {
+  transition-delay: 0.08s;
+}
+
+.seal-leave-to .seal-counter__col:nth-of-type(3) {
+  transition-delay: 0.16s;
+}
+
+.seal-leave-to .seal-counter__col:nth-of-type(4) {
+  transition-delay: 0.24s;
+}
+
+/* —— Center monogram Y (180°) / K —— */
+.seal-initial {
+  width: 1em;
+  height: 2em;
+  position: absolute;
+  top: calc(50% - 1em);
+  left: calc(50% - 0.5em);
   text-align: center;
-  line-height: 1.1;
+  font-family: var(--font-seal);
+  color: var(--seal-gold);
   pointer-events: none;
-  user-select: none;
 }
 
-@keyframes sealSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes sealEnter {
-  from {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
+@media (min-width: 768px) {
+  .seal-initial {
+    font-size: 24px;
+    font-size: 1.5rem;
   }
 }
 
-@keyframes sealLeave {
-  from {
-    opacity: 1;
-    transform: scale(1);
+@media (min-width: 415px) and (max-width: 767px) {
+  .seal-initial {
+    font-size: 15px;
   }
-  to {
-    opacity: 0;
-    transform: scale(1.55);
+}
+
+@media (max-width: 414px) {
+  .seal-initial {
+    font-size: 3.73333vw;
+  }
+}
+
+.seal-initial__typo {
+  display: block;
+  overflow: hidden;
+}
+
+.seal-initial__typo--1 {
+  transform: rotate(180deg);
+}
+
+.seal-initial__typo--2 {
+  margin-top: -0.25em;
+}
+
+.seal-enter .seal-initial__typo-in {
+  transform: translate3d(1.01em, 0, 0);
+}
+
+.seal-enter-to .seal-initial__typo-in {
+  transform: translateZ(0);
+  transition-duration: 1s;
+}
+
+.seal-enter-to .seal-initial__typo-in--2 {
+  transition-delay: 0.1s;
+}
+
+.seal-enter .seal-initial {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.seal-enter-to .seal-initial {
+  transform: scale(1);
+  opacity: 1;
+  transition-duration: 1.4s;
+  transition-delay: 0.2s;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-property: opacity, transform;
+}
+
+.seal-leave-to .seal-initial {
+  opacity: 0;
+  transform: scale(1.4);
+  transition-duration: 1.4s;
+  transition-delay: 1s;
+  transition-timing-function: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  transition-property: opacity, transform;
+}
+
+@keyframes seal-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seal-progress {
+    animation: none;
+  }
+  .seal-enter-to .seal-progress__inner,
+  .seal-enter-to .seal-counter,
+  .seal-enter-to .seal-initial,
+  .seal-enter-to .seal-counter__col,
+  .seal-enter-to .seal-initial__typo-in,
+  .seal-leave-to .seal-progress__inner,
+  .seal-leave-to .seal-counter,
+  .seal-leave-to .seal-initial,
+  .seal-leave-to .seal-counter__col {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }
 

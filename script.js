@@ -630,28 +630,131 @@
     return wait(ms);
   }
 
+  /* —— Phase 1 tplh wax-seal PRELOADER clone (Y/K + YOICHI ring + 1984→2020) —— */
+  const sealState = {
+    preloadMax: 13,
+    preloadAnchor: 0,
+    preloadProgress: 0,
+    raf: 0,
+    running: false,
+  };
+
+  function sealEls() {
+    return {
+      root: sealLoader,
+      rotateRect: document.getElementById("seal-mask-rotate-rect"),
+      leftRect: document.getElementById("seal-mask-left"),
+      rightRect: document.getElementById("seal-mask-right"),
+    };
+  }
+
+  function applySealWipe(ratio) {
+    const { rotateRect, leftRect, rightRect } = sealEls();
+    if (!rotateRect) return;
+    const r = Math.max(0, Math.min(1, ratio || 0));
+    rotateRect.style.transform = "rotate(" + r * 354 + "deg)";
+    if (leftRect) leftRect.style.opacity = r >= 0.5 ? "0" : "1";
+    if (rightRect) rightRect.style.opacity = r >= 0.5 ? "1" : "0";
+  }
+
+  function sealTick() {
+    if (!sealState.running) return;
+    sealState.preloadProgress +=
+      (sealState.preloadAnchor - sealState.preloadProgress) / 14;
+    applySealWipe(sealState.preloadProgress / sealState.preloadMax);
+    sealState.raf = requestAnimationFrame(sealTick);
+  }
+
+  function startSealRAF() {
+    stopSealRAF();
+    sealState.running = true;
+    sealState.raf = requestAnimationFrame(sealTick);
+  }
+
+  function stopSealRAF() {
+    sealState.running = false;
+    if (sealState.raf) cancelAnimationFrame(sealState.raf);
+    sealState.raf = 0;
+  }
+
+  function resetSealProgress() {
+    sealState.preloadMax = 13;
+    sealState.preloadAnchor = 0;
+    sealState.preloadProgress = 0;
+    applySealWipe(0);
+  }
+
+  async function simulateSealAssets() {
+    /* Fake 13 asset ticks (tplh preloadMax) with staggered anchors + lerp /14. */
+    if (reduceMotion) {
+      sealState.preloadAnchor = sealState.preloadMax;
+      sealState.preloadProgress = sealState.preloadMax;
+      applySealWipe(1);
+      return;
+    }
+    const steps = sealState.preloadMax;
+    for (let i = 1; i <= steps; i++) {
+      sealState.preloadAnchor = i;
+      /* Variable-ish pacing so wipe reads as loading, ~1.8–2.4s total. */
+      const gap = i < 4 ? 90 : i < 10 ? 140 : 180;
+      await wait(gap);
+    }
+    /* Wait until lerp catches up past 0.999 of max. */
+    const deadline = performance.now() + 2500;
+    while (
+      sealState.preloadProgress / sealState.preloadMax <= 0.999 &&
+      performance.now() < deadline
+    ) {
+      await wait(32);
+    }
+    sealState.preloadProgress = sealState.preloadMax;
+    applySealWipe(1);
+  }
+
   async function runSealLoader() {
     if (!sealLoader) return;
+    resetSealProgress();
     sealLoader.hidden = false;
-    sealLoader.classList.remove("is-leaving", "is-on", "is-entering");
+    sealLoader.classList.remove(
+      "is-on",
+      "seal-enter",
+      "seal-enter-to",
+      "seal-leave-to",
+      "is-entering",
+      "is-leaving"
+    );
     void sealLoader.offsetHeight;
-    sealLoader.classList.add("is-on", "is-entering");
+    sealLoader.classList.add("is-on", "seal-enter");
     sealLoader.setAttribute("aria-busy", "true");
-    const enterMs = reduceMotion ? 80 : 1400;
-    const holdMs = reduceMotion ? 200 : 2200;
-    await waitMs(enterMs);
-    await waitMs(holdMs);
+    await wait(reduceMotion ? 16 : 32);
+    sealLoader.classList.remove("seal-enter");
+    sealLoader.classList.add("seal-enter-to");
+    startSealRAF();
+    const enterMs = reduceMotion ? 80 : 1600;
+    await wait(enterMs);
+    await simulateSealAssets();
   }
 
   async function dismissSealLoader() {
     if (!sealLoader) return;
-    sealLoader.classList.remove("is-entering");
-    sealLoader.classList.add("is-leaving");
-    await waitMs(reduceMotion ? 40 : 1400);
+    sealLoader.classList.remove("seal-enter", "seal-enter-to");
+    sealLoader.classList.add("seal-leave-to");
+    /* Leave: ring delay 0.8 + 1.4; counter 0.9+1.4; initial 1.0+1.4 → ~2.4s */
+    await wait(reduceMotion ? 40 : 2400);
+    stopSealRAF();
     sealLoader.hidden = true;
-    sealLoader.classList.remove("is-on", "is-leaving", "is-entering");
+    sealLoader.classList.remove(
+      "is-on",
+      "seal-enter",
+      "seal-enter-to",
+      "seal-leave-to",
+      "is-entering",
+      "is-leaving"
+    );
     sealLoader.setAttribute("aria-busy", "false");
+    resetSealProgress();
   }
+
 
   async function enterBook3() {
     if (enterBtn3) enterBtn3.disabled = true;
