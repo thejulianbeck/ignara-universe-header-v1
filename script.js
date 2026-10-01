@@ -26,9 +26,15 @@
   const loaderIcon = document.getElementById("loader-icon");
   const loaderText = document.getElementById("loader-text");
   const loaderPct = document.getElementById("loader-pct");
+  const sealLoader = document.getElementById("seal-loader");
+  const sealStage = document.getElementById("seal-loader-stage");
+  const book3 = document.getElementById("view-book3");
   const enterBtn = document.getElementById("enter-book-2");
+  const enterBtn3 = document.getElementById("enter-book-3");
   const footerEnter = document.getElementById("footer-enter-2");
+  const footerEnter3 = document.getElementById("footer-enter-3");
   const backBtn = document.getElementById("back-hub");
+  const backBtn3 = document.getElementById("back-hub-3");
   const brandHome = document.getElementById("brand-home");
   const headerMeta = document.getElementById("header-meta");
   const header = document.getElementById("site-header");
@@ -55,7 +61,7 @@
   }
 
   function sampleNavTheme() {
-    if (body.dataset.view === "book") {
+    if (body.dataset.view === "book" || body.dataset.view === "book3") {
       setThemeNav("dark");
       return;
     }
@@ -107,9 +113,12 @@
     body.dataset.view = name;
     hub.hidden = name !== "hub";
     book.hidden = name !== "book";
-    headerMeta.textContent = name === "book" ? "ignara dos" : "hub";
+    if (book3) book3.hidden = name !== "book3";
+    if (name === "book") headerMeta.textContent = "ignara dos";
+    else if (name === "book3") headerMeta.textContent = "ignara tres";
+    else headerMeta.textContent = "hub";
     var labForce = document.getElementById("lab-force-glass");
-    /* Sticky header is hidden on book; only force glass on hub lab toggle */
+    /* Sticky header is hidden on book/book3; only force glass on hub lab toggle */
     setForceGlass(name === "hub" && labForce && labForce.checked);
     setMenu(false);
     updateGlass();
@@ -617,6 +626,53 @@
     if (footerEnter) footerEnter.disabled = false;
   }
 
+  function waitMs(ms) {
+    return wait(ms);
+  }
+
+  async function runSealLoader() {
+    if (!sealLoader) return;
+    sealLoader.hidden = false;
+    sealLoader.classList.remove("is-leaving", "is-on", "is-entering");
+    void sealLoader.offsetHeight;
+    sealLoader.classList.add("is-on", "is-entering");
+    sealLoader.setAttribute("aria-busy", "true");
+    const enterMs = reduceMotion ? 80 : 1400;
+    const holdMs = reduceMotion ? 200 : 2200;
+    await waitMs(enterMs);
+    await waitMs(holdMs);
+  }
+
+  async function dismissSealLoader() {
+    if (!sealLoader) return;
+    sealLoader.classList.remove("is-entering");
+    sealLoader.classList.add("is-leaving");
+    await waitMs(reduceMotion ? 40 : 1400);
+    sealLoader.hidden = true;
+    sealLoader.classList.remove("is-on", "is-leaving", "is-entering");
+    sealLoader.setAttribute("aria-busy", "false");
+  }
+
+  async function enterBook3() {
+    if (enterBtn3) enterBtn3.disabled = true;
+    if (footerEnter3) footerEnter3.disabled = true;
+    if (enterBtn) enterBtn.disabled = true;
+    if (footerEnter) footerEnter.disabled = true;
+    try {
+      await runSealLoader();
+      // Activate tres under the still-opaque seal so leave never flashes hub.
+      setView("book3");
+      window.scrollTo(0, 0);
+      if (book3) void book3.offsetHeight;
+      await dismissSealLoader();
+    } finally {
+      if (enterBtn3) enterBtn3.disabled = false;
+      if (footerEnter3) footerEnter3.disabled = false;
+      if (enterBtn) enterBtn.disabled = false;
+      if (footerEnter) footerEnter.disabled = false;
+    }
+  }
+
   function goHub() {
     prepareBookBlank();
     setView("hub");
@@ -625,7 +681,10 @@
 
   if (enterBtn) enterBtn.addEventListener("click", enterBook2);
   if (footerEnter) footerEnter.addEventListener("click", enterBook2);
+  if (enterBtn3) enterBtn3.addEventListener("click", enterBook3);
+  if (footerEnter3) footerEnter3.addEventListener("click", enterBook3);
   if (backBtn) backBtn.addEventListener("click", goHub);
+  if (backBtn3) backBtn3.addEventListener("click", goHub);
 
   brandHome.addEventListener("click", (e) => {
     e.preventDefault();
@@ -858,4 +917,11 @@
   prepareBookBlank();
   setView("hub");
   setMenu(false);
+
+  /* Optional seal demo: #prueba-sello runs the Ignara tres seal entry */
+  if (window.location.hash === "#prueba-sello") {
+    window.setTimeout(function () {
+      enterBook3();
+    }, 80);
+  }
 })();
