@@ -630,7 +630,7 @@
     return wait(ms);
   }
 
-  /* —— Phase 1 tplh wax-seal PRELOADER clone (Y/K + YOICHI ring + 1984→2020) —— */
+  /* —— Phase 1 tplh wax-seal PRELOADER clone (Y/K + IGNARA VOL. III ring + 1984→2020) —— */
   const sealState = {
     preloadMax: 13,
     preloadAnchor: 0,
