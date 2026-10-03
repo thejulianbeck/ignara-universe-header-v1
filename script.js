@@ -652,7 +652,8 @@
     const { rotateRect, leftRect, rightRect } = sealEls();
     if (!rotateRect) return;
     const r = Math.max(0, Math.min(1, ratio || 0));
-    rotateRect.style.transform = "rotate(" + r * 354 + "deg)";
+    /* Full turn: 354° left the L of VOL. in the 6° gap. 360 meets the half-swap at 180°. */
+    rotateRect.style.transform = "rotate(" + r * 360 + "deg)";
     if (leftRect) leftRect.style.opacity = r >= 0.5 ? "0" : "1";
     if (rightRect) rightRect.style.opacity = r >= 0.5 ? "1" : "0";
   }

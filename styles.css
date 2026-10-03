@@ -2306,7 +2306,9 @@ body[data-menu="open"] .nav-toggle span:last-child {
 }
 
 .seal-progress .seal-mask-rotate-group {
-  transform: rotate(34deg);
+  /* 285° = textPath start of the first I in IGNARA (startOffset 447.74 on r=90).
+     Wipe leading edge is this angle, then clockwise through both phrase copies. */
+  transform: rotate(285deg);
   transform-origin: 126px 126px;
   transform-box: view-box;
 }
