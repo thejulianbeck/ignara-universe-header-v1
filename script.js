@@ -686,21 +686,26 @@
   }
 
   async function simulateSealAssets() {
-    /* Fake 13 asset ticks (tplh preloadMax) with staggered anchors + lerp /14. */
+    /* 13 fake asset ticks (tplh preloadMax).
+       The wipe is NOT a linear clock and NOT ease-in.
+       Original store: each animation frame
+         preloadProgress += (preloadAnchor - preloadProgress) / 14
+       which is an exponential ease-out (fast while far from the anchor,
+       decelerating as it catches). Equal 90/140/180ms gaps low-passed that
+       chase into a near-constant speed. Commit all 13 anchors up front,
+       the way a burst of parallel onLoads lands before the next paint, so
+       the visible sweep is that /14 ease-out: ~50% by 0.15s, ~95% by 0.67s,
+       >0.999 by ~1.55s at 60fps, then hold full 360°. */
     if (reduceMotion) {
       sealState.preloadAnchor = sealState.preloadMax;
       sealState.preloadProgress = sealState.preloadMax;
       applySealWipe(1);
       return;
     }
-    const steps = sealState.preloadMax;
-    for (let i = 1; i <= steps; i++) {
+    for (let i = 1; i <= sealState.preloadMax; i++) {
       sealState.preloadAnchor = i;
-      /* Variable-ish pacing so wipe reads as loading, ~1.8–2.4s total. */
-      const gap = i < 4 ? 90 : i < 10 ? 140 : 180;
-      await wait(gap);
     }
-    /* Wait until lerp catches up past 0.999 of max. */
+    /* Wait until the per-frame /14 lerp passes 0.999 of max (tplh loaded()). */
     const deadline = performance.now() + 2500;
     while (
       sealState.preloadProgress / sealState.preloadMax <= 0.999 &&
