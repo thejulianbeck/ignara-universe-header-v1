@@ -695,7 +695,9 @@
        chase into a near-constant speed. Commit all 13 anchors up front,
        the way a burst of parallel onLoads lands before the next paint, so
        the visible sweep is that /14 ease-out: ~50% by 0.15s, ~95% by 0.67s,
-       >0.999 by ~1.55s at 60fps, then hold full 360°. */
+       >0.999 by ~1.55s at 60fps, then hold full 360°.
+       Called on the same turn as seal-enter-to so the clock starts with the
+       ring scale/fade (0.6→1, 1.4s), not after that entrance finishes. */
     if (reduceMotion) {
       sealState.preloadAnchor = sealState.preloadMax;
       sealState.preloadProgress = sealState.preloadMax;
@@ -735,10 +737,14 @@
     await wait(reduceMotion ? 16 : 32);
     sealLoader.classList.remove("seal-enter");
     sealLoader.classList.add("seal-enter-to");
+    /* Same frame as the ring entrance. Anchors commit inside simulateSealAssets
+       before its first await, so the /14 wipe begins with the scale-in, not after
+       the 1.4s / 1.6s entrance hold. */
     startSealRAF();
+    const wipeDone = simulateSealAssets();
     const enterMs = reduceMotion ? 80 : 1600;
     await wait(enterMs);
-    await simulateSealAssets();
+    await wipeDone;
   }
 
   async function dismissSealLoader() {
