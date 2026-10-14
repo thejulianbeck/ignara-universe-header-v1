@@ -14,7 +14,7 @@
   --ink-soft: #2c2622;
   --ink-muted: rgba(26, 24, 22, 0.62);
   --bg: #f0eee9;
-  --bg-hub: #f0eee9;
+  --bg-hub: #ffffff; /* white page bg (header sits on white at top) */
   --bg-panel: #0c1211;
   --bg-deep: #050708;
   --bg-loader: #0e1a19;
@@ -2661,4 +2661,20 @@ body[data-menu="open"] .nav-toggle span:last-child {
 /* Anchor jumps clear the slim sticky strip */
 html {
   scroll-padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 0.5rem);
+}
+
+/* At scroll top: NO glass at all — solid black wordmark + menu on white.
+   visibility:hidden also kills backdrop-filter/border/noise compositing on iOS Safari. */
+.header-glass.glass {
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+.site-header[data-scrolled="true"] .header-glass.glass,
+.site-header[data-force-glass="true"] .header-glass.glass,
+body[data-menu="open"] .header-glass.glass {
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0s linear 0s;
+}
+body[data-view="hub"] .site-header[data-scrolled="false"]:not([data-force-glass="true"]) {
+  color: #000;
 }

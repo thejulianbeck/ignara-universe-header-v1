@@ -48,7 +48,7 @@
   /* —— Frosted glass: visible on scroll; forced on book view ——
      Theme-nav flips ink/cream so glass stays readable on cream OR night bands. */
   function updateGlass() {
-    const scrolled = window.scrollY > 12;
+    const scrolled = window.scrollY > 4;
     header.setAttribute("data-scrolled", scrolled ? "true" : "false");
   }
 
