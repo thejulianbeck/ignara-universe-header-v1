@@ -168,11 +168,12 @@ body[data-view="book"] .site-header {
 /* Positioning host only — no material props (Safari sticky/backdrop trap) */
 .header-glass-host {
   position: absolute;
-  top: calc(0.5rem + env(safe-area-inset-top, 0px));
-  right: 0.7rem;
-  bottom: 0.5rem;
-  left: 0.7rem;
-  border-radius: 999px;
+  /* Full-bleed rectangular strip (edge to edge, covers safe area) */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 0;
   overflow: hidden;
   pointer-events: none;
   background: transparent;
@@ -193,7 +194,9 @@ body[data-view="book"] .site-header {
   inset: 0;
   width: 100%;
   height: 100%;
-  border-radius: 999px !important;
+  border-radius: 0 !important;
+  /* Strip: bottom hairline only (full border reads odd edge-to-edge) */
+  border-width: 0 0 var(--glass-border-width) 0 !important;
   opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
@@ -214,17 +217,14 @@ body[data-menu="open"] .header-glass.glass {
   justify-content: space-between;
   gap: 1rem;
   height: var(--header-h);
-  max-width: var(--max);
-  margin: 0 auto;
-  /* Right: 1.5rem page pad − 0.7rem pill inset + ~0.55rem to the menu bars.
-     Left matches that ink-to-edge gap (wordmark has no sidebearing). */
-  padding: 0 1.5rem 0 2.05rem;
+  max-width: none;
+  margin: 0;
+  /* Strip layout: wordmark anchored left, menu right, normal page pad */
+  padding: 0 calc(1.5rem + env(safe-area-inset-right, 0px)) 0 calc(1.5rem + env(safe-area-inset-left, 0px));
 }
 
 .brand {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
@@ -290,7 +290,7 @@ body[data-menu="open"] .header-glass.glass {
 .nav-toggle {
   display: none;
   position: absolute;
-  right: 0.85rem;
+  right: calc(0.95rem + env(safe-area-inset-right, 0px));
   top: 50%;
   transform: translateY(-50%);
   width: 2.25rem;
