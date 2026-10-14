@@ -36,7 +36,7 @@
   --line-light: rgba(255, 255, 255, 0.12);
   --line-dark: rgba(26, 24, 22, 0.14);
   /* Glass Lab Lock defaults live in glass-lab-preset.css — do not redefine here */
-  --header-h: 3rem; /* slim strip: 48px (was 4.5rem/72px) */
+  --header-h: 55px; /* strip height (was 48px, originally 72px) */
   --radius: 1rem;
   --radius-sm: 0.75rem;
   --max: 72rem;
