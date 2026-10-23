@@ -1091,7 +1091,7 @@
       // reserve the largest accordion state so opening never clips
       openH = 0;
       qa(".footer-col--mobile-acc").forEach(function (c) { openH = Math.max(openH, c.querySelector(".footer-col__inner").offsetHeight - (c.classList.contains("footer-col--mobile-acc-open") ? c.querySelector(".footer-col__inner").offsetHeight : 0)); });
-      f.style.paddingBottom = (content.offsetHeight - contact.offsetHeight + 8) + "px";
+      f.style.paddingBottom = (content.offsetHeight + 8) + "px"; // same as original: content + 8
     } else {
       f.style.paddingBottom = (content.offsetHeight + 8) + "px";
     }
@@ -1105,14 +1105,20 @@
     if (reduce) { inner.style.transform = "none"; return; }
     // sticky-inner parallax: 15% → 0 over the last ~45% vh of scroll
     var span = vh * 0.47, p = Math.min(1, Math.max(0, 1 - rest / span));
-    inner.style.transform = "translate3d(0," + (15 * (1 - p)).toFixed(3) + "%,0)";
-    // desktop: logo panel tilts away at the very end
-    if (desk.matches) {
-      var e = Math.min(1, Math.max(0, 1 - rest / 200));
-      e = 1 - Math.pow(1 - e, 3);
-      svgw.style.transformOrigin = "0 0";
-      svgw.style.transform = "translate(" + (-7 * e).toFixed(3) + "%,0) rotate(" + (-6 * e).toFixed(3) + "deg)";
-    } else svgw.style.transform = "";
+    // desktop only: the 15%->0 parallax. On touch/mobile the red panel is pure CSS sticky
+    // (no per-frame JS transform), which removes the iOS Safari jitter.
+    inner.style.transform = desk.matches ? "translate3d(0," + (15 * (1 - p)).toFixed(3) + "%,0)" : "";
+    // logo panel peel (The Line: GSAP scrub, trigger .footer__wrapper "top top" -> "max",
+    // power1.inOut, origin top left; <1024: x-14% y-40% rot-6, >=1024: x-7% rot-6)
+    var wr = svgw.parentNode, wTop = wr.getBoundingClientRect().top + window.scrollY;
+    // original starts at "top top"; on short mobile viewports that can sit past the scroll end,
+    // so guarantee at least ~35vh of travel for the peel.
+    if (!desk.matches) wTop = Math.min(wTop, docMax - vh * 0.35);
+    var p2 = docMax > wTop ? Math.min(1, Math.max(0, (window.scrollY - wTop) / (docMax - wTop))) : 0;
+    var e = p2 < 0.5 ? 2 * p2 * p2 : 1 - 2 * (1 - p2) * (1 - p2);
+    var xp = desk.matches ? -7 : -14, yp = desk.matches ? 0 : -40;
+    svgw.style.transformOrigin = "0 0";
+    svgw.style.transform = "translate3d(" + (xp * e).toFixed(3) + "%," + (yp * e).toFixed(3) + "%,0) rotate(" + (-6 * e).toFixed(3) + "deg)";
   }
   window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(tick); } }, { passive: true });
   window.addEventListener("resize", function () { qa(".footer-col--mobile-acc").forEach(function (c) { setAcc(c, c.classList.contains("footer-col--mobile-acc-open")); }); layout(); });

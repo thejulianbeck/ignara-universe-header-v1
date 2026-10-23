@@ -2755,12 +2755,13 @@ body[data-view="hub"] .site-header[data-scrolled="false"]:not([data-force-glass=
 /* structure */
 .tl-footer .footer__wrapper { position: relative; z-index: 3; }
 .tl-footer .footer__wrapper--cta { background-color: var(--tl-white); z-index: 4; }
-.tl-footer .footer__scroller { position: absolute; inset: -50vh 0 0 0; }
-.tl-footer .footer__sticky { display: flex; height: 100vh; height: 100dvh; position: sticky; top: 0; z-index: 2; }
+.tl-footer .footer__scroller { position: absolute; inset: -50vh 0 0 0; display: flex; flex-direction: column; justify-content: flex-end; }
+.tl-footer .footer__sticky { display: flex; height: 100vh; height: 100lvh; flex: none; position: -webkit-sticky; position: sticky; top: auto; bottom: 0; z-index: 2; }
 @media (prefers-reduced-motion: no-preference) { .tl-footer .footer__sticky { transition: transform 1s var(--tl-ease); } }
 .tl-footer.footer--credits-open .footer__sticky { transform: translate(5%, -240px) rotate(-3deg); }
 @media (min-width: 1024px) { .tl-footer.footer--credits-open .footer__sticky { transform: translate(5%, -16.2037vw) rotate(-6deg); } }
-.tl-footer .footer__sticky-inner { position: absolute; inset: 0; display: flex; align-items: flex-end; background-color: var(--tl-red); will-change: transform; }
+.tl-footer .footer__sticky-inner { position: absolute; inset: 0; display: flex; align-items: flex-end; background-color: var(--tl-red); }
+@media (min-width: 1024px) { .tl-footer .footer__sticky-inner { will-change: transform; } }
 .tl-footer .footer__sticky-inner::before { content: ""; position: absolute; left: 0; right: 0; bottom: calc(100% - 1px); height: 10vh; background-color: var(--tl-red); }
 .tl-footer .footer__content { position: relative; top: 1px; background-color: var(--tl-red); color: var(--tl-white); }
 .tl-footer .footer__fig { position: absolute; bottom: 0; left: 20.51282vw; width: 138.46154vw; filter: grayscale(.3); mix-blend-mode: multiply; opacity: .2; pointer-events: none; }
@@ -2884,3 +2885,14 @@ body[data-view="hub"] .site-header[data-scrolled="false"]:not([data-force-glass=
 .tl-footer .footer-credits__btn-svg { position: absolute; right: 8px; bottom: 140px; width: 82px; height: 93px; }
 @media (min-width: 1024px) { .tl-footer .footer-credits__btn-svg { right: .46296vw; bottom: 9.66435vw; width: 8.21759vw; height: 9.43287vw; } }
 body:not([data-view="hub"]) .tl-footer { display: none; }
+
+/* Mobile red-panel parallax (15% -> 0, as the original) driven by a CSS scroll timeline:
+   runs on the compositor in sync with native scroll (iOS Safari 26+). No support -> panel stays fixed. */
+.tl-footer { timeline-scope: --tlpar; }
+.tl-footer .footer__pmark { position: absolute; left: 0; bottom: 0; width: 1px; height: 47svh; pointer-events: none; visibility: hidden; view-timeline: --tlpar block; }
+@keyframes tl-par { from { transform: translate3d(0,15%,0); } to { transform: translate3d(0,0,0); } }
+@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .tl-footer .footer__sticky-inner { animation: tl-par linear both; animation-timeline: --tlpar; animation-range: entry 0% entry 100%; }
+  }
+}
