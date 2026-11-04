@@ -1,0 +1,46 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>IGNARA · El fuego</title><meta name="description" content="Cinco amigos, un carro, un rumor: un Libro que cura."><meta name="theme-color" content="#0b0705">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&display=swap"><link rel="stylesheet" href="../shared.css?v=20261104-1329"><link rel="stylesheet" href="../../glass-lab-preset.css?v=20261104-1329">
+<style>
+body{background:#0b0705;color:#fff8e8;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.world{position:fixed;inset:0;opacity:0;transition:opacity 2.6s ease}
+.world svg{width:100%;height:100%;display:block}
+.world .l1{transform:translateY(40px);transition:transform 3.2s cubic-bezier(.19,1,.22,1)}
+.world .l2{transform:translateY(70px);transition:transform 3.6s cubic-bezier(.19,1,.22,1) .2s}
+.world .l3{transform:translateY(110px);transition:transform 4s cubic-bezier(.19,1,.22,1) .35s}
+.lit .world{opacity:1}.lit .world .l1,.lit .world .l2,.lit .world .l3{transform:none}
+.riv{stroke-dasharray:8 14;animation:fl 3s linear infinite}@keyframes fl{to{stroke-dashoffset:-44}}
+#gl,#fb{position:fixed;inset:0;width:100%;height:100%;z-index:2;transition:transform 2.4s cubic-bezier(.19,1,.22,1),opacity 2s}
+#fb{display:none;background:radial-gradient(circle at 50% 70%,#ffd27a calc(var(--i,0)*12% + 1%),#ff7a1c calc(var(--i,0)*24% + 2%),rgba(120,30,0,0) calc(var(--i,0)*40% + 4%))}
+.lit #gl,.lit #fb{transform:translateY(16svh) scale(.55);mix-blend-mode:screen}
+.ttl{position:fixed;left:0;right:0;top:max(16svh,calc(env(safe-area-inset-top) + 60px));z-index:3;text-align:center;opacity:0;transform:scale(.92);transition:opacity 1.6s 1.2s,transform 2.4s cubic-bezier(.19,1,.22,1) 1.2s;pointer-events:none}
+.lit .ttl{opacity:1;transform:none}
+.ttl .wmk{width:min(64vw,340px);margin:0 auto 14px;color:#fff8e8;filter:drop-shadow(0 6px 24px rgba(255,170,80,.6))}
+.ttl p{margin:0 auto;max-width:22em;padding:0 24px;font-size:17px;line-height:1.35;color:#4a2a14;font-weight:500}
+.ttl p+p{margin-top:8px;font-size:14px;color:#7a4316}
+.pr{position:fixed;left:50%;top:calc(70% + 70px);z-index:3;width:120px;height:3px;margin-left:-60px;border-radius:3px;background:rgba(255,200,120,.15);overflow:hidden;transition:opacity .6s}
+.pr i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff8a2a,#ffd27a);transform-origin:left;transform:scaleX(var(--i,0))}
+.lit .pr{opacity:0}
+.lead{position:fixed;left:0;right:0;top:calc(50% - 150px);z-index:3;text-align:center;font-size:15px;color:rgba(255,226,166,.75);letter-spacing:.04em;transition:opacity .8s}
+.lit .lead{opacity:0}
+.card{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));z-index:10;width:min(92vw,420px);padding:20px;border-radius:22px;transform:translate(-50%,130%);transition:transform .9s cubic-bezier(.19,1,.22,1);background:rgba(28,20,12,.72)!important}
+.card.in{transform:translate(-50%,0)}
+.card .k{margin:0 0 6px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#ffd58a}
+.card h2{margin:0 0 14px;font-weight:400;font-size:20px;line-height:1.2}
+.btn-rm{display:none;position:fixed;left:50%;top:calc(50% + 150px);z-index:4;transform:translateX(-50%);padding:14px 22px;border-radius:999px;border:1px solid rgba(255,210,130,.5);background:rgba(255,160,60,.15);color:#ffe2a6;font:500 16px "Inter Tight",sans-serif}
+.rm .btn-rm{display:block}.lit .btn-rm{display:none}
+@media (min-width:900px){.card{left:auto;right:5vw;bottom:8vh;transform:translateX(130%)}.card.in{transform:none}}
+</style></head><body>
+<div class="world" aria-hidden="true"><svg viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4b860"/><stop offset=".35" stop-color="#f7d79a"/><stop offset=".6" stop-color="#b9d98e"/><stop offset="1" stop-color="#2f5a35"/></linearGradient><radialGradient id="sn" cx=".5" cy=".38" r=".5"><stop offset="0" stop-color="#fff2c0" stop-opacity=".9"/><stop offset="1" stop-color="#fff2c0" stop-opacity="0"/></radialGradient></defs>
+<rect width="400" height="800" fill="url(#sk)"/><circle cx="200" cy="300" r="190" fill="url(#sn)"/>
+<g class="l1"><path d="M0 470q40-90 90-40q40-110 110-20q60-100 110 10q40-60 90 10V800H0z" fill="#79a865" opacity=".8"/></g>
+<g class="l2"><path d="M0 540q30-70 70-20q30-80 70 0q40-90 90 0q30-60 70 0q40-70 100 10V800H0z" fill="#4c8448"/><path class="riv" d="M-10 640q120-40 210 0t220-20" stroke="#8fe3d6" stroke-width="5" fill="none"/><path d="M-10 640q120-40 210 0t220-20V700q-110 30-220 6t-210 10z" fill="#3fb6aa" opacity=".9"/></g>
+<g class="l3" fill="#24462c"><path d="M0 800V600q20-30 30 0l10-60q14-20 22 0q10 50 30 60q20-90 40-10l20 60V800zM400 800V590q-24-30-34 6l-14-56q-12-16-20 4q-8 60-28 66q-18-80-36 0V800z"/><path d="M60 800q20-60 50-70q20 20 40 70zM250 800q20-50 60-70q20 30 30 70z" fill="#1b3a24"/></g></svg></div>
+<canvas id="gl"></canvas><div id="fb"></div>
+<p class="lead" id="lead">Una brasa espera.</p>
+<div class="pr" aria-hidden="true"><i></i></div>
+<button class="btn-rm" id="rmb">Encender el fuego</button>
+<div class="ttl"><span class="wmk" role="img" aria-label="IGNARA"></span><p>Cinco amigos, un carro, un rumor: un Libro que cura.</p><p>¿Y si lo que te falta no es algo que se pueda apagar?</p></div>
+<div class="card glass" id="card"><p class="k">El fuego te pide algo</p><h2>Déjanos tu correo para mantenerlo encendido.</h2><div id="fm"><form class="xform" novalidate><label class="sr" for="em">Correo electrónico</label><input id="em" type="email" name="email" autocomplete="email" inputmode="email" placeholder="tu@correo.com" enterkeyhint="send"><p class="err" aria-live="polite"></p><button type="submit">Mantenerlo encendido</button></form><div class="ok" role="status" tabindex="-1"><strong>¡El fuego sigue encendido!</strong><br>Te avisaremos cuando el mapa ilustrado del viaje esté listo.</div><p class="demo-note">Demo: este formulario no envía datos todavía.</p></div></div>
+<p class="hint" id="hint">Mantén presionado para soplar la brasa</p>
+<script src="../shared.js?v=20261104-1329"></script><script src="fuego.js?v=20261104-1329"></script>
+</body></html>
