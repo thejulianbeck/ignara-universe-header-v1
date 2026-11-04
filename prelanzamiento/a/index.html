@@ -1,0 +1,30 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>IGNARA · Libro 1 · Prelanzamiento</title><meta name="description" content="Cinco amigos, un carro, un rumor: un Libro que cura."><link rel="stylesheet" href="../shared.css?v=20261104-1245"><meta name="theme-color" content="#1f3b2d"><style>
+body{min-height:100svh;background:radial-gradient(120% 80% at 50% 0%,#2f5a42 0%,#1f3b2d 55%,#172c22 100%);color:#f3ead6;font-family:Georgia,"Times New Roman",serif;display:flex;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+main{display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px;max-width:560px;width:100%}
+.seal{width:min(72vw,300px);aspect-ratio:1;position:relative}
+.seal svg.ring{position:absolute;inset:0;width:100%;height:100%;animation:spin 60s linear infinite}
+.seal .wmk{position:absolute;left:22%;right:22%;top:50%;transform:translateY(-50%);color:#f3ead6}
+.ring text{font:600 15px Georgia,serif;letter-spacing:4.2px;fill:#d9b46a}
+@keyframes spin{to{transform:rotate(360deg)}}
+.kicker{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#d9b46a;margin:0}
+h1{font-weight:400;font-size:clamp(26px,6.4vw,40px);line-height:1.2;margin:0}
+.sub{font-style:italic;font-size:18px;opacity:.85;margin:0}
+.gift{font-size:15px;line-height:1.5;opacity:.85;margin:0;border-top:1px solid rgba(217,180,106,.35);padding-top:18px}
+form[data-demo] input{border-color:rgba(217,180,106,.7);font-family:Georgia,serif}
+form[data-demo] input::placeholder{color:rgba(243,234,214,.55)}
+form[data-demo] button{background:#d9b46a;color:#1f3b2d;font-family:Georgia,serif}
+.ok{color:#f3ead6}
+@media (prefers-reduced-motion:reduce){.seal svg.ring{animation:none}}
+</style></head><body><main>
+<div class="seal" aria-hidden="true">
+<svg class="ring" viewBox="0 0 300 300"><defs><path id="c" d="M150,150 m-128,0 a128,128 0 1,1 256,0 a128,128 0 1,1 -256,0"/></defs>
+<circle cx="150" cy="150" r="146" fill="none" stroke="#d9b46a" stroke-width="1.2"/><circle cx="150" cy="150" r="108" fill="none" stroke="#d9b46a" stroke-width=".8" opacity=".6"/>
+<text><textPath href="#c">IGNARA · VOL. I · IGNARA · VOL. I · IGNARA · VOL. I · IGNARA · VOL. I ·</textPath></text></svg>
+<span class="wmk"></span></div>
+<h1 class="sr">IGNARA · Libro 1</h1>
+<p class="kicker">Libro 1 · Muy pronto</p>
+<p style="font-size:clamp(24px,6vw,36px);line-height:1.25;margin:0">«Cinco amigos, un carro, un rumor: un Libro que cura.»</p>
+<p class="sub">¿Y si lo que te falta no es algo que se pueda apagar?</p>
+<div style="width:100%;display:flex;flex-direction:column;align-items:center"><form data-demo novalidate><label class="sr" for="em">Correo electrónico</label><input id="em" type="email" name="email" required autocomplete="email" inputmode="email" placeholder="tu@correo.com"><button type="submit">Reserva tu lugar</button></form><p class="ok" hidden tabindex="-1">¡Listo! Tu lugar está reservado. Te avisaremos cuando el mapa ilustrado del viaje esté listo.</p><p class="demo-note">Demo: este formulario no envía datos todavía.</p></div>
+<p class="gift">Quienes se suscriban recibirán un mapa ilustrado del viaje <em>(próximamente)</em>.</p>
+</main><script src="../shared.js?v=20261104-1245"></script></body></html>

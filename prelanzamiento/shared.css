@@ -1,0 +1,15 @@
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0}
+img,svg{display:block;max-width:100%}
+.wm{width:min(78vw,520px);height:auto}
+form[data-demo]{display:flex;gap:8px;width:100%;max-width:460px}
+form[data-demo] input{flex:1;min-width:0;font:inherit;font-size:16px;padding:14px 16px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;outline:none}
+form[data-demo] button{font:inherit;font-size:16px;font-weight:600;padding:14px 20px;border-radius:999px;border:0;cursor:pointer;white-space:nowrap}
+form[data-demo].is-done{display:none}
+.ok{font-size:17px;line-height:1.4;max-width:460px}
+.demo-note{font-size:12px;opacity:.65;margin-top:10px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:420px){form[data-demo]{flex-direction:column}}
+.wmk{display:block;aspect-ratio:497/152;background:currentColor;-webkit-mask:url(../ignara-wordmark.svg) center/contain no-repeat;mask:url(../ignara-wordmark.svg) center/contain no-repeat}
+.ok:focus{outline:none}
